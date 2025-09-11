@@ -1,0 +1,170 @@
+'use client';
+
+import { useState, useMemo } from 'react';
+import type { GeneratePersonalizedRoadmapOutput } from '@/ai/flows/generate-personalized-roadmap';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  List,
+  GraduationCap,
+  Wrench,
+  Calendar,
+  FlaskConical,
+  GitMerge,
+  Lightbulb,
+  FileText,
+  Briefcase,
+  Users,
+  Award,
+  ChevronRight,
+} from 'lucide-react';
+
+interface RoadmapDisplayProps {
+  data: GeneratePersonalizedRoadmapOutput;
+  onReset: () => void;
+}
+
+const parseList = (text: string | undefined): string[] => {
+  if (!text) return [];
+  return text.split('\n').map(s => s.replace(/^- /, '').trim()).filter(Boolean);
+};
+
+const SectionCard = ({ title, icon: Icon, children }: { title: string; icon: React.ElementType; children: React.ReactNode }) => (
+  <Card className="flex flex-col">
+    <CardHeader className="flex flex-row items-center gap-3">
+      <Icon className="w-6 h-6 text-primary" />
+      <CardTitle className="text-lg">{title}</CardTitle>
+    </CardHeader>
+    <CardContent className="flex-1 text-sm text-muted-foreground">
+      {children}
+    </CardContent>
+  </Card>
+);
+
+
+const Checklist = ({ items, sectionId, onToggle, completedItems }: { items: string[], sectionId: string, onToggle: (id: string) => void, completedItems: Set<string> }) => (
+  <ul className="space-y-3">
+    {items.map((item, index) => {
+      const id = `${sectionId}-${index}`;
+      const isCompleted = completedItems.has(id);
+      return (
+        <li key={id} className="flex items-start gap-3">
+          <Checkbox id={id} checked={isCompleted} onCheckedChange={() => onToggle(id)} className="mt-1"/>
+          <label htmlFor={id} className={`flex-1 ${isCompleted ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
+            {item}
+          </label>
+        </li>
+      );
+    })}
+  </ul>
+);
+
+export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
+  const [completedItems, setCompletedItems] = useState<Set<string>>(new Set());
+  
+  const sections = useMemo(() => ({
+    skillRoadmap: parseList(data.skillRoadmap),
+    toolsToMaster: parseList(data.toolsToMaster),
+    projects: parseList(data.projects),
+    portfolioBuilder: parseList(data.portfolioBuilder),
+    resumeInterviewPrep: parseList(data.resumeInterviewPrep),
+    communityMentorship: parseList(data.communityMentorship)
+  }), [data]);
+
+  const totalChecklistItems = Object.values(sections).reduce((sum, items) => sum + items.length, 0);
+
+  const toggleItem = (id: string) => {
+    setCompletedItems(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const progressPercentage = totalChecklistItems > 0 ? (completedItems.size / totalChecklistItems) * 100 : 0;
+
+  const getNextMilestone = () => {
+    const allItems = [
+      ...sections.skillRoadmap.map((_, i) => `skillRoadmap-${i}`),
+      ...sections.projects.map((_, i) => `projects-${i}`),
+    ];
+    for (const id of allItems) {
+      if (!completedItems.has(id)) {
+        const [section, index] = id.split('-');
+        // @ts-ignore
+        return sections[section][index];
+      }
+    }
+    return "You've completed all milestones!";
+  }
+
+  const sectionsConfig = [
+    { id: 'skillRoadmap', title: 'Skill Roadmap', icon: List, items: sections.skillRoadmap },
+    { id: 'toolsToMaster', title: 'Tools to Master', icon: Wrench, items: sections.toolsToMaster },
+    { id: 'timeline', title: 'Timeline', icon: Calendar, content: data.timeline },
+    { id: 'projects', title: 'Projects', icon: FlaskConical, items: sections.projects },
+    { id: 'skillGapAnalysis', title: 'Skill Gap Analysis', icon: GitMerge, content: data.skillGapAnalysis },
+    { id: 'personalizedLearningPath', title: 'Personalized Learning Path', icon: GraduationCap, content: data.personalizedLearningPath },
+    { id: 'resources', title: 'Resources', icon: Lightbulb, content: data.resources },
+    { id: 'portfolioBuilder', title: 'Portfolio Builder', icon: FileText, items: sections.portfolioBuilder },
+    { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', icon: Briefcase, items: sections.resumeInterviewPrep },
+    { id: 'jobMarketInsights', title: 'Job Market Insights', icon: Users, content: data.jobMarketInsights },
+    { id: 'communityMentorship', title: 'Community & Mentorship', icon: Users, items: sections.communityMentorship },
+  ];
+
+  return (
+    <div className="space-y-8 animate-in fade-in-50 duration-500">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight">Your Personalized Roadmap</h1>
+          <p className="text-muted-foreground">Here is your AI-generated path to becoming a {data.jobMarketInsights.split(' for a ')[1]?.split(' ')[0] || 'pro'}.</p>
+        </div>
+        <Button onClick={onReset} variant="outline">Start Over</Button>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><Award className="w-5 h-5 text-primary" /> Motivation & Gamification</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+              <Progress value={progressPercentage} className="w-full" />
+              <div className="flex justify-between text-sm">
+                  <p className="text-foreground"><span className="font-semibold">{Math.round(progressPercentage)}%</span> complete</p>
+                  <p className="text-muted-foreground">Next Milestone: <span className="font-semibold text-foreground">{getNextMilestone()}</span></p>
+              </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {sectionsConfig.map(section => {
+          if ((!section.items || section.items.length === 0) && !section.content) return null;
+
+          return (
+            <SectionCard key={section.id} title={section.title} icon={section.icon}>
+              {section.items ? (
+                <Checklist items={section.items} sectionId={section.id} onToggle={toggleItem} completedItems={completedItems} />
+              ) : (
+                <ul className="space-y-2">
+                {parseList(section.content).map((line, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                        <ChevronRight className="w-4 h-4 mt-1 text-primary shrink-0"/>
+                        <span>{line}</span>
+                    </li>
+                ))}
+                </ul>
+              )}
+            </SectionCard>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
