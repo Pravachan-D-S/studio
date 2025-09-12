@@ -41,6 +41,11 @@ export default function MotivationalScreen({ onStart }: MotivationalScreenProps)
           show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
       )}>
         <VidyaanLogo className="h-20 w-auto mx-auto text-gray-800" />
+
+        <h2 className="mt-4 text-2xl font-bold text-slate-700 tracking-tight">Your AI Career Guide</h2>
+        <p className="max-w-md mx-auto mt-2 text-muted-foreground">
+          Get a personalized roadmap to land your dream job in tech.
+        </p>
         
         <div className="mt-8 h-16 flex items-center justify-center">
             <p className="text-lg md:text-xl text-gray-600 italic max-w-md">
