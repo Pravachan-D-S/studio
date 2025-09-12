@@ -40,7 +40,7 @@ export function VidyaanLogo(props: SVGProps<SVGSVGElement>) {
     return (
         <svg
             {...props}
-            viewBox="0 0 160 50"
+            viewBox="0 0 180 50"
             xmlns="http://www.w3.org/2000/svg"
         >
             <defs>
@@ -59,7 +59,7 @@ export function VidyaanLogo(props: SVGProps<SVGSVGElement>) {
             </g>
 
             {/* Text */}
-            <text x="50" y="32" fontFamily="Inter, sans-serif" fontSize="28" fontWeight="bold" fill="#2b75ae">
+            <text x="45" y="32" fontFamily="Inter, sans-serif" fontSize="28" fontWeight="bold" fill="#2b75ae">
                 Vidyaan
             </text>
         </svg>
