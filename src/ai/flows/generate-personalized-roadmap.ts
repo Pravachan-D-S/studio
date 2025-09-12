@@ -49,6 +49,7 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
 
   Generate a comprehensive roadmap based on the following student information. Be encouraging and use a tone that resonates with students.
 
+  Student Information:
   Stream: {{{stream}}}
   Specialization: {{{specialization}}}
   Program Duration: {{{programDuration}}} years
@@ -56,6 +57,7 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
   Target Salary: {{{salaryRange}}}
 
   **IMPORTANT INSTRUCTIONS:**
+  - Use the "Vidyaan Knowledge Map" below as your primary source of truth for generating the roadmap.
   - For any field that should be a list, provide a newline-separated string. For example:
     - Skill 1
     - Skill 2
@@ -63,16 +65,136 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
   - Be specific and provide concrete examples.
   - The tone should be like a friendly and knowledgeable mentor.
 
+  ---
+  **Vidyaan Knowledge Map (Starter Version)**
+
+  **Engineering**
+  1.  **CSE / ISE**
+      *   **Data Scientist**
+          *   **Skills:** Python, Statistics, Machine Learning, Deep Learning, SQL
+          *   **Tools:** TensorFlow, PyTorch, Scikit-learn, Jupyter
+          *   **Resources:** Kaggle, Coursera (Andrew Ng), DataCamp
+          *   **Projects:** Stock Price Prediction, Image Classifier, NLP Chatbot
+          *   **Job Market:** Strong demand across IT, healthcare, finance, e-commerce
+          *   **Timeline:** 2–3 years
+      *   **Web Developer**
+          *   **Skills:** HTML, CSS, JavaScript, React, Node.js, MongoDB
+          *   **Tools:** VS Code, GitHub, Firebase, Docker
+          *   **Resources:** FreeCodeCamp, MDN Docs, The Odin Project
+          *   **Projects:** Portfolio Website, E-commerce Platform, Blogging App
+          *   **Job Market:** High demand in startups and enterprises
+          *   **Timeline:** 1–2 years
+  2.  **ECE**
+      *   **Embedded Systems Engineer**
+          *   **Skills:** C, C++, Microcontrollers, RTOS, Digital Electronics
+          *   **Tools:** Arduino, Raspberry Pi, Keil, Proteus
+          *   **Resources:** NPTEL Embedded Systems, FreeCodeCamp IoT, IEEE Journals
+          *   **Projects:** IoT Smart Home, Autonomous Robot, Sensor Networks
+          *   **Job Market:** High demand in IoT, automotive, robotics
+          *   **Timeline:** 2–3 years
+      *   **VLSI Engineer**
+          *   **Skills:** Verilog, VHDL, ASIC Design, Semiconductor Physics
+          *   **Tools:** Cadence, Synopsys, Xilinx Vivado
+          *   **Resources:** Udemy VLSI Design, Coursera Chip Design
+          *   **Projects:** FPGA-based Processor, Low Power Circuit Design
+          *   **Job Market:** Growing semiconductor and electronics industry
+          *   **Timeline:** 2–4 years
+  3.  **Mechanical**
+      *   **Automobile Engineer**
+          *   **Skills:** CAD, Thermodynamics, Vehicle Dynamics
+          *   **Tools:** AutoCAD, SolidWorks, Ansys
+          *   **Resources:** SAE India, NPTEL, MIT OpenCourseWare
+          *   **Projects:** Electric Vehicle Prototype, Engine Design, Solar Car Model
+          *   **Job Market:** Strong in EV, manufacturing, R&D
+          *   **Timeline:** 3–4 years
+      *   **Robotics Engineer**
+          *   **Skills:** Control Systems, Mechatronics, Python, ROS
+          *   **Tools:** MATLAB, Gazebo, Arduino, SolidWorks
+          *   **Resources:** Coursera Robotics Specialization, ROS Tutorials
+          *   **Projects:** Pick-and-Place Robot, Humanoid Robot, Automated Drone
+          *   **Job Market:** Growing in automation, defense, AI industries
+          *   **Timeline:** 2–4 years
+  4.  **Civil**
+      *   **Structural Engineer**
+          *   **Skills:** RCC Design, Structural Analysis, Construction Materials
+          *   **Tools:** STAAD Pro, AutoCAD Civil 3D, ETABS
+          *   **Resources:** NPTEL Civil, Bentley Learning, IS Codes
+          *   **Projects:** Bridge Design, Earthquake-Resistant Building, Smart City Model
+          *   **Job Market:** Demand in infrastructure, smart cities, government projects
+          *   **Timeline:** 3–4 years
+      *   **Urban Planner**
+          *   **Skills:** GIS, Town Planning, Environmental Studies
+          *   **Tools:** ArcGIS, AutoCAD Map, SketchUp
+          *   **Resources:** UN Habitat, MIT Urban Studies, Coursera GIS
+          *   **Projects:** Smart Traffic Management, Sustainable City Design
+          *   **Job Market:** Expanding with urban development
+          *   **Timeline:** 2–3 years
+
+  **MBA**
+  1.  **Finance**
+      *   **Financial Analyst**
+          *   **Skills:** Accounting, Financial Modeling, Risk Analysis, Excel
+          *   **Tools:** Excel, Power BI, Tableau
+          *   **Resources:** CFA Institute, Investopedia, Coursera Finance
+          *   **Projects:** Budget Forecasting, Stock Market Analysis
+          *   **Job Market:** Stable in banks, corporates, fintech
+          *   **Timeline:** 2–3 years
+  2.  **Marketing**
+      *   **Digital Marketing Manager**
+          *   **Skills:** SEO, SEM, Social Media, Analytics
+          *   **Tools:** Google Analytics, HubSpot, Canva
+          *   **Resources:** HubSpot Academy, Google Skillshop
+          *   **Projects:** Brand Campaign, Social Media Strategy, E-commerce Ads
+          *   **Job Market:** Strong in startups and retail
+          *   **Timeline:** 1–2 years
+
+  **MCA**
+  1.  **Software Development**
+      *   **Full Stack Developer**
+          *   **Skills:** Java, Python, React, Node.js, SQL
+          *   **Tools:** GitHub, VS Code, Docker
+          *   **Resources:** FreeCodeCamp, Udemy Java Developer
+          *   **Projects:** CRM System, Learning Management System
+          *   **Job Market:** Strong across IT industry
+          *   **Timeline:** 2–3 years
+  2.  **Cybersecurity**
+      *   **Security Analyst**
+          *   **Skills:** Networking, Linux, Cryptography, Penetration Testing
+          *   **Tools:** Wireshark, Kali Linux, Metasploit
+          *   **Resources:** EC-Council CEH, Coursera Cybersecurity, Cybrary
+          *   **Projects:** Secure Banking App, Penetration Testing Lab
+          *   **Job Market:** Huge demand in IT, defense, finance
+          *   **Timeline:** 2–3 years
+
+  **Diploma**
+  1.  **Computer Science**
+      *   **Junior Web Developer**
+          *   **Skills:** HTML, CSS, JavaScript, Bootstrap
+          *   **Tools:** VS Code, GitHub Pages
+          *   **Resources:** W3Schools, FreeCodeCamp
+          *   **Projects:** Personal Portfolio, Small Business Website
+          *   **Job Market:** Entry-level jobs in IT companies
+          *   **Timeline:** 1–2 years
+  2.  **Electronics**
+      *   **Technician / IoT Developer**
+          *   **Skills:** PCB Design, Microcontrollers, Sensors
+          *   **Tools:** Arduino, Eagle, Proteus
+          *   **Resources:** NPTEL IoT, Arduino Docs
+          *   **Projects:** Smart Lighting System, Water Level Detector
+          *   **Job Market:** Local industries, IoT startups
+          *   **Timeline:** 1–2 years
+  ---
+
   **Roadmap Output:**
 
-  1.  **Skill Roadmap:** A list of essential technical and soft skills.
-  2.  **Tools to Master:** Specific programming languages, frameworks, and libraries.
-  3.  **Estimated Timeline:** An estimation of how many years it will take to achieve the career goal.
-  4.  **Project Ideas:** 3-4 project ideas with increasing difficulty.
-  5.  **Learning Resources:** Suggest top free and paid courses, books, and communities.
-  6.  **Career Growth:** Describe potential career growth and future opportunities.
+  1.  **Skill Roadmap:** A list of essential technical and soft skills based on the Knowledge Map.
+  2.  **Tools to Master:** Specific programming languages, frameworks, and libraries from the Knowledge Map.
+  3.  **Estimated Timeline:** An estimation of how many years it will take to achieve the career goal, based on the Knowledge Map.
+  4.  **Project Ideas:** 3-4 project ideas with increasing difficulty from the Knowledge Map.
+  5.  **Learning Resources:** Suggest top free and paid courses, books, and communities from the Knowledge Map.
+  6.  **Career Growth:** Describe potential career growth and future opportunities for the chosen path.
   7.  **Resume & Interview Prep:** A brief resume outline and 3-5 common interview questions.
-  8.  **Job Market Insights:** Insights on demand, salary ranges, and valuable certifications.`,
+  8.  **Job Market Insights:** Insights on demand and salary ranges from the Knowledge Map.`,
 });
 
 const generatePersonalizedRoadmapFlow = ai.defineFlow(
