@@ -35,7 +35,7 @@ const getAimingCareers = (getValues: Function): string[] => {
     if (!stream) return [];
 
     const streamCareers = aimingCareers[stream];
-    if (!streamCareers) return aimingCareers['Other'] as string[];
+    if (!streamCareers) return [];
 
     if (Array.isArray(streamCareers)) {
         return streamCareers;

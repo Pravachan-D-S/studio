@@ -1,11 +1,10 @@
-export const streams = ['Engineering', 'MBA', 'MCA', 'Diploma', 'Other'];
+export const streams = ['Engineering', 'MBA', 'MCA', 'Diploma'];
 
 export const specializations: { [key: string]: string[] } = {
   Engineering: ['CSE / ISE', 'ECE', 'Mechanical', 'Civil', 'EEE'],
   MBA: ['Finance', 'Marketing', 'HR', 'Operations', 'Analytics'],
   MCA: ['Software Development', 'Data Science', 'Networking', 'Cybersecurity'],
   Diploma: ['Computer Science', 'Electronics', 'Mechanical', 'Civil'],
-  Other: [],
 };
 
 export const programDurations: { [key: string]: string } = {
@@ -44,15 +43,4 @@ export const aimingCareers: { [key: string]: { [key: string]: string[] } } = {
         'Mechanical': ['CAD Designer', 'Workshop Supervisor', 'Production Assistant', 'Maintenance Technician', 'CNC Operator'],
         'Civil': ['Site Supervisor', 'Draftsman (AutoCAD Civil)', 'Junior Surveyor', 'Construction Technician', 'Estimation Assistant'],
     },
-    Other: [
-      'Data Scientist',
-      'Web Developer',
-      'AI Expert',
-      'Cybersecurity Analyst',
-      'Product Manager',
-      'Researcher',
-      'Cloud Engineer',
-      'DevOps Engineer',
-      'Mobile App Developer',
-    ]
 };
