@@ -12,7 +12,7 @@ interface MotivationalScreenProps {
 const AnimatedShape = ({ className, delay }: { className: string, delay: string }) => (
     <div
       className={cn(
-        'absolute rounded-full bg-sky-200/50 blur-xl animate-float',
+        'absolute rounded-full bg-primary/10 blur-2xl animate-float',
         className
       )}
       style={{ animationDelay: delay }}
@@ -28,12 +28,12 @@ export default function MotivationalScreen({ onStart }: MotivationalScreenProps)
   }, []);
 
   return (
-    <div className="relative flex flex-col items-center justify-center h-screen bg-gradient-to-b from-white to-sky-100 p-4 overflow-hidden">
+    <div className="relative flex flex-col items-center justify-center h-screen bg-gradient-to-br from-background via-sky-50 to-slate-100 p-4 overflow-hidden animate-gradient-xy">
        {/* Animated background shapes */}
-       <AnimatedShape className="w-48 h-48 top-10 left-10" delay="0s" />
-       <AnimatedShape className="w-32 h-32 bottom-20 right-5" delay="2s" />
-       <AnimatedShape className="w-24 h-24 top-1/2 left-1/4" delay="4s" />
-       <AnimatedShape className="w-40 h-40 bottom-1/3 right-1/3" delay="6s" />
+       <AnimatedShape className="w-64 h-64 top-10 left-10" delay="0s" />
+       <AnimatedShape className="w-48 h-48 bottom-20 right-5" delay="2s" />
+       <AnimatedShape className="w-32 h-32 top-1/2 left-1/4" delay="4s" />
+       <AnimatedShape className="w-56 h-56 bottom-1/3 right-1/3" delay="6s" />
 
 
       <div className={cn(
