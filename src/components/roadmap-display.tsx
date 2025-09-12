@@ -105,6 +105,13 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
     return "You've completed all milestones!";
   }
 
+  const getAwardColor = () => {
+    if (progressPercentage >= 75) return 'text-amber-400'; // Gold
+    if (progressPercentage >= 50) return 'text-slate-400'; // Silver
+    if (progressPercentage >= 25) return 'text-orange-400'; // Bronze
+    return 'text-primary';
+  };
+
   const sectionsConfig = [
     { id: 'skillRoadmap', title: 'Skill Roadmap', icon: List, items: sections.skillRoadmap, className: 'lg:col-span-1' },
     { id: 'toolsToMaster', title: 'Tools to Master', icon: Wrench, items: sections.toolsToMaster, className: 'lg:col-span-1' },
@@ -128,7 +135,10 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><Award className="w-5 h-5 text-primary" /> Progress Tracker</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Award className={cn("w-5 h-5 transition-colors", getAwardColor())} />
+             Progress Tracker
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
