@@ -165,7 +165,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
       </div>
 
       <div className="p-4 border-t bg-background">
-        {!isComplete && (
+        {!isComplete && currentQuestion && (
             <form onSubmit={(e) => {
                 e.preventDefault();
                 const key = currentQuestion.key as keyof FormValues;
