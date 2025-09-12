@@ -7,20 +7,18 @@ export const branches = [
   'Mechanical Engineering',
   'Civil Engineering',
   'Electrical Engineering',
-  'Artificial Intelligence & Machine Learning',
+  'AI & ML',
 ];
 
 export const aimingCareers = [
   'Data Scientist',
-  'Full Stack Web Developer',
+  'Web Developer',
   'AI/ML Engineer',
-  'Cloud Engineer (AWS/Azure/GCP)',
+  'Cloud Engineer',
   'DevOps Engineer',
   'Cybersecurity Analyst',
-  'Embedded Systems Engineer',
-  'Mobile App Developer (iOS/Android)',
+  'Mobile App Developer',
   'Game Developer',
-  'UI/UX Designer',
 ];
 
 export const yearsOfStudy = [
@@ -35,4 +33,6 @@ export const skillLevels = ['Beginner', 'Intermediate', 'Advanced'];
 
 export const locationPreferences = ['India', 'USA', 'Europe', 'Remote', 'Any'];
 
-export const learningStyles = ['Video Tutorials', 'Reading Documentation', 'Project-based Learning', 'Mix'];
+export const learningStyles = ['Video', 'Reading', 'Projects', 'Mix'];
+
+export const salaryRanges = ['5-8 LPA', '10-15 LPA', '20+ LPA'];

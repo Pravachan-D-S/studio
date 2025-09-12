@@ -1,11 +1,11 @@
 'use client';
 
-import { CompassIcon } from './icons';
+import { VidyaanIcon } from './icons';
 
 export default function LoadingState() {
   return (
     <div className="flex flex-col items-center justify-center h-full min-h-[50vh] text-center p-4">
-      <CompassIcon className="w-16 h-16 text-primary animate-spin" />
+      <VidyaanIcon className="w-16 h-16 text-primary animate-spin" />
       <h2 className="mt-6 text-2xl font-bold tracking-tight text-foreground">
         Generating Your Personalized Roadmap...
       </h2>

@@ -1,13 +1,4 @@
 import { z } from 'zod';
-import {
-  streams,
-  branches,
-  aimingCareers,
-  yearsOfStudy,
-  skillLevels,
-  locationPreferences,
-  learningStyles,
-} from './constants';
 
 export const formSchema = z.object({
   stream: z.string().min(1, 'Stream is required.'),

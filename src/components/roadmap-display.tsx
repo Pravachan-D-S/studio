@@ -19,6 +19,7 @@ import {
   Users,
   Award,
   ChevronRight,
+  TrendingUp,
 } from 'lucide-react';
 
 interface RoadmapDisplayProps {
@@ -31,8 +32,8 @@ const parseList = (text: string | undefined): string[] => {
   return text.split('\n').map(s => s.replace(/^- /, '').trim()).filter(Boolean);
 };
 
-const SectionCard = ({ title, icon: Icon, children }: { title: string; icon: React.ElementType; children: React.ReactNode }) => (
-  <Card className="flex flex-col">
+const SectionCard = ({ title, icon: Icon, children, className }: { title: string; icon: React.ElementType; children: React.ReactNode; className?: string }) => (
+  <Card className={cn("flex flex-col", className)}>
     <CardHeader className="flex flex-row items-center gap-3">
       <Icon className="w-6 h-6 text-primary" />
       <CardTitle className="text-lg">{title}</CardTitle>
@@ -98,23 +99,24 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
       if (!completedItems.has(id)) {
         const [section, index] = id.split('-');
         // @ts-ignore
-        return sections[section][index];
+        const itemText = sections[section][index];
+        return itemText.length > 40 ? itemText.substring(0, 40) + '...' : itemText;
       }
     }
     return "You've completed all milestones!";
   }
 
   const sectionsConfig = [
-    { id: 'skillRoadmap', title: 'Skill Roadmap', icon: List, items: sections.skillRoadmap },
-    { id: 'toolsToMaster', title: 'Tools to Master', icon: Wrench, items: sections.toolsToMaster },
-    { id: 'timeline', title: 'Timeline', icon: Calendar, content: data.timeline },
-    { id: 'projects', title: 'Projects', icon: FlaskConical, items: sections.projects },
+    { id: 'skillRoadmap', title: 'Skill Roadmap', icon: List, items: sections.skillRoadmap, className: 'lg:col-span-1' },
+    { id: 'toolsToMaster', title: 'Tools to Master', icon: Wrench, items: sections.toolsToMaster, className: 'lg:col-span-1' },
+    { id: 'timeline', title: 'Timeline', icon: Calendar, content: data.timeline, className: 'lg:col-span-1' },
+    { id: 'projects', title: 'Projects', icon: FlaskConical, items: sections.projects, className: 'lg:col-span-2' },
     { id: 'skillGapAnalysis', title: 'Skill Gap Analysis', icon: GitMerge, content: data.skillGapAnalysis },
-    { id: 'personalizedLearningPath', title: 'Personalized Learning Path', icon: GraduationCap, content: data.personalizedLearningPath },
+    { id: 'personalizedLearningPath', title: 'Personalized Learning Path', icon: GraduationCap, content: data.personalizedLearningPath, className: 'lg:col-span-3' },
     { id: 'resources', title: 'Resources', icon: Lightbulb, content: data.resources },
     { id: 'portfolioBuilder', title: 'Portfolio Builder', icon: FileText, items: sections.portfolioBuilder },
-    { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', icon: Briefcase, items: sections.resumeInterviewPrep },
-    { id: 'jobMarketInsights', title: 'Job Market Insights', icon: Users, content: data.jobMarketInsights },
+    { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', icon: Briefcase, items: sections.resumeInterviewPrep, className: 'lg:col-span-2' },
+    { id: 'jobMarketInsights', title: 'Job Market Insights', icon: TrendingUp, content: data.jobMarketInsights },
     { id: 'communityMentorship', title: 'Community & Mentorship', icon: Users, items: sections.communityMentorship },
   ];
 
@@ -123,7 +125,7 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight">Your Personalized Roadmap</h1>
-          <p className="text-muted-foreground">Here is your AI-generated path to becoming a {data.jobMarketInsights.split(' for a ')[1]?.split(' ')[0] || 'pro'}.</p>
+          <p className="text-muted-foreground">Here is your AI-generated path to becoming a pro.</p>
         </div>
         <Button onClick={onReset} variant="outline">Start Over</Button>
       </div>
@@ -134,10 +136,10 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-              <Progress value={progressPercentage} className="w-full" />
-              <div className="flex justify-between text-sm">
+              <Progress value={progressPercentage} className="w-full h-2" />
+              <div className="flex justify-between text-sm flex-wrap gap-2">
                   <p className="text-foreground"><span className="font-semibold">{Math.round(progressPercentage)}%</span> complete</p>
-                  <p className="text-muted-foreground">Next Milestone: <span className="font-semibold text-foreground">{getNextMilestone()}</span></p>
+                  <p className="text-muted-foreground">Next: <span className="font-semibold text-foreground">{getNextMilestone()}</span></p>
               </div>
           </div>
         </CardContent>
@@ -148,7 +150,7 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
           if ((!section.items || section.items.length === 0) && !section.content) return null;
 
           return (
-            <SectionCard key={section.id} title={section.title} icon={section.icon}>
+            <SectionCard key={section.id} title={section.title} icon={section.icon} className={section.className}>
               {section.items ? (
                 <Checklist items={section.items} sectionId={section.id} onToggle={toggleItem} completedItems={completedItems} />
               ) : (
