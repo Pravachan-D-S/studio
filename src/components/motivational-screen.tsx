@@ -30,7 +30,7 @@ export default function MotivationalScreen({ onStart }: MotivationalScreenProps)
         <Button 
           onClick={onStart} 
           size="lg" 
-          className="mt-8 w-full md:w-auto text-lg rounded-full px-12 py-6 bg-green-500 hover:bg-green-600 text-white transition-transform transform hover:scale-105"
+          className="mt-8 w-full md:w-auto text-lg rounded-full px-12 py-6 bg-green-500 hover:bg-green-600 text-white transition-all transform hover:scale-105 hover:shadow-lg hover:shadow-green-500/40"
         >
           Start
         </Button>
