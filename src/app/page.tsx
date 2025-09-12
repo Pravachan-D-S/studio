@@ -11,6 +11,7 @@ import MotivationalScreen from '@/components/motivational-screen';
 import ChatScreen from '@/components/chat-screen';
 import LoadingState from '@/components/loading-state';
 import RoadmapDisplay from '@/components/roadmap-display';
+import { VidyaanLogo } from '@/components/icons';
 
 type View = 'splash' | 'motivational' | 'chat' | 'loading' | 'results';
 
@@ -68,9 +69,7 @@ export default function Home() {
         <>
           <header className="px-4 lg:px-6 h-16 flex items-center shadow-sm bg-card">
             <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold tracking-tight text-foreground">
-                Vidyaan
-              </h1>
+              <VidyaanLogo className="h-8 w-auto" />
             </div>
           </header>
           <main className="flex-1 p-4 sm:p-6 md:p-8 bg-slate-50">

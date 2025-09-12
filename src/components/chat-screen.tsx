@@ -7,7 +7,7 @@ import { Loader2, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { formSchema, FormValues } from '@/lib/types';
-import { VidyaanIcon, UserIcon } from '@/components/icons';
+import { VidyaanIcon, UserIcon, VidyaanLogo } from '@/components/icons';
 import {
   streams,
   specializations,
@@ -143,8 +143,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
       <header className="flex items-center p-4 border-b">
-        <VidyaanIcon className="h-8 w-8 text-primary" />
-        <h1 className="ml-3 text-2xl font-bold">Vidyaan AI</h1>
+        <VidyaanLogo className="h-8 w-auto" />
       </header>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
