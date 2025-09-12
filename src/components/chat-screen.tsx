@@ -21,19 +21,41 @@ import { cn } from '@/lib/utils';
 type ChatMessage = {
   sender: 'ai' | 'user';
   text: string | React.ReactNode;
-  options?: string[];
+  options?: string[] | readonly string[];
 };
 
 interface ChatScreenProps {
   onSubmit: (data: FormValues) => Promise<void>;
 }
 
+const getAimingCareers = (getValues: Function): string[] => {
+    const stream = getValues('stream');
+    const specialization = getValues('specialization');
+
+    if (!stream) return [];
+
+    const streamCareers = aimingCareers[stream];
+    if (!streamCareers) return aimingCareers['Other'] as string[];
+
+    if (Array.isArray(streamCareers)) {
+        return streamCareers;
+    }
+
+    if (specialization && streamCareers[specialization]) {
+        return streamCareers[specialization];
+    }
+    
+    // Fallback for stream if specialization doesn't match
+    return Object.values(streamCareers).flat();
+}
+
+
 const questions = [
   { key: 'stream', text: 'Which stream are you studying in?', options: streams },
   { key: 'specialization', text: 'Which branch or specialization are you in?', optionsGetter: (getValues: any) => specializations[getValues('stream')] || [] },
   { key: 'programDuration', text: 'How many years is your program?', placeholderGetter: (getValues: any) => `e.g., ${programDurations[getValues('stream')] || '3'}` },
   { key: 'salaryRange', text: 'What salary range do you aim for in the future?', options: salaryRanges },
-  { key: 'aimingCareer', text: 'What is your career goal?', options: aimingCareers, allowCustom: true },
+  { key: 'aimingCareer', text: 'What is your career goal?', optionsGetter: getAimingCareers, allowCustom: true },
 ];
 
 export default function ChatScreen({ onSubmit }: ChatScreenProps) {
@@ -65,7 +87,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
         // @ts-ignore
         if (getValues(questionKey)) return;
         
-        let options = currentQuestion.options || [];
+        let options: string[] | readonly string[] = currentQuestion.options || [];
         if (currentQuestion.optionsGetter) {
             options = currentQuestion.optionsGetter(getValues);
         }
@@ -116,7 +138,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
   };
 
   const currentQuestion = questions[currentQuestionIndex];
-  const showOptions = currentQuestion?.options || currentQuestion?.optionsGetter?.(getValues)?.length > 0;
+  const showOptions = currentQuestion && (currentQuestion.options || currentQuestion.optionsGetter?.(getValues)?.length > 0);
 
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
@@ -191,7 +213,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
                 />
             )}
 
-            <Button type="submit" size="icon" disabled={isLoading || showOptions} className="rounded-full">
+            <Button type="submit" size="icon" disabled={isLoading || (!!showOptions)} className="rounded-full">
                 {isLoading ? <Loader2 className="animate-spin" /> : <Send />}
             </Button>
             </form>

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { streams, aimingCareers, salaryRanges } from './constants';
+import { streams, salaryRanges } from './constants';
 
 export const formSchema = z.object({
   stream: z.string({ required_error: 'Stream is required.' }).refine(val => streams.includes(val), { message: 'Please select a valid stream.'}),
