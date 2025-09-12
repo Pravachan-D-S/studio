@@ -44,7 +44,7 @@ export default function MotivationalScreen({ onStart }: MotivationalScreenProps)
 
         <h2 className="mt-4 text-2xl font-bold text-slate-700 tracking-tight">Your AI Career Guide</h2>
         <p className="max-w-md mx-auto mt-2 text-muted-foreground">
-          Get a personalized roadmap to land your dream job in tech.
+          Get a personalized roadmap to land your dream job.
         </p>
         
         <div className="mt-8 h-16 flex items-center justify-center">
