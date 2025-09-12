@@ -12,11 +12,21 @@ interface ActionResult {
   error?: string;
 }
 
+// Note: This function has been updated to accept any object that fits the input type.
+// This is a temporary solution to accommodate the new dynamic form.
+// A more robust solution would involve a more flexible schema or multiple actions.
 export async function generateRoadmapAction(
-  input: GeneratePersonalizedRoadmapInput
+  input: Omit<GeneratePersonalizedRoadmapInput, 'skillSelfAssessment' | 'locationPreference' | 'learningStyle' | 'timeAvailability'> & { [key: string]: string }
 ): Promise<ActionResult> {
   try {
-    const output = await generatePersonalizedRoadmap(input);
+    const preparedInput: GeneratePersonalizedRoadmapInput = {
+      stream: input.stream,
+      specialization: input.specialization,
+      programDuration: input.programDuration,
+      aimingCareer: input.aimingCareer,
+      salaryRange: input.salaryRange,
+    };
+    const output = await generatePersonalizedRoadmap(preparedInput);
     return { success: true, data: output };
   } catch (e: any) {
     console.error(e);

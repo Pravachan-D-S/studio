@@ -12,7 +12,6 @@ import {
   Wrench,
   Calendar,
   FlaskConical,
-  GitMerge,
   Lightbulb,
   FileText,
   Briefcase,
@@ -20,6 +19,7 @@ import {
   Award,
   ChevronRight,
   TrendingUp,
+  BarChart,
 } from 'lucide-react';
 
 interface RoadmapDisplayProps {
@@ -69,9 +69,7 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
     skillRoadmap: parseList(data.skillRoadmap),
     toolsToMaster: parseList(data.toolsToMaster),
     projects: parseList(data.projects),
-    portfolioBuilder: parseList(data.portfolioBuilder),
     resumeInterviewPrep: parseList(data.resumeInterviewPrep),
-    communityMentorship: parseList(data.communityMentorship)
   }), [data]);
 
   const totalChecklistItems = Object.values(sections).reduce((sum, items) => sum + items.length, 0);
@@ -109,15 +107,12 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
   const sectionsConfig = [
     { id: 'skillRoadmap', title: 'Skill Roadmap', icon: List, items: sections.skillRoadmap, className: 'lg:col-span-1' },
     { id: 'toolsToMaster', title: 'Tools to Master', icon: Wrench, items: sections.toolsToMaster, className: 'lg:col-span-1' },
-    { id: 'timeline', title: 'Timeline', icon: Calendar, content: data.timeline, className: 'lg:col-span-1' },
-    { id: 'projects', title: 'Projects', icon: FlaskConical, items: sections.projects, className: 'lg:col-span-2' },
-    { id: 'skillGapAnalysis', title: 'Skill Gap Analysis', icon: GitMerge, content: data.skillGapAnalysis },
-    { id: 'personalizedLearningPath', title: 'Personalized Learning Path', icon: GraduationCap, content: data.personalizedLearningPath, className: 'lg:col-span-3' },
-    { id: 'resources', title: 'Resources', icon: Lightbulb, content: data.resources },
-    { id: 'portfolioBuilder', title: 'Portfolio Builder', icon: FileText, items: sections.portfolioBuilder },
+    { id: 'timeline', title: 'Estimated Timeline', icon: Calendar, content: data.timeline, className: 'lg:col-span-1' },
+    { id: 'projects', title: 'Project Ideas', icon: FlaskConical, items: sections.projects, className: 'lg:col-span-3' },
+    { id: 'resources', title: 'Learning Resources', icon: Lightbulb, content: data.resources, className: 'lg:col-span-2' },
+    { id: 'careerGrowth', title: 'Career Growth', icon: TrendingUp, content: data.careerGrowth, className: 'lg:col-span-1' },
     { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', icon: Briefcase, items: sections.resumeInterviewPrep, className: 'lg:col-span-2' },
-    { id: 'jobMarketInsights', title: 'Job Market Insights', icon: TrendingUp, content: data.jobMarketInsights },
-    { id: 'communityMentorship', title: 'Community & Mentorship', icon: Users, items: sections.communityMentorship },
+    { id: 'jobMarketInsights', title: 'Job Market Insights', icon: BarChart, content: data.jobMarketInsights, className: 'lg:col-span-1' },
   ];
 
   return (
@@ -132,7 +127,7 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><Award className="w-5 h-5 text-primary" /> Motivation & Gamification</CardTitle>
+          <CardTitle className="flex items-center gap-2"><Award className="w-5 h-5 text-primary" /> Progress Tracker</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">

@@ -33,6 +33,7 @@ export default function Home() {
 
   const handleFormSubmit = async (data: FormValues) => {
     setView('loading');
+    // The action now accepts a more generic input object
     const result = await generateRoadmapAction(data);
 
     if (result.success && result.data) {
@@ -72,7 +73,7 @@ export default function Home() {
               </h1>
             </div>
           </header>
-          <main className="flex-1 p-4 sm:p-6 md:p-8">
+          <main className="flex-1 p-4 sm:p-6 md:p-8 bg-slate-50">
             <RoadmapDisplay data={roadmapData} onReset={handleReset}/>
           </main>
         </>
