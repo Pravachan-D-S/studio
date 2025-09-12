@@ -146,7 +146,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
         <VidyaanLogo className="h-8 w-auto" />
       </header>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-[radial-gradient(hsl(var(--border))_1px,transparent_1px)] [background-size:16px_16px]">
+      <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-gradient-to-br from-background to-slate-50">
         {messages.map((msg, index) => (
           <div key={index} className={cn('flex items-start gap-3 animate-fade-in-up', msg.sender === 'user' ? 'flex-row-reverse' : '')}>
             <Avatar className="w-8 h-8">
