@@ -23,7 +23,7 @@ export default function MotivationalScreen({ onStart }: MotivationalScreenProps)
         
         <div className="mt-8 h-16 flex items-center justify-center">
             <p className="text-lg md:text-xl text-gray-600 italic">
-              "Your future depends on what you do today."
+              "The greater the difficulty, the more the glory in surmounting it"
             </p>
         </div>
 
