@@ -57,7 +57,7 @@ const questions = [
   { key: 'specialization', text: 'Which branch or specialization are you in?', optionsGetter: (getValues: any) => specializations[getValues('stream')] || [] },
   { key: 'yearOfStudy', text: 'What is your current year of study?', optionsGetter: (getValues: any) => yearOfStudyOptions[getValues('stream')] || [] },
   { key: 'salaryRange', text: 'What salary range do you aim for in the future?', options: salaryRanges },
-  { key: 'aimingCareer', text: 'What is your career goal?', optionsGetter: getAimingCareers, allowCustom: true },
+  { key: 'aimingCareer', text: 'What is your career goal?', optionsGetter: getAimingCareers, allowCustom: false },
   { key: 'coding', text: 'How would you rate your coding skills?', options: skillLevels },
   { key: 'math', text: 'How would you rate your math skills?', options: skillLevels },
   { key: 'communication', text: 'How would you rate your communication skills?', options: skillLevels },
