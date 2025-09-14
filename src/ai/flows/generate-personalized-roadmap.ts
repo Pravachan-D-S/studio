@@ -17,7 +17,7 @@ import {z} from 'genkit';
 const GeneratePersonalizedRoadmapInputSchema = z.object({
   stream: z.string().describe('The student’s stream of study (e.g., Engineering, MBA, MCA).'),
   specialization: z.string().describe('The student’s branch or specialization (e.g., CSE, Finance, Software Development).'),
-  programDuration: z.string().describe('The duration of the student\'s program in years.'),
+  yearOfStudy: z.string().describe('The student\'s current year of study (e.g., 1st, 2nd, final year).'),
   aimingCareer: z.string().describe('The student’s desired career path (e.g., Data Scientist, Web Developer, Product Manager).'),
   salaryRange: z.string().describe('The student\'s target salary range (e.g., <5 LPA, 5-10 LPA, 20+ LPA).'),
 });
@@ -25,10 +25,11 @@ const GeneratePersonalizedRoadmapInputSchema = z.object({
 export type GeneratePersonalizedRoadmapInput = z.infer<typeof GeneratePersonalizedRoadmapInputSchema>;
 
 const GeneratePersonalizedRoadmapOutputSchema = z.object({
+  motivationalNudge: z.string().describe('A short, encouraging message for the student.'),
   skillRoadmap: z.string().describe('A list of technical and soft skills to learn, presented as a newline-separated list.'),
   toolsToMaster: z.string().describe('A list of programming languages, frameworks, IDEs, and libraries to master, presented as a newline-separated list.'),
-  timeline: z.string().describe('A realistic plan based on the student’s program duration and career goal, estimating how many years it might take to reach the goal.'),
-  projects: z.string().describe('A list of 3-4 projects with increasing difficulty, suitable for a GitHub portfolio. Each project should be a single line.'),
+  timeline: z.string().describe('A realistic plan based on the student’s program duration and career goal, estimating how many years it might take to reach the goal. It should be tailored to the student\'s current year of study.'),
+  projects: z.string().describe('A list of 3-4 projects with increasing difficulty, suitable for a GitHub portfolio. Each project should be a single line. The projects should be appropriate for the student\'s current year of study.'),
   resources: z.string().describe('Suggested free/paid courses, tutorials, books, and communities.'),
   careerGrowth: z.string().describe('An overview of career growth opportunities for the chosen path, including potential roles and advancements.'),
   resumeInterviewPrep: z.string().describe('A resume outline and common technical/HR interview questions, presented as a newline-separated list.'),
@@ -52,11 +53,13 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
   Student Information:
   Stream: {{{stream}}}
   Specialization: {{{specialization}}}
-  Program Duration: {{{programDuration}}} years
+  Current Year of Study: {{{yearOfStudy}}}
   Aiming Career: {{{aimingCareer}}}
   Target Salary: {{{salaryRange}}}
 
   **IMPORTANT INSTRUCTIONS:**
+  - Start with a short, motivational nudge to inspire the student.
+  - Tailor the timeline and project suggestions based on the student's **current year of study**. For example, a first-year student should get foundational projects, while a final-year student should get more advanced, portfolio-ready projects.
   - Use the "Vidyaan Knowledge Map" below as your primary source of truth for generating the roadmap.
   - For any field that should be a list, provide a newline-separated string. For example:
     - Skill 1
@@ -187,15 +190,17 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
 
   **Roadmap Output:**
 
-  1.  **Skill Roadmap:** A list of essential technical and soft skills based on the Knowledge Map.
-  2.  **Tools to Master:** Specific programming languages, frameworks, and libraries from the Knowledge Map.
-  3.  **Estimated Timeline:** An estimation of how many years it will take to achieve the career goal, based on the Knowledge Map.
-  4.  **Project Ideas:** 3-4 project ideas with increasing difficulty from the Knowledge Map.
-  5.  **Learning Resources:** Suggest top free and paid courses, books, and communities from the Knowledge Map.
-  6.  **Career Growth:** Describe potential career growth and future opportunities for the chosen path.
-  7.  **Resume & Interview Prep:** A brief resume outline and 3-5 common interview questions.
-  8.  **Job Market Insights:** Insights on demand and salary ranges from the Knowledge Map.`,
+  1.  **Motivational Nudge:** A short, uplifting message to get the student excited.
+  2.  **Skill Roadmap:** A list of essential technical and soft skills based on the Knowledge Map.
+  3.  **Tools to Master:** Specific programming languages, frameworks, and libraries from the Knowledge Map.
+  4.  **Estimated Timeline:** An estimation of how many years it will take to achieve the career goal, based on the Knowledge Map and **considering their current year of study**.
+  5.  **Project Ideas:** 3-4 project ideas with increasing difficulty from the Knowledge Map, **appropriate for their current year**.
+  6.  **Learning Resources:** Suggest top free and paid courses, books, and communities from the Knowledge Map.
+  7.  **Career Growth:** Describe potential career growth and future opportunities for the chosen path.
+  8.  **Resume & Interview Prep:** A brief resume outline and 3-5 common interview questions.
+  9.  **Job Market Insights:** Insights on demand and salary ranges from the Knowledge Map.`,
 });
+
 
 const generatePersonalizedRoadmapFlow = ai.defineFlow(
   {

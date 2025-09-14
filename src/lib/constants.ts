@@ -7,11 +7,11 @@ export const specializations: { [key: string]: string[] } = {
   Diploma: ['Computer Science', 'Electronics', 'Mechanical', 'Civil'],
 };
 
-export const programDurations: { [key: string]: string } = {
-  Engineering: '4',
-  MBA: '2',
-  MCA: '3',
-  Diploma: '3',
+export const yearOfStudyOptions: { [key: string]: string[] } = {
+  Engineering: ['1st Year', '2nd Year', '3rd Year', '4th Year'],
+  MBA: ['1st Year', '2nd Year'],
+  MCA: ['1st Year', '2nd Year', '3rd Year'],
+  Diploma: ['1st Year', '2nd Year', '3rd Year'],
 };
 
 export const salaryRanges = ['<5 LPA', '5-10 LPA', '10-20 LPA', '20+ LPA'];

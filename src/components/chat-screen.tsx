@@ -13,7 +13,7 @@ import {
   specializations,
   salaryRanges,
   aimingCareers,
-  programDurations,
+  yearOfStudyOptions,
 } from '@/lib/constants';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -53,7 +53,7 @@ const getAimingCareers = (getValues: Function): string[] => {
 const questions = [
   { key: 'stream', text: 'Which stream are you studying in?', options: streams },
   { key: 'specialization', text: 'Which branch or specialization are you in?', optionsGetter: (getValues: any) => specializations[getValues('stream')] || [] },
-  { key: 'programDuration', text: 'How many years is your program?', placeholderGetter: (getValues: any) => `e.g., ${programDurations[getValues('stream')] || '3'}` },
+  { key: 'yearOfStudy', text: 'What is your current year of study?', optionsGetter: (getValues: any) => yearOfStudyOptions[getValues('stream')] || [] },
   { key: 'salaryRange', text: 'What salary range do you aim for in the future?', options: salaryRanges },
   { key: 'aimingCareer', text: 'What is your career goal?', optionsGetter: getAimingCareers, allowCustom: true },
 ];
@@ -205,7 +205,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
             ) : (
                 <Input
                     {...register(currentQuestion.key as keyof FormValues)}
-                    placeholder={currentQuestion.placeholderGetter?.(getValues) || 'Type your answer...'}
+                    placeholder={'Type your answer...'}
                     autoComplete="off"
                     className="flex-1 rounded-full"
                     disabled={isLoading}

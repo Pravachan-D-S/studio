@@ -22,7 +22,7 @@ export async function generateRoadmapAction(
     const preparedInput: GeneratePersonalizedRoadmapInput = {
       stream: input.stream,
       specialization: input.specialization,
-      programDuration: input.programDuration,
+      yearOfStudy: input.yearOfStudy,
       aimingCareer: input.aimingCareer,
       salaryRange: input.salaryRange,
     };
