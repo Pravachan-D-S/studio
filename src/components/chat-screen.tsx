@@ -15,6 +15,7 @@ import {
   aimingCareers,
   yearOfStudyOptions,
   skillLevels,
+  chatNudges,
 } from '@/lib/constants';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -90,11 +91,8 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
         const currentQuestion = questions[currentQuestionIndex];
         const questionKey = currentQuestion.key as keyof FormValues;
         
-        // This logic is to prevent re-asking a question if the value is already set 
-        // (e.g., when a user goes back and changes an answer)
         // @ts-ignore
         if (getValues(questionKey)) {
-          // Check if we need to advance past this question
           const nextIndex = currentQuestionIndex + 1;
           if(nextIndex < questions.length) {
             const nextQuestionKey = questions[nextIndex].key as keyof FormValues;
@@ -113,7 +111,6 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
 
         setMessages(prev => {
           const lastMessage = prev[prev.length - 1];
-          // Prevents duplicate questions from being added
           if (lastMessage?.sender === 'ai' && lastMessage.text === currentQuestion.text) {
             return prev;
           }
@@ -136,13 +133,20 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
   }, [messages]);
 
   const handleUserInput = (field: keyof FormValues, value: string) => {
-    setMessages(prev => [...prev, { sender: 'user', text: value }]);
+    setMessages(prev => {
+        const newMessages: ChatMessage[] = [...prev, { sender: 'user', text: value }];
+        if (currentQuestionIndex < questions.length) {
+            const randomNudge = chatNudges[Math.floor(Math.random() * chatNudges.length)];
+            newMessages.push({ sender: 'ai', text: randomNudge });
+        }
+        return newMessages;
+    });
+
     // @ts-ignore
     setValue(field, value, { shouldValidate: true });
     
     const currentIndex = questions.findIndex(q => q.key === field);
 
-    // Clear subsequent fields if an earlier answer is changed
     for (let i = currentIndex + 1; i < questions.length; i++) {
         const key = questions[i].key as keyof FormValues;
         // @ts-ignore
@@ -159,7 +163,11 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
   };
 
   const currentQuestion = questions[currentQuestionIndex];
-  const showOptions = currentQuestion && (currentQuestion.options || currentQuestion.optionsGetter?.(getValues)?.length > 0);
+  let showOptions = false;
+  if(currentQuestion){
+    const options = currentQuestion.optionsGetter ? currentQuestion.optionsGetter(getValues) : currentQuestion.options;
+    showOptions = options && options.length > 0;
+  }
 
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
@@ -167,7 +175,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
         <VidyaanLogo className="h-8 w-auto" />
       </header>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-gradient-to-br from-background to-slate-50">
+      <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-gradient-to-br from-background to-slate-50 animate-gradient-xy">
         {messages.map((msg, index) => (
           <div key={index} className={cn('flex items-start gap-3 animate-fade-in-up', msg.sender === 'user' ? 'flex-row-reverse' : '')}>
             <Avatar className="w-8 h-8">

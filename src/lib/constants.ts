@@ -46,3 +46,14 @@ export const aimingCareers: { [key: string]: { [key: string]: string[] } | strin
         'Civil': ['Site Supervisor', 'Draftsman (AutoCAD Civil)', 'Junior Surveyor', 'Construction Technician', 'Estimation Assistant'],
     },
 };
+
+export const chatNudges = [
+    "Great choice!",
+    "Excellent!",
+    "Awesome!",
+    "Perfect.",
+    "Got it.",
+    "That's a strong field.",
+    "Nice!",
+    "Alright!",
+];
