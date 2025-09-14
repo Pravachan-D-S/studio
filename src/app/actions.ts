@@ -49,8 +49,6 @@ export async function analyzeGapsAction(
   input: FormValues
 ): Promise<SkillGapActionResult> {
   try {
-    // We can't pass the full FormValues to the Zod schema if it has extra fields,
-    // so we manually construct the input for the AI flow.
     const preparedInput: AnalyzeSkillGapsInput = {
         stream: input.stream,
         specialization: input.specialization,
