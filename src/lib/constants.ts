@@ -16,13 +16,15 @@ export const yearOfStudyOptions: { [key: string]: string[] } = {
 
 export const salaryRanges = ['<5 LPA', '5-10 LPA', '10-20 LPA', '20+ LPA'];
 
-export const aimingCareers: { [key: string]: { [key: string]: string[] } } = {
+export const skillLevels = ['Beginner', 'Intermediate', 'Advanced'] as const;
+
+export const aimingCareers: { [key: string]: { [key: string]: string[] } | string[] } = {
     Engineering: {
         'CSE / ISE': ['Data Scientist', 'Web Developer', 'AI Engineer', 'Cloud Engineer', 'Software Developer', 'Cybersecurity Analyst'],
         'ECE': ['Embedded Systems Engineer', 'VLSI Engineer', 'IoT Developer', 'Telecommunications Engineer', 'Signal Processing Engineer'],
         'Mechanical': ['Automobile Engineer', 'Robotics Engineer', 'Design Engineer (CAD/CAM)', 'Manufacturing Engineer', 'Thermal Systems Engineer'],
         'Civil': ['Structural Engineer', 'Urban Planner', 'Construction Manager', 'Environmental Engineer', 'Surveying & GIS Specialist'],
-        'EEE': ['Electrical Engineer', 'Power Systems Engineer', 'Control Systems Engineer'], // Assuming EEE maps here
+        'EEE': ['Electrical Engineer', 'Power Systems Engineer', 'Control Systems Engineer'],
     },
     MBA: {
         'Finance': ['Financial Analyst', 'Investment Banker', 'Risk Manager', 'Corporate Finance Manager', 'Wealth Manager'],

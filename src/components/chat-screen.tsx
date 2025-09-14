@@ -14,6 +14,7 @@ import {
   salaryRanges,
   aimingCareers,
   yearOfStudyOptions,
+  skillLevels,
 } from '@/lib/constants';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -46,7 +47,8 @@ const getAimingCareers = (getValues: Function): string[] => {
     }
     
     // Fallback for stream if specialization doesn't match
-    return Object.values(streamCareers).flat();
+    const allCareers = Object.values(streamCareers).flat();
+    return [...new Set(allCareers)];
 }
 
 
@@ -56,6 +58,9 @@ const questions = [
   { key: 'yearOfStudy', text: 'What is your current year of study?', optionsGetter: (getValues: any) => yearOfStudyOptions[getValues('stream')] || [] },
   { key: 'salaryRange', text: 'What salary range do you aim for in the future?', options: salaryRanges },
   { key: 'aimingCareer', text: 'What is your career goal?', optionsGetter: getAimingCareers, allowCustom: true },
+  { key: 'coding', text: 'How would you rate your coding skills?', options: skillLevels },
+  { key: 'math', text: 'How would you rate your math skills?', options: skillLevels },
+  { key: 'communication', text: 'How would you rate your communication skills?', options: skillLevels },
 ];
 
 export default function ChatScreen({ onSubmit }: ChatScreenProps) {
@@ -71,7 +76,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
     setValue,
     getValues,
     control,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     mode: 'onChange',
@@ -84,8 +89,22 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
       if (currentQuestionIndex < questions.length) {
         const currentQuestion = questions[currentQuestionIndex];
         const questionKey = currentQuestion.key as keyof FormValues;
+        
+        // This logic is to prevent re-asking a question if the value is already set 
+        // (e.g., when a user goes back and changes an answer)
         // @ts-ignore
-        if (getValues(questionKey)) return;
+        if (getValues(questionKey)) {
+          // Check if we need to advance past this question
+          const nextIndex = currentQuestionIndex + 1;
+          if(nextIndex < questions.length) {
+            const nextQuestionKey = questions[nextIndex].key as keyof FormValues;
+             // @ts-ignore
+            if(!getValues(nextQuestionKey)) {
+               setCurrentQuestionIndex(nextIndex);
+               return;
+            }
+          }
+        }
         
         let options: string[] | readonly string[] = currentQuestion.options || [];
         if (currentQuestion.optionsGetter) {
@@ -94,6 +113,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
 
         setMessages(prev => {
           const lastMessage = prev[prev.length - 1];
+          // Prevents duplicate questions from being added
           if (lastMessage?.sender === 'ai' && lastMessage.text === currentQuestion.text) {
             return prev;
           }
@@ -101,12 +121,11 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
         });
       } else {
         setIsComplete(true);
-        setMessages(prev => [...prev, { sender: 'ai', text: "Great! I have all the information I need. Generating your roadmap now..." }]);
+        setMessages(prev => [...prev, { sender: 'ai', text: "Great! I have all the information I need. Analyzing your skills now..." }]);
         handleSubmit(handleFinalSubmit)();
       }
     };
     
-    // Give a small delay for the user message to appear before AI asks the next question
     const timer = setTimeout(askQuestion, messages.length > 0 && messages[messages.length-1].sender === 'user' ? 500 : 0);
     return () => clearTimeout(timer);
 
@@ -121,14 +140,16 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
     // @ts-ignore
     setValue(field, value, { shouldValidate: true });
     
+    const currentIndex = questions.findIndex(q => q.key === field);
+
     // Clear subsequent fields if an earlier answer is changed
-    for (let i = currentQuestionIndex + 1; i < questions.length; i++) {
+    for (let i = currentIndex + 1; i < questions.length; i++) {
         const key = questions[i].key as keyof FormValues;
         // @ts-ignore
         setValue(key, undefined);
     }
     
-    setCurrentQuestionIndex(prev => prev + 1);
+    setCurrentQuestionIndex(currentIndex + 1);
   };
   
   const handleFinalSubmit = async (data: FormValues) => {
@@ -156,7 +177,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
             </Avatar>
             <div className={cn('rounded-lg px-4 py-3 max-w-[80%]', msg.sender === 'ai' ? 'bg-secondary text-secondary-foreground' : 'bg-primary text-primary-foreground')}>
               <p className="text-sm">{msg.text}</p>
-              {msg.sender === 'ai' && msg.options && (
+              {msg.sender === 'ai' && msg.options && !isComplete && (
                 <div className="flex flex-wrap gap-2 mt-3">
                   {msg.options.map((option, i) => (
                     <Button 
@@ -174,8 +195,8 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
             </div>
           </div>
         ))}
-         {isLoading && !isComplete && (
-            <div className="flex items-center gap-3 animate-fade-in-up">
+         {isLoading && isComplete && (
+            <div className="flex justify-center items-center gap-3 animate-fade-in-up">
                  <Avatar className="w-8 h-8">
                     <AvatarFallback className="bg-transparent"><VidyaanIcon className="w-8 h-8"/></AvatarFallback>
                 </Avatar>
@@ -189,14 +210,16 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
         {!isComplete && currentQuestion && (
             <form onSubmit={(e) => {
                 e.preventDefault();
-                const key = currentQuestion.key as keyof FormValues;
-                const value = getValues(key);
-                if (value) {
-                    handleUserInput(key, value);
+                if(currentQuestion.allowCustom) {
+                  const key = currentQuestion.key as keyof FormValues;
+                  const value = getValues(key);
+                  if (value) {
+                      handleUserInput(key, value);
+                  }
                 }
             }} className="flex items-center gap-2">
             
-            {showOptions ? (
+            {showOptions && !currentQuestion.allowCustom ? (
                 <Input
                     placeholder="Select an option above"
                     disabled
@@ -212,7 +235,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
                 />
             )}
 
-            <Button type="submit" size="icon" disabled={isLoading || (!!showOptions)} className="rounded-full">
+            <Button type="submit" size="icon" disabled={isLoading || (showOptions && !currentQuestion.allowCustom)} className="rounded-full">
                 {isLoading ? <Loader2 className="animate-spin" /> : <Send />}
             </Button>
             </form>

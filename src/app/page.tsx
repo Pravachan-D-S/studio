@@ -2,22 +2,26 @@
 
 import { useState, useEffect } from 'react';
 import type { GeneratePersonalizedRoadmapOutput } from '@/ai/flows/generate-personalized-roadmap';
+import type { AnalyzeSkillGapsOutput } from '@/ai/flows/analyze-skill-gaps';
 import type { FormValues } from '@/lib/types';
-import { generateRoadmapAction } from '@/app/actions';
+import { generateRoadmapAction, analyzeGapsAction } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 
 import SplashScreen from '@/components/splash-screen';
 import MotivationalScreen from '@/components/motivational-screen';
 import ChatScreen from '@/components/chat-screen';
 import LoadingState from '@/components/loading-state';
+import MissingSkillsScreen from '@/components/missing-skills-screen';
 import RoadmapDisplay from '@/components/roadmap-display';
 import { VidyaanLogo } from '@/components/icons';
 
-type View = 'splash' | 'motivational' | 'chat' | 'loading' | 'results';
+type View = 'splash' | 'motivational' | 'chat' | 'loading' | 'missing-skills' | 'results';
 
 export default function Home() {
   const [view, setView] = useState<View>('splash');
   const [roadmapData, setRoadmapData] = useState<GeneratePersonalizedRoadmapOutput | null>(null);
+  const [missingSkillsData, setMissingSkillsData] = useState<AnalyzeSkillGapsOutput | null>(null);
+  const [formData, setFormData] = useState<FormValues | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -34,24 +38,52 @@ export default function Home() {
 
   const handleFormSubmit = async (data: FormValues) => {
     setView('loading');
-    // The action now accepts a more generic input object
-    const result = await generateRoadmapAction(data);
+    setFormData(data);
+    const result = await analyzeGapsAction(data);
 
     if (result.success && result.data) {
-      setRoadmapData(result.data);
-      setView('results');
+      setMissingSkillsData(result.data);
+      setView('missing-skills');
     } else {
       toast({
         variant: 'destructive',
         title: 'An error occurred',
-        description: result.error || 'Failed to generate roadmap. Please try again.',
+        description: result.error || 'Failed to analyze skills. Please try again.',
       });
       setView('chat'); // Go back to chat on error
+    }
+  };
+
+  const handleProceedToRoadmap = async () => {
+    if (!formData) {
+        toast({
+            variant: 'destructive',
+            title: 'An error occurred',
+            description: 'Form data is missing. Please start over.',
+        });
+        setView('chat');
+        return;
+    }
+    setView('loading');
+    const result = await generateRoadmapAction(formData);
+    
+    if (result.success && result.data) {
+        setRoadmapData(result.data);
+        setView('results');
+    } else {
+        toast({
+            variant: 'destructive',
+            title: 'An error occurred',
+            description: result.error || 'Failed to generate roadmap. Please try again.',
+        });
+        setView('chat');
     }
   };
   
   const handleReset = () => {
     setRoadmapData(null);
+    setMissingSkillsData(null);
+    setFormData(null);
     setView('motivational');
   }
 
@@ -64,6 +96,12 @@ export default function Home() {
          <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-background via-sky-50 to-slate-100 animate-gradient-xy">
             <LoadingState />
          </div>
+      )}
+      {view === 'missing-skills' && missingSkillsData && (
+        <MissingSkillsScreen 
+          data={missingSkillsData}
+          onProceed={handleProceedToRoadmap}
+        />
       )}
       {view === 'results' && roadmapData && (
         <>
