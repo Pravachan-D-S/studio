@@ -68,8 +68,8 @@ const Checklist = ({ items, sectionId, onToggle, completedItems }: { items: stri
   </ul>
 );
 
-const PDFSection = ({ title, icon: Icon, children, isList = false }: { title: string; icon: React.ElementType; children: React.ReactNode, isList?: boolean }) => (
-    <div className="mb-6 break-inside-avoid">
+const PDFSection = ({ title, icon: Icon, children, isList = false, fullWidth = false }: { title: string; icon: React.ElementType; children: React.ReactNode, isList?: boolean, fullWidth?: boolean }) => (
+    <div className={cn("mb-6", fullWidth ? "col-span-2" : "break-inside-avoid")}>
         <div className="flex items-center gap-3 mb-2 border-b pb-2">
             <Icon className="w-5 h-5 text-primary" />
             <h3 className="text-base font-semibold text-gray-800">{title}</h3>
@@ -90,12 +90,13 @@ const RoadmapPDF = ({ data, innerRef }: { data: GeneratePersonalizedRoadmapOutpu
     { id: 'skillRoadmap', title: 'Skill Roadmap', icon: List, items: parseList(data.skillRoadmap) },
     { id: 'toolsToMaster', title: 'Tools to Master', icon: Wrench, items: parseList(data.toolsToMaster) },
     { id: 'projects', title: 'Project Ideas', icon: FlaskConical, items: parseList(data.projects) },
-    { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', icon: Briefcase, items: parseList(data.resumeInterviewPrep) },
     { id: 'timeline', title: 'Estimated Timeline', icon: Calendar, content: parseList(data.timeline) },
     { id: 'resources', title: 'Learning Resources', icon: Lightbulb, content: parseList(data.resources) },
     { id: 'careerGrowth', title: 'Career Growth', icon: TrendingUp, content: parseList(data.careerGrowth) },
     { id: 'jobMarketInsights', title: 'Job Market Insights', icon: BarChart, content: parseList(data.jobMarketInsights) },
   ]), [data]);
+
+  const resumePrepItems = parseList(data.resumeInterviewPrep);
 
     return (
         <div ref={innerRef} className="p-8 bg-white text-gray-800" style={{ width: '210mm' }}>
@@ -110,7 +111,7 @@ const RoadmapPDF = ({ data, innerRef }: { data: GeneratePersonalizedRoadmapOutpu
               </div>
             )}
             
-            <div className="columns-2 gap-8">
+            <div className="grid grid-cols-2 gap-x-8">
                 {sectionsConfig.map(section => {
                     if ((!section.items || section.items.length === 0) && (!section.content || section.content.length === 0)) return null;
 
@@ -120,6 +121,11 @@ const RoadmapPDF = ({ data, innerRef }: { data: GeneratePersonalizedRoadmapOutpu
                         </PDFSection>
                     )
                 })}
+                {resumePrepItems.length > 0 && (
+                     <PDFSection title="Resume & Interview Prep" icon={Briefcase} isList fullWidth>
+                        {resumePrepItems.map((item, index) => <div key={index}>{item}</div>)}
+                    </PDFSection>
+                )}
             </div>
 
             <div className="mt-8 pt-4 border-t text-center text-xs text-gray-500">
