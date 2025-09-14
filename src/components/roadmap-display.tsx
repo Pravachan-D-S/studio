@@ -75,11 +75,11 @@ const PDFSection = ({ title, icon: Icon, children, isList = false, fullWidth = f
             <h3 className="text-base font-semibold text-gray-800">{title}</h3>
         </div>
         {isList ? (
-            <ul className="space-y-1 text-xs text-gray-600">
+            <ul className="space-y-1 text-sm text-gray-600">
                 {React.Children.map(children, child => <li className="flex items-start"><span className="mr-2 mt-1">&#8226;</span><span>{child}</span></li>)}
             </ul>
         ) : (
-             <div className="text-xs text-gray-600 space-y-1">{children}</div>
+             <div className="text-sm text-gray-600 space-y-1">{children}</div>
         )}
     </div>
 );
@@ -124,9 +124,11 @@ const RoadmapPDF = ({ data, innerRef }: { data: GeneratePersonalizedRoadmapOutpu
             </div>
             
             {resumePrepItems.length > 0 && (
-                <PDFSection title="Resume & Interview Prep" icon={Briefcase} isList fullWidth>
-                    {resumePrepItems.map((item, index) => <div key={index}>{item}</div>)}
-                </PDFSection>
+                <div className="break-before-page">
+                    <PDFSection title="Resume & Interview Prep" icon={Briefcase} isList fullWidth>
+                        {resumePrepItems.map((item, index) => <div key={index}>{item}</div>)}
+                    </PDFSection>
+                </div>
             )}
 
             <div className="mt-8 pt-4 border-t text-center text-xs text-gray-500">
@@ -185,25 +187,19 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
         const canvasWidth = canvas.width;
         const canvasHeight = canvas.height;
         const ratio = canvasWidth / canvasHeight;
-        let height = pdfWidth / ratio;
         
-        // Handle long content that might need multiple pages
-        const pageHeight = pdfHeight - 20; // 10mm margin top/bottom
+        const imgHeight = pdfWidth / ratio;
+        let heightLeft = imgHeight;
         let position = 0;
 
-        if (height > pageHeight) {
-            height = pageHeight;
-        }
-
-        pdf.addImage(imgData, 'PNG', 0, 10, pdfWidth, height);
-        let heightLeft = (canvas.height * pdfWidth) / canvas.width - height;
-        position = -pageHeight;
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, imgHeight);
+        heightLeft -= pdfHeight;
         
         while (heightLeft > 0) {
-            position = position + height;
+            position = heightLeft - imgHeight;
             pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, position + 10, pdfWidth, height);
-            heightLeft -= pageHeight;
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+            heightLeft -= pdfHeight;
         }
         
         pdf.save('Vidyaan-Roadmap.pdf');
