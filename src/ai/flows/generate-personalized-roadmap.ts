@@ -87,6 +87,13 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
           *   **Projects:** Portfolio Website, E-commerce Platform, Blogging App
           *   **Job Market:** High demand in startups and enterprises
           *   **Timeline:** 1–2 years
+      *   **AI Engineer**
+          *   **Skills:** Python, Data Structures, Algorithms, Linear Algebra, Probability, Machine Learning, Deep Learning
+          *   **Tools:** PyTorch, TensorFlow, Keras, Scikit-learn, AWS SageMaker, GCP AI Platform
+          *   **Resources:** fast.ai, Coursera AI for Everyone, DeepLearning.AI
+          *   **Projects:** Generative Art with GANs, AI-powered Recommendation System, Automated Content Summarizer
+          *   **Job Market:** Very high demand in tech, research, and product innovation.
+          *   **Timeline:** 2–3 years
   2.  **ECE**
       *   **Embedded Systems Engineer**
           *   **Skills:** C, C++, Microcontrollers, RTOS, Digital Electronics
@@ -213,5 +220,3 @@ const generatePersonalizedRoadmapFlow = ai.defineFlow(
     return output!;
   }
 );
-
-    
