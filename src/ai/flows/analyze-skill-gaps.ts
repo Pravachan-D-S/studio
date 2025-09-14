@@ -12,7 +12,7 @@ import {z} from 'genkit';
 
 const AnalyzeSkillGapsInputSchema = z.object({
   stream: z.string().describe('The student\'s stream of study (e.g., BE, B.Tech, Diploma, MCA).'),
-  branch: z.string().describe('The student\'s branch of study (e.g., ISE, CSE, ECE, Mechanical, Civil).'),
+  specialization: z.string().describe('The student\'s branch of study (e.g., ISE, CSE, ECE, Mechanical, Civil).'),
   aimingCareer: z.string().describe('The student\'s target career (e.g., Data Scientist, Web Developer, AI Expert).'),
   yearOfStudy: z.string().describe('The student\'s year of study (e.g., 1st year, 2nd year, final year, graduate).'),
   skillSelfAssessment: z.object({
@@ -39,7 +39,7 @@ const prompt = ai.definePrompt({
   prompt: `You are an AI career advisor. A student has provided the following information:
 
   Stream: {{{stream}}}
-  Branch: {{{branch}}}
+  Specialization: {{{specialization}}}
   Aiming Career: {{{aimingCareer}}}
   Year of Study: {{{yearOfStudy}}}
   Skill Self-Assessment:

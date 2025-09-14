@@ -53,7 +53,7 @@ export async function analyzeGapsAction(
     // so we manually construct the input for the AI flow.
     const preparedInput: AnalyzeSkillGapsInput = {
         stream: input.stream,
-        branch: input.specialization,
+        specialization: input.specialization,
         aimingCareer: input.aimingCareer,
         yearOfStudy: input.yearOfStudy,
         skillSelfAssessment: {
