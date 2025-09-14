@@ -185,9 +185,27 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
         const canvasWidth = canvas.width;
         const canvasHeight = canvas.height;
         const ratio = canvasWidth / canvasHeight;
-        const height = pdfWidth / ratio;
+        let height = pdfWidth / ratio;
+        
+        // Handle long content that might need multiple pages
+        const pageHeight = pdfHeight - 20; // 10mm margin top/bottom
+        let position = 0;
 
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, height);
+        if (height > pageHeight) {
+            height = pageHeight;
+        }
+
+        pdf.addImage(imgData, 'PNG', 0, 10, pdfWidth, height);
+        let heightLeft = (canvas.height * pdfWidth) / canvas.width - height;
+        position = -pageHeight;
+        
+        while (heightLeft > 0) {
+            position = position + height;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position + 10, pdfWidth, height);
+            heightLeft -= pageHeight;
+        }
+        
         pdf.save('Vidyaan-Roadmap.pdf');
 
     } catch (error) {

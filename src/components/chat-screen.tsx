@@ -123,7 +123,8 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
       }
     };
     
-    const timer = setTimeout(askQuestion, messages.length > 0 && messages[messages.length-1].sender === 'user' ? 500 : 0);
+    const delay = messages.length > 0 && messages[messages.length-1].sender === 'user' ? 500 : 0;
+    const timer = setTimeout(askQuestion, delay);
     return () => clearTimeout(timer);
 
   }, [currentQuestionIndex, watchedValues]);
@@ -164,9 +165,14 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
 
   const currentQuestion = questions[currentQuestionIndex];
   let showOptions = false;
-  if(currentQuestion){
-    const options = currentQuestion.optionsGetter ? currentQuestion.optionsGetter(getValues) : currentQuestion.options;
+  let allowCustomInput = false;
+
+  if (currentQuestion) {
+    const options = currentQuestion.optionsGetter
+      ? currentQuestion.optionsGetter(getValues)
+      : currentQuestion.options;
     showOptions = options && options.length > 0;
+    allowCustomInput = !!currentQuestion.allowCustom;
   }
 
   return (
@@ -218,7 +224,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
         {!isComplete && currentQuestion && (
             <form onSubmit={(e) => {
                 e.preventDefault();
-                if(currentQuestion.allowCustom) {
+                if(allowCustomInput) {
                   const key = currentQuestion.key as keyof FormValues;
                   const value = getValues(key);
                   if (value) {
@@ -227,7 +233,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
                 }
             }} className="flex items-center gap-2">
             
-            {showOptions && !currentQuestion.allowCustom ? (
+            {!allowCustomInput ? (
                 <Input
                     placeholder="Select an option above"
                     disabled
@@ -243,7 +249,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
                 />
             )}
 
-            <Button type="submit" size="icon" disabled={isLoading || (showOptions && !currentQuestion.allowCustom)} className="rounded-full">
+            <Button type="submit" size="icon" disabled={isLoading || !allowCustomInput} className="rounded-full">
                 {isLoading ? <Loader2 className="animate-spin" /> : <Send />}
             </Button>
             </form>
