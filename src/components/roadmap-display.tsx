@@ -23,7 +23,7 @@ import {
   Heart,
   HelpCircle,
   CheckCircle2,
-  XCircle,
+  Award,
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -290,16 +290,22 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
 
   const getProgressBadge = () => {
     const percentage = Math.round(progressPercentage);
-    if (percentage < 33) {
-      return <Badge variant="destructive" className="text-xs px-2 py-1">Beginner</Badge>;
+    let color = 'text-yellow-700'; // Bronze
+    let text = 'Bronze';
+    if (percentage >= 100) {
+        color = 'text-yellow-500'; // Gold
+        text = 'Gold';
+    } else if (percentage >= 50) {
+        color = 'text-gray-400'; // Silver
+        text = 'Silver';
     }
-    if (percentage < 67) {
-      return <Badge className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1.5">Intermediate</Badge>;
-    }
-    if (percentage < 100) {
-      return <Badge className="bg-green-500 hover:bg-green-600 text-white text-base px-4 py-2">Expert</Badge>;
-    }
-    return <Badge className="bg-green-600 hover:bg-green-700 text-white text-base px-4 py-2">Mastered</Badge>;
+
+    return (
+        <div className={cn('flex items-center gap-2 font-semibold', color)}>
+            <Award className="w-6 h-6" />
+            <span>{text}</span>
+        </div>
+    );
   };
 
   const sectionsConfig = [
