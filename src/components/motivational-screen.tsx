@@ -14,7 +14,7 @@ interface MotivationalScreenProps {
 const AnimatedShape = ({ className, delay }: { className: string, delay: string }) => (
     <div
       className={cn(
-        'absolute rounded-full bg-primary/10 blur-2xl animate-float',
+        'absolute rounded-full blur-3xl animate-float opacity-30',
         className
       )}
       style={{ animationDelay: delay }}
@@ -30,27 +30,27 @@ export default function MotivationalScreen({ onStart }: MotivationalScreenProps)
   }, []);
 
   return (
-    <div className="relative flex flex-col items-center justify-center h-screen bg-gradient-to-br from-background via-sky-50 to-slate-100 p-4 overflow-hidden animate-gradient-xy">
+    <div className="relative flex flex-col items-center justify-center h-screen bg-background p-4 overflow-hidden">
        {/* Animated background shapes */}
-       <AnimatedShape className="w-64 h-64 top-10 left-10" delay="0s" />
-       <AnimatedShape className="w-48 h-48 bottom-20 right-5" delay="2s" />
-       <AnimatedShape className="w-32 h-32 top-1/2 left-1/4" delay="4s" />
-       <AnimatedShape className="w-56 h-56 bottom-1/3 right-1/3" delay="6s" />
+       <AnimatedShape className="w-64 h-64 top-10 left-10 bg-primary" delay="0s" />
+       <AnimatedShape className="w-48 h-48 bottom-20 right-5 bg-blue-500" delay="2s" />
+       <AnimatedShape className="w-32 h-32 top-1/2 left-1/4 bg-purple-500" delay="4s" />
+       <AnimatedShape className="w-56 h-56 bottom-1/3 right-1/3 bg-teal-500" delay="6s" />
 
 
       <div className={cn(
           "relative z-10 text-center transition-all duration-1000 ease-in-out",
           show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
       )}>
-        <VidyaanLogo className="h-20 w-auto mx-auto text-gray-800" />
+        <VidyaanLogo className="h-20 w-auto mx-auto" />
 
-        <h2 className="mt-4 text-2xl font-bold text-slate-700 tracking-tight">Your AI Career Guide</h2>
+        <h2 className="mt-4 text-2xl font-bold tracking-tight">Your AI Career Guide</h2>
         <p className="max-w-md mx-auto mt-2 text-muted-foreground">
           Get a personalized roadmap to land your dream job.
         </p>
         
         <div className="mt-8 h-16 flex items-center justify-center">
-            <p className="text-lg md:text-xl text-gray-600 italic max-w-md">
+            <p className="text-lg md:text-xl text-muted-foreground/80 italic max-w-md">
               "The greater the difficulty, the more the glory in surmounting it"
             </p>
         </div>

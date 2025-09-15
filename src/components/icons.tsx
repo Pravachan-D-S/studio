@@ -11,22 +11,22 @@ export function VidyaanIcon(props: SVGProps<SVGSVGElement>) {
     >
       <defs>
         <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" style={{ stopColor: '#80b6a2', stopOpacity: 1 }} />
-          <stop offset="100%" style={{ stopColor: '#1d70a2', stopOpacity: 1 }} />
+          <stop offset="0%" style={{ stopColor: 'hsl(var(--primary))', stopOpacity: 1 }} />
+          <stop offset="100%" style={{ stopColor: 'hsl(190 80% 50%)', stopOpacity: 1 }} />
         </linearGradient>
       </defs>
       {/* Book */}
       <path
         d="M10 85 C 10 75, 40 70, 50 70 C 60 70, 90 75, 90 85 L 90 90 L 10 90 Z"
-        fill="#1e527f"
+        fill="hsl(var(--primary) / 0.6)"
       />
       <path
         d="M50 25 C 20 25, 10 40, 10 70 L 10 85 C 10 75, 40 70, 50 70 V 25 Z"
-        fill="#2b75ae"
+        fill="hsl(var(--primary) / 0.8)"
       />
       <path
         d="M50 25 C 80 25, 90 40, 90 70 L 90 85 C 90 75, 60 70, 50 70 V 25 Z"
-        fill="#2b75ae"
+        fill="hsl(var(--primary) / 0.8)"
       />
       {/* Cap */}
       <polygon points="50,5 5,25 50,45 95,25" fill="url(#grad1)" />
@@ -45,21 +45,21 @@ export function VidyaanLogo(props: SVGProps<SVGSVGElement>) {
         >
             <defs>
                 <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#80b6a2"/>
-                    <stop offset="100%" stopColor="#1d70a2"/>
+                    <stop offset="0%" stopColor="hsl(var(--primary))"/>
+                    <stop offset="100%" stopColor="hsl(190 80% 50%)"/>
                 </linearGradient>
             </defs>
             
             {/* Icon */}
             <g transform="translate(0, -5) scale(0.4)">
-                <path d="M50 25 C 20 25, 10 40, 10 70 L 10 85 C 10 75, 40 70, 50 70 V 25 Z" fill="#2b75ae" />
-                <path d="M50 25 C 80 25, 90 40, 90 70 L 90 85 C 90 75, 60 70, 50 70 V 25 Z" fill="#2b75ae" />
+                <path d="M50 25 C 20 25, 10 40, 10 70 L 10 85 C 10 75, 40 70, 50 70 V 25 Z" fill="hsl(var(--primary) / 0.8)" />
+                <path d="M50 25 C 80 25, 90 40, 90 70 L 90 85 C 90 75, 60 70, 50 70 V 25 Z" fill="hsl(var(--primary) / 0.8)" />
                 <polygon points="50,5 5,25 50,45 95,25" fill="url(#logoGrad)" />
                 <path d="M75 29 L 75 40 L 80 40 L 80 29 Z" fill="#f0c242" />
             </g>
 
             {/* Text */}
-            <text x="45" y="32" fontFamily="Inter, sans-serif" fontSize="28" fontWeight="bold" fill="#2b75ae">
+            <text x="45" y="32" fontFamily="Inter, sans-serif" fontSize="28" fontWeight="bold" fill="hsl(var(--foreground))">
                 Vidyaan
             </text>
         </svg>

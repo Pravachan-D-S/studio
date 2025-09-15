@@ -67,7 +67,7 @@ const questions = [
 const AnimatedShape = ({ className, delay }: { className: string; delay: string }) => (
     <div
       className={cn(
-        'absolute rounded-full bg-primary/10 blur-2xl animate-float -z-10',
+        'absolute rounded-full blur-3xl animate-float -z-10 opacity-30',
         className
       )}
       style={{ animationDelay: delay }}
@@ -246,11 +246,11 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
         <VidyaanLogo className="h-8 w-auto" />
       </header>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-gradient-to-br from-background to-slate-50 animate-gradient-xy relative">
+      <div className="flex-1 overflow-y-auto p-4 space-y-6 relative">
         {/* Animated Background Shapes */}
-        {currentQuestionIndex >= 2 && <AnimatedShape className="w-48 h-48 top-20 left-10" delay="0s" />}
-        {currentQuestionIndex >= 4 && <AnimatedShape className="w-32 h-32 bottom-24 right-5" delay="2s" />}
-        {currentQuestionIndex >= 6 && <AnimatedShape className="w-40 h-40 top-1/2 left-1/4" delay="4s" />}
+        {currentQuestionIndex >= 2 && <AnimatedShape className="w-48 h-48 top-20 left-10 bg-primary" delay="0s" />}
+        {currentQuestionIndex >= 4 && <AnimatedShape className="w-32 h-32 bottom-24 right-5 bg-blue-500" delay="2s" />}
+        {currentQuestionIndex >= 6 && <AnimatedShape className="w-40 h-40 top-1/2 left-1/4 bg-purple-500" delay="4s" />}
 
         {messages.map((msg, index) => (
           <div key={index} className={cn('flex items-start gap-3 animate-fade-in-up', msg.sender === 'user' ? 'flex-row-reverse' : '')}>

@@ -97,7 +97,7 @@ export default function Home() {
       {view === 'motivational' && <MotivationalScreen onStart={handleStartJourney} />}
       {view === 'chat' && <ChatScreen onSubmit={handleFormSubmit} />}
       {view === 'loading' && (
-         <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-background via-sky-50 to-slate-100 animate-gradient-xy">
+         <div className="flex-1 flex items-center justify-center">
             <LoadingState />
          </div>
       )}
@@ -114,7 +114,7 @@ export default function Home() {
               <VidyaanLogo className="h-8 w-auto" />
             </div>
           </header>
-          <main className="flex-1 p-4 sm:p-6 md:p-8 bg-slate-50">
+          <main className="flex-1 p-4 sm:p-6 md:p-8">
             <RoadmapDisplay data={roadmapData} onReset={handleReset} studentData={formData}/>
           </main>
         </>
