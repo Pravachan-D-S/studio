@@ -82,6 +82,8 @@ const Checklist = ({
         }
         setQuizSkill(null);
     }
+
+    const canVerify = sectionId === 'skillRoadmap' || sectionId === 'toolsToMaster';
     
     return (
       <>
@@ -95,7 +97,7 @@ const Checklist = ({
                     <span className={`flex-1 ${isCompleted ? 'line-through text-green-600' : 'text-foreground'}`}>
                         {item}
                     </span>
-                    {sectionId !== 'resumeInterviewPrep' && (
+                    {canVerify && (
                         isCompleted ? (
                              <CheckCircle2 className="w-5 h-5 text-green-500" />
                         ) : (
@@ -207,7 +209,7 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     resumeInterviewPrep: parseList(data.resumeInterviewPrep),
   }), [data]);
 
-  const quizSections = ['skillRoadmap', 'toolsToMaster', 'projects'];
+  const quizSections = ['skillRoadmap', 'toolsToMaster'];
   const totalChecklistItems = Object.entries(sections)
     .filter(([key]) => quizSections.includes(key))
     .reduce((sum, [, items]) => sum + items.length, 0);
