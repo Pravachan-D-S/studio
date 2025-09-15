@@ -7,7 +7,7 @@ import { Loader2, Send, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { formSchema, FormValues } from '@/lib/types';
-import { VidyaanIcon, UserIcon, VidyaanLogo } from '@/components/icons';
+import { VidyaanIcon, UserIcon } from '@/components/icons';
 import {
   streams,
   specializations,
@@ -243,7 +243,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
   return (
     <div className="flex flex-col h-screen bg-background text-foreground overflow-hidden">
       <header className="flex items-center p-4 border-b">
-        <VidyaanLogo className="h-8 w-auto" />
+        <VidyaanLogo className="h-10 w-auto" />
       </header>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-6 relative">
@@ -276,46 +276,6 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
          <div ref={endOfMessagesRef} />
       </div>
 
-      <div className="p-4 border-t bg-background">
-        {!isComplete && currentQuestion && (
-            <form onSubmit={(e) => {
-                e.preventDefault();
-                if(showCustomInput) {
-                  const key = currentQuestion.key as keyof FormValues;
-                  const value = getValues(key);
-                  if (value) {
-                      handleUserInput(key, value);
-                  }
-                }
-            }} className="flex items-center gap-2">
-            
-            {!showCustomInput ? (
-                <Input
-                    placeholder="Select an option above"
-                    disabled
-                    className="flex-1 rounded-full"
-                />
-            ) : (
-                <Input
-                    {...register(currentQuestion.key as keyof FormValues)}
-                    placeholder={'Type your answer...'}
-                    autoComplete="off"
-                    className="flex-1 rounded-full"
-                    disabled={isLoading}
-                />
-            )}
-
-            <Button type="submit" size="icon" disabled={isLoading || !showCustomInput} className="rounded-full">
-                {isLoading ? <Loader2 className="animate-spin" /> : <Send />}
-            </Button>
-            </form>
-        )}
-         {currentQuestion && errors[currentQuestion.key as keyof FormValues] && (
-            <p className="text-destructive text-xs mt-1 pl-4">
-              {errors[currentQuestion.key as keyof FormValues]?.message}
-            </p>
-         )}
-      </div>
     </div>
   );
 }

@@ -111,7 +111,7 @@ export default function Home() {
         <>
           <header className="px-4 lg:px-6 h-16 flex items-center shadow-sm bg-card">
             <div className="flex items-center gap-2">
-              <VidyaanLogo className="h-8 w-auto" />
+              <VidyaanLogo />
             </div>
           </header>
           <main className="flex-1 p-4 sm:p-6 md:p-8">

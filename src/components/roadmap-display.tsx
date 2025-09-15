@@ -159,7 +159,7 @@ const RoadmapPDF = ({ data, innerRef }: { data: GeneratePersonalizedRoadmapOutpu
     return (
         <div ref={innerRef} className="p-8 bg-white text-gray-800" style={{ width: '210mm' }}>
             <div className="flex items-center justify-between pb-4 border-b mb-6">
-                <VidyaanLogo className="h-12 w-auto" />
+                <VidyaanLogo />
                 <h1 className="text-2xl font-bold text-gray-700">Your Personalized Career Roadmap</h1>
             </div>
 

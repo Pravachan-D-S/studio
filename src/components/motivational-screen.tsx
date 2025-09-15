@@ -42,7 +42,7 @@ export default function MotivationalScreen({ onStart }: MotivationalScreenProps)
           "relative z-10 text-center transition-all duration-1000 ease-in-out",
           show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
       )}>
-        <VidyaanLogo className="h-20 w-auto mx-auto" />
+        <VidyaanLogo />
 
         <h2 className="mt-4 text-2xl font-bold tracking-tight">Your AI Career Guide</h2>
         <p className="max-w-md mx-auto mt-2 text-muted-foreground">

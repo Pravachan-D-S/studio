@@ -17,7 +17,7 @@ export default function MissingSkillsScreen({ data, onProceed }: MissingSkillsSc
     return (
         <div className="flex flex-col min-h-screen bg-background">
             <header className="px-4 lg:px-6 h-16 flex items-center">
-                <VidyaanLogo className="h-8 w-auto" />
+                <VidyaanLogo />
             </header>
             <main className="flex-1 flex items-center justify-center p-4">
                 <Card className="w-full max-w-2xl text-center animate-fade-in-up shadow-2xl bg-card">
