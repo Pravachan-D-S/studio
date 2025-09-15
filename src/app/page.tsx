@@ -87,6 +87,10 @@ export default function Home() {
     setView('motivational');
   }
 
+  const getFormData = (): FormValues | null => {
+    return formData;
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       {view === 'splash' && <SplashScreen />}
@@ -103,7 +107,7 @@ export default function Home() {
           onProceed={handleProceedToRoadmap}
         />
       )}
-      {view === 'results' && roadmapData && (
+      {view === 'results' && roadmapData && formData && (
         <>
           <header className="px-4 lg:px-6 h-16 flex items-center shadow-sm bg-card">
             <div className="flex items-center gap-2">
@@ -111,12 +115,10 @@ export default function Home() {
             </div>
           </header>
           <main className="flex-1 p-4 sm:p-6 md:p-8 bg-slate-50">
-            <RoadmapDisplay data={roadmapData} onReset={handleReset}/>
+            <RoadmapDisplay data={roadmapData} onReset={handleReset} studentData={formData}/>
           </main>
         </>
       )}
     </div>
   );
 }
-
-    

@@ -2,36 +2,37 @@
 
 import React, { useState, useMemo, useRef } from 'react';
 import type { GeneratePersonalizedRoadmapOutput } from '@/ai/flows/generate-personalized-roadmap';
+import type { FormValues } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 import {
   List,
-  GraduationCap,
   Wrench,
   Calendar,
   FlaskConical,
   Lightbulb,
-  FileText,
   Briefcase,
-  Users,
-  Award,
   ChevronRight,
   TrendingUp,
   BarChart,
   Download,
   Loader2,
   Heart,
+  HelpCircle,
+  CheckCircle2,
+  XCircle,
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { VidyaanLogo } from './icons';
+import { QuizDialog } from './quiz-dialog';
 
 interface RoadmapDisplayProps {
   data: GeneratePersonalizedRoadmapOutput;
   onReset: () => void;
+  studentData: FormValues;
 }
 
 const parseList = (text: string | undefined): string[] => {
@@ -51,22 +52,79 @@ const SectionCard = ({ title, icon: Icon, children, className }: { title: string
   </Card>
 );
 
-const Checklist = ({ items, sectionId, onToggle, completedItems }: { items: string[], sectionId: string, onToggle: (id: string) => void, completedItems: Set<string> }) => (
-  <ul className="space-y-3">
-    {items.map((item, index) => {
-      const id = `${sectionId}-${index}`;
-      const isCompleted = completedItems.has(id);
-      return (
-        <li key={id} className="flex items-start gap-3">
-          <Checkbox id={id} checked={isCompleted} onCheckedChange={() => onToggle(id)} className="mt-1"/>
-          <label htmlFor={id} className={`flex-1 ${isCompleted ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
-            {item}
-          </label>
-        </li>
-      );
-    })}
-  </ul>
-);
+const Checklist = ({ 
+  items, 
+  sectionId, 
+  completedItems,
+  studentData,
+  onQuizComplete 
+}: { 
+  items: string[], 
+  sectionId: string, 
+  completedItems: Set<string>,
+  studentData: FormValues,
+  onQuizComplete: (skillId: string) => void,
+}) => {
+    const [quizSkill, setQuizSkill] = useState<string | null>(null);
+    const [isQuizOpen, setIsQuizOpen] = useState(false);
+
+    const handleVerifyClick = (skill: string) => {
+        setQuizSkill(skill);
+        setIsQuizOpen(true);
+    };
+
+    const handleQuizClose = (passed: boolean, skill: string) => {
+        setIsQuizOpen(false);
+        if (passed) {
+            const skillId = `${sectionId}-${items.indexOf(skill)}`;
+            onQuizComplete(skillId);
+        }
+        setQuizSkill(null);
+    }
+    
+    return (
+      <>
+        <ul className="space-y-3">
+          {items.map((item, index) => {
+            const id = `${sectionId}-${index}`;
+            const isCompleted = completedItems.has(id);
+            return (
+              <li key={id} className="flex items-start gap-3 group">
+                 <div className="flex items-center w-full justify-between">
+                    <span className={`flex-1 ${isCompleted ? 'line-through text-green-600' : 'text-foreground'}`}>
+                        {item}
+                    </span>
+                    {sectionId !== 'resumeInterviewPrep' && (
+                        isCompleted ? (
+                             <CheckCircle2 className="w-5 h-5 text-green-500" />
+                        ) : (
+                            <Button 
+                                size="sm" 
+                                variant="outline" 
+                                onClick={() => handleVerifyClick(item)}
+                                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                                <HelpCircle className="w-4 h-4 mr-2" />
+                                Verify
+                            </Button>
+                        )
+                    )}
+                 </div>
+              </li>
+            );
+          })}
+        </ul>
+        {isQuizOpen && quizSkill && (
+            <QuizDialog 
+                isOpen={isQuizOpen}
+                skill={quizSkill}
+                studentData={studentData}
+                onClose={handleQuizClose}
+            />
+        )}
+      </>
+    );
+};
 
 const PDFSection = ({ title, icon: Icon, children, isList = false, fullWidth = false }: { title: string; icon: React.ElementType; children: React.ReactNode, isList?: boolean, fullWidth?: boolean }) => (
     <div className={cn("mb-6 break-inside-avoid", fullWidth ? "col-span-2" : "")}>
@@ -124,11 +182,9 @@ const RoadmapPDF = ({ data, innerRef }: { data: GeneratePersonalizedRoadmapOutpu
             </div>
             
             {resumePrepItems.length > 0 && (
-                <div className="break-before-page">
-                    <PDFSection title="Resume & Interview Prep" icon={Briefcase} isList fullWidth>
-                        {resumePrepItems.map((item, index) => <div key={index}>{item}</div>)}
-                    </PDFSection>
-                </div>
+                 <PDFSection title="Resume & Interview Prep" icon={Briefcase} isList fullWidth>
+                    {resumePrepItems.map((item, index) => <div key={index}>{item}</div>)}
+                </PDFSection>
             )}
 
             <div className="mt-8 pt-4 border-t text-center text-xs text-gray-500">
@@ -138,7 +194,7 @@ const RoadmapPDF = ({ data, innerRef }: { data: GeneratePersonalizedRoadmapOutpu
     )
 }
 
-export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
+export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDisplayProps) {
   const [completedItems, setCompletedItems] = useState<Set<string>>(new Set());
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const pdfRef = useRef<HTMLDivElement>(null);
@@ -150,17 +206,16 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
     resumeInterviewPrep: parseList(data.resumeInterviewPrep),
   }), [data]);
 
-  const totalChecklistItems = Object.values(sections).reduce((sum, items) => sum + items.length, 0);
+  const quizSections = ['skillRoadmap', 'toolsToMaster', 'projects'];
+  const totalChecklistItems = Object.entries(sections)
+    .filter(([key]) => quizSections.includes(key))
+    .reduce((sum, [, items]) => sum + items.length, 0);
 
-  const toggleItem = (id: string) => {
+  const handleQuizComplete = (itemId: string) => {
     setCompletedItems(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
-      }
-      return newSet;
+        const newSet = new Set(prev);
+        newSet.add(itemId);
+        return newSet;
     });
   };
 
@@ -170,7 +225,7 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
     
     try {
         const canvas = await html2canvas(pdfRef.current, {
-            scale: 2, // Higher scale for better quality
+            scale: 2,
             useCORS: true,
             logging: false,
         });
@@ -188,7 +243,7 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
         const canvasHeight = canvas.height;
         const ratio = canvasWidth / canvasHeight;
         
-        const imgHeight = pdfWidth / ratio;
+        let imgHeight = pdfWidth / ratio;
         let heightLeft = imgHeight;
         let position = 0;
 
@@ -216,6 +271,7 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
   const getNextMilestone = () => {
     const allItems = [
       ...sections.skillRoadmap.map((_, i) => `skillRoadmap-${i}`),
+      ...sections.toolsToMaster.map((_, i) => `toolsToMaster-${i}`),
       ...sections.projects.map((_, i) => `projects-${i}`),
     ];
     for (const id of allItems) {
@@ -228,13 +284,6 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
     }
     return "You've completed all milestones!";
   }
-
-  const getAwardColor = () => {
-    if (progressPercentage >= 75) return 'text-amber-400'; // Gold
-    if (progressPercentage >= 50) return 'text-slate-400'; // Silver
-    if (progressPercentage >= 25) return 'text-orange-400'; // Bronze
-    return 'text-primary';
-  };
 
   const sectionsConfig = [
     { id: 'motivationalNudge', title: 'Motivational Nudge', icon: Heart, content: data.motivationalNudge, className: 'lg:col-span-3' },
@@ -267,7 +316,6 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Award className={cn("w-5 h-5 transition-colors", getAwardColor())} />
              Progress Tracker
           </CardTitle>
         </CardHeader>
@@ -289,7 +337,13 @@ export default function RoadmapDisplay({ data, onReset }: RoadmapDisplayProps) {
           return (
             <SectionCard key={section.id} title={section.title} icon={section.icon} className={section.className}>
               {section.items ? (
-                <Checklist items={section.items} sectionId={section.id} onToggle={toggleItem} completedItems={completedItems} />
+                <Checklist 
+                    items={section.items} 
+                    sectionId={section.id} 
+                    completedItems={completedItems} 
+                    studentData={studentData}
+                    onQuizComplete={handleQuizComplete}
+                />
               ) : (
                  section.id === 'motivationalNudge' ? (
                      <p className="italic">"{section.content}"</p>

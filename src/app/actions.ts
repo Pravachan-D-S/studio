@@ -11,6 +11,11 @@ import {
   type AnalyzeSkillGapsOutput,
 } from '@/ai/flows/analyze-skill-gaps';
 import type { FormValues } from '@/lib/types';
+import {
+  generateQuiz,
+  type GenerateQuizInput,
+  type GenerateQuizOutput,
+} from '@/ai/flows/generate-quiz';
 
 
 interface RoadmapActionResult {
@@ -23,6 +28,12 @@ interface SkillGapActionResult {
   success: boolean;
   data?: AnalyzeSkillGapsOutput;
   error?: string;
+}
+
+interface QuizActionResult {
+    success: boolean;
+    data?: GenerateQuizOutput;
+    error?: string;
 }
 
 export async function generateRoadmapAction(
@@ -66,4 +77,16 @@ export async function analyzeGapsAction(
     console.error(e);
     return { success: false, error: e.message || 'An unknown error occurred.' };
   }
+}
+
+export async function generateQuizAction(
+    input: GenerateQuizInput
+): Promise<QuizActionResult> {
+    try {
+        const output = await generateQuiz(input);
+        return { success: true, data: output };
+    } catch (e: any) {
+        console.error(e);
+        return { success: false, error: e.message || 'An unknown error occurred.' };
+    }
 }

@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2, Send } from 'lucide-react';
+import { Loader2, Send, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { formSchema, FormValues } from '@/lib/types';
@@ -136,7 +136,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
   const handleUserInput = (field: keyof FormValues, value: string) => {
     setMessages(prev => {
         const newMessages: ChatMessage[] = [...prev, { sender: 'user', text: value }];
-        if (currentQuestionIndex < questions.length) {
+        if (currentQuestionIndex < questions.length - 1) {
             const randomNudge = chatNudges[Math.floor(Math.random() * chatNudges.length)];
             newMessages.push({ sender: 'ai', text: randomNudge });
         }
@@ -148,6 +148,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
     
     const currentIndex = questions.findIndex(q => q.key === field);
 
+    // Clear values for subsequent questions to allow re-selection
     for (let i = currentIndex + 1; i < questions.length; i++) {
         const key = questions[i].key as keyof FormValues;
         // @ts-ignore
@@ -157,6 +158,34 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
     setCurrentQuestionIndex(currentIndex + 1);
   };
   
+  const handleReturn = () => {
+    if (currentQuestionIndex > 0) {
+      const prevQuestionIndex = currentQuestionIndex - 1;
+      const prevQuestionKey = questions[prevQuestionIndex].key as keyof FormValues;
+
+      // Remove the last two messages (current question and user's previous answer)
+      setMessages(prev => {
+        const newMessages = [...prev];
+        // Find last user message
+        const lastUserMessageIndex = newMessages.map(m => m.sender).lastIndexOf('user');
+        if (lastUserMessageIndex !== -1) {
+          // Find the AI message before that
+           const aiMessageBefore = newMessages.slice(0, lastUserMessageIndex).map(m => m.sender).lastIndexOf('ai');
+           if (aiMessageBefore !== -1) {
+             return newMessages.slice(0, aiMessageBefore);
+           }
+        }
+        // Fallback if something is wrong
+        return prev.slice(0, -2);
+      });
+
+      // @ts-ignore
+      setValue(prevQuestionKey, undefined); // Clear the value of the question we are returning to
+      setCurrentQuestionIndex(prevQuestionIndex);
+    }
+  };
+
+
   const handleFinalSubmit = async (data: FormValues) => {
     setIsLoading(true);
     await onSubmit(data);
@@ -164,16 +193,42 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
   };
 
   const currentQuestion = questions[currentQuestionIndex];
-  let showOptions = false;
-  let allowCustomInput = false;
+  
+  const renderOptions = (msg: ChatMessage) => {
+    if (msg.sender !== 'ai' || !msg.options || isComplete) return null;
+    
+    const questionIndexForMessage = questions.findIndex(q => q.text === msg.text);
+    if (questionIndexForMessage !== currentQuestionIndex) return null;
 
-  if (currentQuestion) {
-    const options = currentQuestion.optionsGetter
-      ? currentQuestion.optionsGetter(getValues)
-      : currentQuestion.options;
-    showOptions = options && options.length > 0;
-    allowCustomInput = !!currentQuestion.allowCustom;
+    return (
+      <div className="flex flex-wrap items-center gap-2 mt-3">
+        {currentQuestionIndex > 0 && (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleReturn}
+              className="bg-background/20 hover:bg-background/50 border-primary/50 text-foreground rounded-full h-9 w-9"
+              aria-label="Go back"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+        )}
+        {msg.options.map((option, i) => (
+          <Button 
+              key={i} 
+              variant="outline"
+              size="sm" 
+              onClick={() => handleUserInput(currentQuestion.key as keyof FormValues, option)}
+              className="bg-background/20 hover:bg-background/50 border-primary/50 text-foreground rounded-full"
+          >
+            {option}
+          </Button>
+        ))}
+      </div>
+    );
   }
+
+  const showCustomInput = currentQuestion && (currentQuestion.allowCustom ?? false);
 
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
@@ -191,21 +246,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
             </Avatar>
             <div className={cn('rounded-lg px-4 py-3 max-w-[80%]', msg.sender === 'ai' ? 'bg-secondary text-secondary-foreground' : 'bg-primary text-primary-foreground')}>
               <p className="text-sm">{msg.text}</p>
-              {msg.sender === 'ai' && msg.options && !isComplete && (
-                <div className="flex flex-wrap gap-2 mt-3">
-                  {msg.options.map((option, i) => (
-                    <Button 
-                        key={i} 
-                        variant="outline"
-                        size="sm" 
-                        onClick={() => handleUserInput(currentQuestion.key as keyof FormValues, option)}
-                        className="bg-background/20 hover:bg-background/50 border-primary/50 text-foreground rounded-full"
-                    >
-                      {option}
-                    </Button>
-                  ))}
-                </div>
-              )}
+              {renderOptions(msg)}
             </div>
           </div>
         ))}
@@ -224,7 +265,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
         {!isComplete && currentQuestion && (
             <form onSubmit={(e) => {
                 e.preventDefault();
-                if(allowCustomInput) {
+                if(showCustomInput) {
                   const key = currentQuestion.key as keyof FormValues;
                   const value = getValues(key);
                   if (value) {
@@ -233,7 +274,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
                 }
             }} className="flex items-center gap-2">
             
-            {!allowCustomInput ? (
+            {!showCustomInput ? (
                 <Input
                     placeholder="Select an option above"
                     disabled
@@ -249,7 +290,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
                 />
             )}
 
-            <Button type="submit" size="icon" disabled={isLoading || !allowCustomInput} className="rounded-full">
+            <Button type="submit" size="icon" disabled={isLoading || !showCustomInput} className="rounded-full">
                 {isLoading ? <Loader2 className="animate-spin" /> : <Send />}
             </Button>
             </form>
