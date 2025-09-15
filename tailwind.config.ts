@@ -97,14 +97,6 @@ export default {
           '0%, 100%': { transform: 'scale(1)', opacity: '1' },
           '50%': { transform: 'scale(0.95)', opacity: '0.8' },
         },
-        'pulse-node': {
-            '0%, 100%': { r: '2' },
-            '50%': { r: '3' },
-        },
-        'sparkle-line': {
-          '0%, 100%': { strokeDasharray: '0, 100', strokeDashoffset: '0' },
-          '50%': { strokeDasharray: '2, 100', strokeDashoffset: '-20' },
-        },
         'gradient-xy': {
             '0%, 100%': {
                 'background-size':'400% 400%',
@@ -119,6 +111,10 @@ export default {
             'from': { transform: 'rotate(0deg)' },
             'to': { transform: 'rotate(360deg)' },
         },
+        'spin-reverse': {
+            'from': { transform: 'rotate(360deg)' },
+            'to': { transform: 'rotate(0deg)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -126,10 +122,9 @@ export default {
         'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
         'float': 'float 12s ease-in-out infinite',
         'pulse-logo': 'pulse-logo 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'pulse-node': 'pulse-node 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'sparkle-line': 'sparkle-line 2s linear infinite',
         'gradient-xy': 'gradient-xy 15s ease infinite',
         'spin': 'spin 1s linear infinite',
+        'spin-reverse': 'spin-reverse 1s linear infinite',
       },
     },
   },
