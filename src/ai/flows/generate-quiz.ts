@@ -6,7 +6,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 import type { GenerateQuizInput, GenerateQuizOutput } from '@/lib/types';
 import { EngineeringQuizSchema, MbaQuizSchema, NonTechQuizSchema, GenerateQuizInputSchema, GenerateQuizOutputSchema } from '@/lib/types';
 
