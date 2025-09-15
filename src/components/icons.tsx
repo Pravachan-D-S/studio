@@ -7,30 +7,24 @@ export function VidyaanIcon(props: SVGProps<SVGSVGElement>) {
       viewBox="0 0 100 100"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
-      stroke="currentColor"
     >
       <defs>
-        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" style={{ stopColor: 'hsl(var(--primary))', stopOpacity: 1 }} />
-          <stop offset="100%" style={{ stopColor: 'hsl(190 80% 50%)', stopOpacity: 1 }} />
+        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style={{ stopColor: '#4FD1C5' }} />
+          <stop offset="100%" style={{ stopColor: '#F0C242' }} />
         </linearGradient>
       </defs>
       {/* Book */}
       <path
-        d="M10 85 C 10 75, 40 70, 50 70 C 60 70, 90 75, 90 85 L 90 90 L 10 90 Z"
-        fill="hsl(var(--primary) / 0.6)"
+        d="M85,85 A40,40 0 0,0 15,85 L15,90 L85,90 Z M15,85 A40,40 0 0,1 85,85"
+        fill="#1a3a6e"
       />
       <path
-        d="M50 25 C 20 25, 10 40, 10 70 L 10 85 C 10 75, 40 70, 50 70 V 25 Z"
-        fill="hsl(var(--primary) / 0.8)"
+        d="M50 25 L10 45 L50 65 L90 45 Z"
+        fill="url(#grad1)"
       />
-      <path
-        d="M50 25 C 80 25, 90 40, 90 70 L 90 85 C 90 75, 60 70, 50 70 V 25 Z"
-        fill="hsl(var(--primary) / 0.8)"
-      />
-      {/* Cap */}
-      <polygon points="50,5 5,25 50,45 95,25" fill="url(#grad1)" />
-      <path d="M75 29 L 75 40 L 80 40 L 80 29 Z" fill="#f0c242" />
+      {/* Tassel */}
+      <path d="M80 48 L80 60 L85 60 L85 48 Z" fill="#F0C242" />
     </svg>
   );
 }
@@ -40,26 +34,34 @@ export function VidyaanLogo(props: SVGProps<SVGSVGElement>) {
     return (
         <svg
             {...props}
-            viewBox="0 0 180 50"
+            viewBox="0 0 180 60"
             xmlns="http://www.w3.org/2000/svg"
         >
-            <defs>
-                <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="hsl(var(--primary))"/>
-                    <stop offset="100%" stopColor="hsl(190 80% 50%)"/>
+             <defs>
+                <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#4FD1C5" />
+                  <stop offset="100%" stopColor="#F0C242" />
                 </linearGradient>
             </defs>
             
             {/* Icon */}
-            <g transform="translate(0, -5) scale(0.4)">
-                <path d="M50 25 C 20 25, 10 40, 10 70 L 10 85 C 10 75, 40 70, 50 70 V 25 Z" fill="hsl(var(--primary) / 0.8)" />
-                <path d="M50 25 C 80 25, 90 40, 90 70 L 90 85 C 90 75, 60 70, 50 70 V 25 Z" fill="hsl(var(--primary) / 0.8)" />
-                <polygon points="50,5 5,25 50,45 95,25" fill="url(#logoGrad)" />
-                <path d="M75 29 L 75 40 L 80 40 L 80 29 Z" fill="#f0c242" />
+            <g transform="translate(65, -5) scale(0.5)">
+                {/* Book */}
+                <path
+                    d="M85,85 A40,40 0 0,0 15,85 L15,90 L85,90 Z M15,85 A40,40 0 0,1 85,85"
+                    fill="#1a3a6e"
+                />
+                {/* Cap */}
+                <path
+                    d="M50 25 L10 45 L50 65 L90 45 Z"
+                    fill="url(#logoGrad)"
+                />
+                {/* Tassel */}
+                <path d="M80 48 L80 60 L85 60 L85 48 Z" fill="#F0C242" />
             </g>
 
             {/* Text */}
-            <text x="45" y="32" fontFamily="Inter, sans-serif" fontSize="28" fontWeight="bold" fill="hsl(var(--foreground))">
+            <text x="50%" y="52" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="24" fontWeight="bold" fill="#1a3a6e">
                 Vidyaan
             </text>
         </svg>
