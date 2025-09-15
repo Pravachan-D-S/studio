@@ -23,44 +23,12 @@ export function VidyaanIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
-      width="48"
-      height="48"
-      viewBox="0 0 48 48"
+      width="32"
+      height="32"
+      viewBox="0 0 32 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path
-        d="M24 0L0 12V36L24 48L48 36V12L24 0Z"
-        fill="url(#grad1)"
-      />
-      <path
-        d="M24 4L4 14V34L24 44L44 34V14L24 4Z"
-        fill="url(#grad2)"
-      />
-      <path
-        d="M12 18V30L24 36L36 30V18L24 12L12 18Z"
-        fill="#FFFFFF"
-        opacity="0.2"
-      />
-      <path
-        d="M24 21L16 25V29L24 33L32 29V25L24 21Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-
-export function VidyaanLogo(props: SVGProps<SVGSVGElement>) {
-  return (
-    <div className="flex items-center gap-2 font-headline">
-      <svg
-        {...props}
-        width="32"
-        height="32"
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
         <defs>
           <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="hsl(var(--primary))" />
@@ -90,7 +58,58 @@ export function VidyaanLogo(props: SVGProps<SVGSVGElement>) {
         />
         <path d="M13 20V26H19V20" stroke="hsl(var(--primary))" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
-      <span className="text-xl font-bold text-foreground">Vidyaan</span>
+  );
+}
+
+
+export function VidyaanLogo(props: SVGProps<SVGSVGElement>) {
+  return (
+    <div className="flex items-center gap-3 font-headline">
+      <svg
+        {...props}
+        width="40"
+        height="40"
+        viewBox="0 0 40 40"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M10 27.5C3.33333 27.5 2.5 21.6667 2.5 20C2.5 18.3333 3.33333 12.5 10 12.5"
+          stroke="hsl(var(--primary))"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <path
+          d="M30 27.5C36.6667 27.5 37.5 21.6667 37.5 20C37.5 18.3333 36.6667 12.5 30 12.5"
+          stroke="hsl(var(--primary))"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <path
+          d="M10 12.5C10 10.5 13.5 7.5 20 7.5C26.5 7.5 30 10.5 30 12.5"
+          stroke="hsl(var(--primary))"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <path
+          d="M10 27.5C10 29.5 13.5 32.5 20 32.5C26.5 32.5 30 29.5 30 27.5"
+          stroke="hsl(var(--primary))"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <path
+          d="M20 25C22.7614 25 25 22.7614 25 20C25 17.2386 22.7614 15 20 15C17.2386 15 15 17.2386 15 20C15 22.7614 17.2386 25 20 25Z"
+          fill="hsl(var(--primary))"
+          fillOpacity="0.8"
+        />
+        <path
+          d="M20 32.5V20"
+          stroke="hsl(var(--primary))"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+      <span className="text-2xl font-bold tracking-tight text-foreground">Vidyaan</span>
     </div>
   );
 }
