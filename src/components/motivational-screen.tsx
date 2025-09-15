@@ -14,7 +14,7 @@ interface MotivationalScreenProps {
 const AnimatedShape = ({ className, delay }: { className: string, delay: string }) => (
     <div
       className={cn(
-        'absolute rounded-full blur-3xl animate-float opacity-30',
+        'absolute rounded-full blur-3xl animate-float opacity-20',
         className
       )}
       style={{ animationDelay: delay }}
@@ -33,9 +33,9 @@ export default function MotivationalScreen({ onStart }: MotivationalScreenProps)
     <div className="relative flex flex-col items-center justify-center h-screen bg-background p-4 overflow-hidden">
        {/* Animated background shapes */}
        <AnimatedShape className="w-64 h-64 top-10 left-10 bg-primary" delay="0s" />
-       <AnimatedShape className="w-48 h-48 bottom-20 right-5 bg-blue-500" delay="2s" />
-       <AnimatedShape className="w-32 h-32 top-1/2 left-1/4 bg-purple-500" delay="4s" />
-       <AnimatedShape className="w-56 h-56 bottom-1/3 right-1/3 bg-teal-500" delay="6s" />
+       <AnimatedShape className="w-48 h-48 bottom-20 right-5 bg-sky-300" delay="2s" />
+       <AnimatedShape className="w-32 h-32 top-1/2 left-1/4 bg-blue-400" delay="4s" />
+       <AnimatedShape className="w-56 h-56 bottom-1/3 right-1/3 bg-teal-300" delay="6s" />
 
 
       <div className={cn(
@@ -59,7 +59,7 @@ export default function MotivationalScreen({ onStart }: MotivationalScreenProps)
             <Button 
               onClick={onStart} 
               size="lg" 
-              className="w-full md:w-auto text-lg rounded-full px-12 py-6 bg-primary hover:bg-primary/90 text-primary-foreground transition-all transform hover:scale-105 hover:shadow-lg hover:shadow-primary/40"
+              className="w-full md:w-auto text-lg rounded-full px-12 py-6 bg-primary hover:bg-primary/90 text-primary-foreground transition-all transform hover:scale-105 hover:shadow-lg hover:shadow-primary/20"
             >
               Start Journey
             </Button>

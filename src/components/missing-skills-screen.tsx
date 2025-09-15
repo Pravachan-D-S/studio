@@ -15,12 +15,12 @@ export default function MissingSkillsScreen({ data, onProceed }: MissingSkillsSc
     const { missingSkills } = data;
 
     return (
-        <div className="flex flex-col min-h-screen bg-gradient-to-br from-background via-sky-50 to-slate-100">
+        <div className="flex flex-col min-h-screen bg-background">
             <header className="px-4 lg:px-6 h-16 flex items-center">
                 <VidyaanLogo className="h-8 w-auto" />
             </header>
             <main className="flex-1 flex items-center justify-center p-4">
-                <Card className="w-full max-w-2xl text-center animate-fade-in-up shadow-2xl">
+                <Card className="w-full max-w-2xl text-center animate-fade-in-up shadow-2xl bg-card">
                     <CardHeader>
                         <CardTitle className="text-3xl font-extrabold">Your Skill Gap Analysis</CardTitle>
                         <CardDescription className="text-lg text-muted-foreground">
