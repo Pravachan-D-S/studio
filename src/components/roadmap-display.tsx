@@ -6,6 +6,7 @@ import type { FormValues } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import {
   List,
@@ -285,6 +286,20 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     return "You've completed all milestones!";
   }
 
+  const getProgressBadge = () => {
+    const percentage = Math.round(progressPercentage);
+    if (percentage < 33) {
+      return <Badge variant="destructive" className="text-xs px-2 py-1">Beginner</Badge>;
+    }
+    if (percentage < 67) {
+      return <Badge className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1.5">Intermediate</Badge>;
+    }
+    if (percentage < 100) {
+      return <Badge className="bg-green-500 hover:bg-green-600 text-white text-base px-4 py-2">Expert</Badge>;
+    }
+    return <Badge className="bg-green-600 hover:bg-green-700 text-white text-base px-4 py-2">Mastered</Badge>;
+  };
+
   const sectionsConfig = [
     { id: 'motivationalNudge', title: 'Motivational Nudge', icon: Heart, content: data.motivationalNudge, className: 'lg:col-span-3' },
     { id: 'skillRoadmap', title: 'Skill Roadmap', icon: List, items: sections.skillRoadmap, className: 'lg:col-span-1' },
@@ -315,8 +330,9 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-             Progress Tracker
+          <CardTitle className="flex items-center justify-between gap-2">
+             <span>Progress Tracker</span>
+             {getProgressBadge()}
           </CardTitle>
         </CardHeader>
         <CardContent>
