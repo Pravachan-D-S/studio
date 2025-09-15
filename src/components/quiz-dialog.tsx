@@ -35,6 +35,8 @@ export function QuizDialog({ isOpen, skill, studentData, onClose }: QuizDialogPr
   const [quizData, setQuizData] = useState<GenerateQuizOutput | null>(null);
   const [quizState, setQuizState] = useState<QuizState>('loading');
   const [answers, setAnswers] = useState<Answers>({});
+  
+  const allQuestionsAnswered = Object.values(answers).filter(Boolean).length === 5;
 
   const fetchQuiz = async () => {
     setQuizState('loading');
@@ -242,7 +244,7 @@ export function QuizDialog({ isOpen, skill, studentData, onClose }: QuizDialogPr
 
 
         <DialogFooter className="mt-6">
-          {quizState === 'ready' && <Button onClick={handleSubmit}>Submit Quiz</Button>}
+          {quizState === 'ready' && <Button onClick={handleSubmit} disabled={!allQuestionsAnswered}>Submit Quiz</Button>}
           {quizState === 'passed' && <Button onClick={() => onClose(true, skill)}>Close</Button>}
           {quizState === 'failed' && (
             <div className="flex gap-2">
