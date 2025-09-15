@@ -97,9 +97,13 @@ export default {
           '0%, 100%': { transform: 'scale(1)', opacity: '1' },
           '50%': { transform: 'scale(0.95)', opacity: '0.8' },
         },
-        'pulse-bar': {
-            '0%, 100%': { height: '4rem' },
-            '50%': { height: '7rem' },
+        'pulse-node': {
+            '0%, 100%': { r: '2' },
+            '50%': { r: '3' },
+        },
+        'sparkle-line': {
+          '0%, 100%': { strokeDasharray: '0, 100', strokeDashoffset: '0' },
+          '50%': { strokeDasharray: '2, 100', strokeDashoffset: '-20' },
         },
         'gradient-xy': {
             '0%, 100%': {
@@ -122,7 +126,8 @@ export default {
         'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
         'float': 'float 12s ease-in-out infinite',
         'pulse-logo': 'pulse-logo 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'pulse-bar': 'pulse-bar 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'pulse-node': 'pulse-node 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'sparkle-line': 'sparkle-line 2s linear infinite',
         'gradient-xy': 'gradient-xy 15s ease infinite',
         'spin': 'spin 1s linear infinite',
       },
