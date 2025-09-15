@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { VidyaanLogo } from '@/components/icons';
 import { cn } from '@/lib/utils';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
+import { Info } from 'lucide-react';
 
 interface MotivationalScreenProps {
   onStart: () => void;
@@ -53,13 +55,40 @@ export default function MotivationalScreen({ onStart }: MotivationalScreenProps)
             </p>
         </div>
 
-        <Button 
-          onClick={onStart} 
-          size="lg" 
-          className="mt-8 w-full md:w-auto text-lg rounded-full px-12 py-6 bg-green-500 hover:bg-green-600 text-white transition-all transform hover:scale-105 hover:shadow-lg hover:shadow-green-500/40"
-        >
-          Start Journey
-        </Button>
+        <div className="mt-8 flex flex-col items-center gap-4">
+            <Button 
+              onClick={onStart} 
+              size="lg" 
+              className="w-full md:w-auto text-lg rounded-full px-12 py-6 bg-green-500 hover:bg-green-600 text-white transition-all transform hover:scale-105 hover:shadow-lg hover:shadow-green-500/40"
+            >
+              Start Journey
+            </Button>
+            
+            <Dialog>
+                <DialogTrigger asChild>
+                    <Button variant="ghost" className="text-sm text-muted-foreground">
+                        <Info className="mr-2 h-4 w-4" />
+                        About Vidyaan
+                    </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>About Vidyaan</DialogTitle>
+                        <DialogDescription>
+                            Your AI-powered guide to a successful tech career.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4 text-sm text-muted-foreground">
+                       <p>
+                           Vidyaan is an intelligent career counseling platform designed to help students and professionals navigate their career paths with confidence.
+                       </p>
+                       <p>
+                           By analyzing your academic background, skills, and career aspirations, our advanced AI generates a personalized, step-by-step roadmap to help you achieve your goals. From identifying skill gaps to suggesting projects and preparing you for interviews, Vidyaan is your personal mentor for success.
+                       </p>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        </div>
       </div>
     </div>
   );
