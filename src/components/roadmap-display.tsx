@@ -129,15 +129,15 @@ const Checklist = ({
     );
 };
 
-const PDFSection = ({ title, icon: Icon, children, isList = false, fullWidth = false }: { title: string; icon: React.ElementType; children: React.ReactNode, isList?: boolean, fullWidth?: boolean }) => (
-    <div className={cn("mb-6 break-inside-avoid", fullWidth ? "col-span-2" : "")}>
+const PDFSection = ({ title, icon: Icon, children, isList = false }: { title: string; icon: React.ElementType; children: React.ReactNode, isList?: boolean }) => (
+    <div className="mb-4 break-inside-avoid">
         <div className="flex items-center gap-3 mb-2 border-b pb-2">
             <Icon className="w-5 h-5 text-primary" />
             <h3 className="text-base font-semibold text-gray-800">{title}</h3>
         </div>
         {isList ? (
-            <ul className="space-y-1 text-sm text-gray-600">
-                {React.Children.map(children, child => <li className="flex items-start"><span className="mr-2 mt-1">&#8226;</span><span>{child}</span></li>)}
+            <ul className="space-y-1 text-sm text-gray-600 pl-4">
+                {React.Children.map(children, child => <li className="list-disc">{child}</li>)}
             </ul>
         ) : (
              <div className="text-sm text-gray-600 space-y-1">{children}</div>
@@ -146,21 +146,28 @@ const PDFSection = ({ title, icon: Icon, children, isList = false, fullWidth = f
 );
 
 
-const RoadmapPDF = ({ data, innerRef }: { data: GeneratePersonalizedRoadmapOutput; innerRef: React.Ref<HTMLDivElement> }) => {
+const RoadmapPDF = ({ data, studentData, innerRef }: { data: GeneratePersonalizedRoadmapOutput; studentData: FormValues; innerRef: React.Ref<HTMLDivElement> }) => {
   const sectionsConfig = useMemo(() => ([
-    { id: 'skillRoadmap', title: 'Skill Roadmap', icon: List, items: parseList(data.skillRoadmap) },
-    { id: 'toolsToMaster', title: 'Tools to Master', icon: Wrench, items: parseList(data.toolsToMaster) },
-    { id: 'projects', title: 'Project Ideas', icon: FlaskConical, items: parseList(data.projects) },
+    { id: 'studentProfile', title: 'Student Profile', icon: UserIcon, isList: true, content: [
+        `Stream: ${studentData.stream}`,
+        `Specialization: ${studentData.specialization}`,
+        `Year of Study: ${studentData.yearOfStudy}`,
+        `Aiming Career: ${studentData.aimingCareer}`,
+    ]},
+    { id: 'skillRoadmap', title: 'Skill Roadmap', icon: List, isList: true, items: parseList(data.skillRoadmap) },
+    { id: 'toolsToMaster', title: 'Tools to Master', icon: Wrench, isList: true, items: parseList(data.toolsToMaster) },
     { id: 'timeline', title: 'Estimated Timeline', icon: Calendar, content: parseList(data.timeline) },
+    { id: 'projects', title: 'Project Ideas', icon: FlaskConical, isList: true, items: parseList(data.projects) },
     { id: 'resources', title: 'Learning Resources', icon: Lightbulb, content: parseList(data.resources) },
     { id: 'careerGrowth', title: 'Career Growth', icon: TrendingUp, content: parseList(data.careerGrowth) },
     { id: 'jobMarketInsights', title: 'Job Market Insights', icon: BarChart, content: parseList(data.jobMarketInsights) },
-  ]), [data]);
+    { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', icon: Briefcase, isList: true, items: parseList(data.resumeInterviewPrep) },
+  ]), [data, studentData]);
 
-  const resumePrepItems = parseList(data.resumeInterviewPrep);
 
     return (
-        <div ref={innerRef} className="p-8 bg-white text-gray-800" style={{ width: '210mm' }}>
+        <div ref={innerRef} id="pdf-content" className="p-8 bg-white text-gray-800" style={{ width: '210mm' }}>
+            {/* This content is for html2canvas to render */}
             <div className="flex items-center justify-between pb-4 border-b mb-6">
                 <VidyaanLogo />
                 <h1 className="text-2xl font-bold text-gray-700">Your Personalized Career Roadmap</h1>
@@ -174,21 +181,17 @@ const RoadmapPDF = ({ data, innerRef }: { data: GeneratePersonalizedRoadmapOutpu
             
             <div className="grid grid-cols-2 gap-x-8">
                 {sectionsConfig.map(section => {
-                    if ((!section.items || section.items.length === 0) && (!section.content || section.content.length === 0)) return null;
-
-                    return (
-                        <PDFSection key={section.id} title={section.title} icon={section.icon} isList={!!section.items}>
-                            {(section.items || section.content)?.map((item, index) => <div key={index}>{item}</div>)}
-                        </PDFSection>
-                    )
+                     if ((!section.items || section.items.length === 0) && (!section.content || section.content.length === 0)) return null;
+                     const content = section.items || section.content;
+                     return(
+                         <div key={section.id} data-pdf-section className="mb-4 break-inside-avoid col-span-2">
+                             <PDFSection title={section.title} icon={section.icon} isList={section.isList}>
+                                {content?.map((item: any, index: number) => <div key={index}>{item}</div>)}
+                            </PDFSection>
+                         </div>
+                     )
                 })}
             </div>
-            
-            {resumePrepItems.length > 0 && (
-                 <PDFSection title="Resume & Interview Prep" icon={Briefcase} isList fullWidth>
-                    {resumePrepItems.map((item, index) => <div key={index}>{item}</div>)}
-                </PDFSection>
-            )}
 
             <div className="mt-8 pt-4 border-t text-center text-xs text-gray-500">
                 <p>Generated by Vidyaan - Your AI Career Guide</p>
@@ -196,6 +199,26 @@ const RoadmapPDF = ({ data, innerRef }: { data: GeneratePersonalizedRoadmapOutpu
         </div>
     )
 }
+
+function UserIcon(props: React.SVGProps<SVGSVGElement>) {
+    return (
+      <svg
+        {...props}
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    );
+  }
 
 export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDisplayProps) {
   const [completedItems, setCompletedItems] = useState<Set<string>>(new Set());
@@ -223,43 +246,69 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
   };
 
   const handleDownloadPdf = async () => {
-    if (!pdfRef.current) return;
+    const content = pdfRef.current;
+    if (!content) return;
     setIsGeneratingPdf(true);
     
     try {
-        const canvas = await html2canvas(pdfRef.current, {
-            scale: 2,
-            useCORS: true,
-            logging: false,
-        });
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const margin = 10; // 10mm margin
         
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF({
-            orientation: 'p',
-            unit: 'mm',
-            format: 'a4',
-        });
-        
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-        const canvasWidth = canvas.width;
-        const canvasHeight = canvas.height;
-        const ratio = canvasWidth / canvasHeight;
-        
-        let imgHeight = pdfWidth / ratio;
-        let heightLeft = imgHeight;
-        let position = 0;
+        let y = margin;
 
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, imgHeight);
-        heightLeft -= pdfHeight;
-        
-        while (heightLeft > 0) {
-            position = heightLeft - imgHeight;
-            pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
-            heightLeft -= pdfHeight;
+        const addCanvasToPdf = async (element: HTMLElement, yPos: number): Promise<number> => {
+            const canvas = await html2canvas(element, { scale: 2, useCORS: true, logging: false });
+            const imgData = canvas.toDataURL('image/png');
+            const imgHeight = (canvas.height * (pageWidth - 2 * margin)) / canvas.width;
+            
+            if (yPos + imgHeight > pageHeight - margin) {
+                pdf.addPage();
+                yPos = margin;
+            }
+
+            pdf.addImage(imgData, 'PNG', margin, yPos, pageWidth - 2 * margin, imgHeight);
+            return yPos + imgHeight;
+        };
+
+        // Render header
+        const headerElement = content.querySelector('.flex.items-center.justify-between') as HTMLElement;
+        if(headerElement) {
+            y = await addCanvasToPdf(headerElement, y);
+            y += 5; // spacing after header
         }
-        
+
+        // Render motivational nudge
+        const nudgeElement = content.querySelector('.mb-6.p-4.bg-sky-50') as HTMLElement;
+        if (nudgeElement) {
+            y = await addCanvasToPdf(nudgeElement, y);
+            y += 5;
+        }
+
+        // Render sections
+        const sectionElements = content.querySelectorAll('[data-pdf-section]') as NodeListOf<HTMLElement>;
+
+        for (const sectionEl of Array.from(sectionElements)) {
+            const canvas = await html2canvas(sectionEl, { scale: 2, useCORS: true, logging: false });
+            const imgData = canvas.toDataURL('image/png');
+            const imgHeight = (canvas.height * (pageWidth - 2 * margin)) / canvas.width;
+
+            if (y + imgHeight > pageHeight - margin) {
+                pdf.addPage();
+                y = margin;
+            }
+            
+            pdf.addImage(imgData, 'PNG', margin, y, pageWidth - 2 * margin, imgHeight);
+            y += imgHeight + 5; // Add some padding between sections
+        }
+
+        // Render footer
+        const footerElement = content.querySelector('.mt-8.pt-4.border-t') as HTMLElement;
+        if (footerElement) {
+            y = await addCanvasToPdf(footerElement, y);
+        }
+
         pdf.save('Vidyaan-Roadmap.pdf');
 
     } catch (error) {
@@ -275,7 +324,6 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     const allItems = [
       ...sections.skillRoadmap.map((_, i) => `skillRoadmap-${i}`),
       ...sections.toolsToMaster.map((_, i) => `toolsToMaster-${i}`),
-      ...sections.projects.map((_, i) => `projects-${i}`),
     ];
     for (const id of allItems) {
       if (!completedItems.has(id)) {
@@ -387,7 +435,7 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
         })}
       </div>
       <div className="fixed top-[-10000px] left-[-10000px] z-[-1]">
-          <RoadmapPDF data={data} innerRef={pdfRef} />
+          <RoadmapPDF data={data} studentData={studentData} innerRef={pdfRef} />
       </div>
     </div>
   );
