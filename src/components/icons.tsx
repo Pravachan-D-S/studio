@@ -18,61 +18,79 @@ export function UserIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-// Deprecated: VidyaanIcon is replaced by VidyaanLogo's new SVG
+// Deprecated: VidyaanIcon is no longer used and is replaced by the new VidyaanLogo.
 export function VidyaanIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
-      viewBox="0 0 112 112"
+      width="48"
+      height="48"
+      viewBox="0 0 48 48"
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      fill="currentColor"
     >
-      <defs>
-        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style={{stopColor: '#6EE7B7', stopOpacity: 1}} />
-          <stop offset="100%" style={{stopColor: '#3B82F6', stopOpacity: 1}} />
-        </linearGradient>
-      </defs>
-      <path fill="url(#grad1)" d="M56 0L0 25L56 50L112 25L56 0Z" />
-      <path fill="#1E40AF" d="M56 53.125L100 28.125V78.125C100 78.125 78.125 90.625 56 78.125C33.875 90.625 12.5 78.125 12.5 78.125V28.125L56 53.125Z" />
-      <path fill="#FBBF24" d="M103.125 26.25V41.25L106.25 39.375V25L103.125 26.25Z" />
+      <path
+        d="M24 0L0 12V36L24 48L48 36V12L24 0Z"
+        fill="url(#grad1)"
+      />
+      <path
+        d="M24 4L4 14V34L24 44L44 34V14L24 4Z"
+        fill="url(#grad2)"
+      />
+      <path
+        d="M12 18V30L24 36L36 30V18L24 12L12 18Z"
+        fill="#FFFFFF"
+        opacity="0.2"
+      />
+      <path
+        d="M24 21L16 25V29L24 33L32 29V25L24 21Z"
+        fill="currentColor"
+      />
     </svg>
-  )
+  );
 }
 
 export function VidyaanLogo(props: SVGProps<SVGSVGElement>) {
   return (
-    <div className="flex items-center justify-center" >
+    <div className="flex items-center gap-2 font-headline">
       <svg
-          {...props}
-          viewBox="0 0 112 100"
-          xmlns="http://www.w3.org/2000/svg"
+        {...props}
+        width="32"
+        height="32"
+        viewBox="0 0 32 32"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
       >
-          <defs>
-              <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" style={{stopColor: '#4FD1C5', stopOpacity: 1}} />
-                  <stop offset="100%" style={{stopColor: '#F6E05E', stopOpacity: 1}} />
-              </linearGradient>
-          </defs>
-          
-          {/* Icon */}
-          <g>
-              {/* Book */}
-              <path fill="#2c5282" d="M93.92,35.32c-3.9-2.27-8.75-3.56-13.84-3.56H80c-0.03,0-0.06,0-0.09,0c-5.12,0.01-9.99,1.3-13.9,3.58 C62.1,37.56,58.56,40.53,56,44.07v30.08c0,0,12-6.68,24-0.1c12,6.58,24,0,24,0V44.05 C101.44,40.52,97.89,37.55,93.92,35.32z"/>
-
-              {/* Cap */}
-              <g>
-                  <path fill="url(#logo-grad)" d="M80,3.11l-36,15v4.67l36,15l36-15v-4.67L80,3.11z"/>
-                  <path fill="#F6E05E" d="M113,23.78v4h2v-4.67L113,23.78z"/>
-                  <rect x="76" y="23.11" fill="#2c5282" width="8" height="12"/>
-              </g>
-          </g>
-
-          {/* Text */}
-          <text x="56" y="95" fontFamily="Inter, sans-serif" fontSize="24" fill="#2c5282" textAnchor="middle" fontWeight="bold">
-              Vidyaan
-          </text>
+        <defs>
+          <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="hsl(var(--primary))" />
+            <stop offset="100%" stopColor="hsl(var(--chart-2))" />
+          </linearGradient>
+        </defs>
+        {/* Book shape */}
+        <path
+          d="M4 24V6C4 5.44772 4.44772 5 5 5H27C27.5523 5 28 5.44772 28 6V24C28 24.5523 27.5523 25 27 25H5C4.44772 25 4 24.5523 4 24Z"
+          fill="hsl(var(--primary))"
+          fillOpacity="0.1"
+        />
+        <path
+          d="M4 24V6C4 5.44772 4.44772 5 5 5H16V25H5C4.44772 25 4 24.5523 4 24Z"
+          fill="hsl(var(--primary))"
+          fillOpacity="0.2"
+        />
+        <path
+          d="M16 5V25H27C27.5523 25 28 24.5523 28 24V6C28 5.44772 27.5523 5 27 5H16Z"
+          fill="hsl(var(--primary))"
+          fillOpacity="0.3"
+        />
+        {/* Graduation cap */}
+        <path
+          d="M2 14L16 21L30 14L16 7L2 14Z"
+          fill="url(#logo-grad)"
+        />
+        <path d="M13 20V26H19V20" stroke="hsl(var(--primary))" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
+      <span className="text-xl font-bold text-foreground">Vidyaan</span>
     </div>
   );
 }
