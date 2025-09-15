@@ -59,7 +59,7 @@ export default function MotivationalScreen({ onStart }: MotivationalScreenProps)
             <Button 
               onClick={onStart} 
               size="lg" 
-              className="w-full md:w-auto text-lg rounded-full px-12 py-6 bg-green-500 hover:bg-green-600 text-white transition-all transform hover:scale-105 hover:shadow-lg hover:shadow-green-500/40"
+              className="w-full md:w-auto text-lg rounded-full px-12 py-6 bg-primary hover:bg-primary/90 text-primary-foreground transition-all transform hover:scale-105 hover:shadow-lg hover:shadow-primary/40"
             >
               Start Journey
             </Button>
