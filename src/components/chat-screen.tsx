@@ -64,6 +64,16 @@ const questions = [
   { key: 'communication', text: 'How would you rate your communication skills?', options: skillLevels },
 ];
 
+const AnimatedShape = ({ className, delay }: { className: string; delay: string }) => (
+    <div
+      className={cn(
+        'absolute rounded-full bg-primary/10 blur-2xl animate-float -z-10',
+        className
+      )}
+      style={{ animationDelay: delay }}
+    />
+  );
+
 export default function ChatScreen({ onSubmit }: ChatScreenProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -231,12 +241,17 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
   const showCustomInput = currentQuestion && (currentQuestion.allowCustom ?? false);
 
   return (
-    <div className="flex flex-col h-screen bg-background text-foreground">
+    <div className="flex flex-col h-screen bg-background text-foreground overflow-hidden">
       <header className="flex items-center p-4 border-b">
         <VidyaanLogo className="h-8 w-auto" />
       </header>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-gradient-to-br from-background to-slate-50 animate-gradient-xy">
+      <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-gradient-to-br from-background to-slate-50 animate-gradient-xy relative">
+        {/* Animated Background Shapes */}
+        {currentQuestionIndex >= 2 && <AnimatedShape className="w-48 h-48 top-20 left-10" delay="0s" />}
+        {currentQuestionIndex >= 4 && <AnimatedShape className="w-32 h-32 bottom-24 right-5" delay="2s" />}
+        {currentQuestionIndex >= 6 && <AnimatedShape className="w-40 h-40 top-1/2 left-1/4" delay="4s" />}
+
         {messages.map((msg, index) => (
           <div key={index} className={cn('flex items-start gap-3 animate-fade-in-up', msg.sender === 'user' ? 'flex-row-reverse' : '')}>
             <Avatar className="w-8 h-8">
@@ -244,7 +259,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
                 {msg.sender === 'ai' ? <VidyaanIcon className="w-8 h-8"/> : <UserIcon className="w-6 h-6"/>}
               </AvatarFallback>
             </Avatar>
-            <div className={cn('rounded-lg px-4 py-3 max-w-[80%]', msg.sender === 'ai' ? 'bg-secondary text-secondary-foreground' : 'bg-primary text-primary-foreground')}>
+            <div className={cn('rounded-lg px-4 py-3 max-w-[80%] z-10', msg.sender === 'ai' ? 'bg-secondary text-secondary-foreground' : 'bg-primary text-primary-foreground')}>
               <p className="text-sm">{msg.text}</p>
               {renderOptions(msg)}
             </div>
