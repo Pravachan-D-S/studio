@@ -10,11 +10,9 @@ import {
   type AnalyzeSkillGapsInput,
   type AnalyzeSkillGapsOutput,
 } from '@/ai/flows/analyze-skill-gaps';
-import type { FormValues } from '@/lib/types';
+import type { FormValues, GenerateQuizInput, GenerateQuizOutput } from '@/lib/types';
 import {
   generateQuiz,
-  type GenerateQuizInput,
-  type GenerateQuizOutput,
 } from '@/ai/flows/generate-quiz';
 
 

@@ -19,8 +19,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { generateQuizAction } from '@/app/actions';
-import type { FormValues } from '@/lib/types';
-import type { GenerateQuizOutput } from '@/ai/flows/generate-quiz';
+import type { FormValues, GenerateQuizOutput } from '@/lib/types';
 
 interface QuizDialogProps {
   isOpen: boolean;
