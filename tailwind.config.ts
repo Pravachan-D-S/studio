@@ -107,6 +107,10 @@ export default {
                 'background-position': 'right center'
             }
         },
+        'spin': {
+            'from': { transform: 'rotate(0deg)' },
+            'to': { transform: 'rotate(360deg)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -115,6 +119,7 @@ export default {
         'float': 'float 12s ease-in-out infinite',
         'pulse-dot': 'pulse-dot 1.4s infinite ease-in-out',
         'gradient-xy': 'gradient-xy 15s ease infinite',
+        'spin': 'spin 1s linear infinite',
       },
     },
   },
