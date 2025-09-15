@@ -7,7 +7,7 @@ import { Loader2, Send, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { formSchema, FormValues } from '@/lib/types';
-import { VidyaanIcon, UserIcon } from '@/components/icons';
+import { VidyaanIcon, UserIcon, VidyaanLogo } from '@/components/icons';
 import {
   streams,
   specializations,
@@ -259,7 +259,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
                 {msg.sender === 'ai' ? <VidyaanIcon className="w-8 h-8"/> : <UserIcon className="w-6 h-6"/>}
               </AvatarFallback>
             </Avatar>
-            <div className={cn('rounded-lg px-4 py-3 max-w-[80%] z-10', msg.sender === 'ai' ? 'bg-secondary text-secondary-foreground' : 'bg-primary text-primary-foreground')}>
+            <div className={cn('rounded-lg px-4 py-3 max-w-[80%]', msg.sender === 'ai' ? 'bg-secondary text-secondary-foreground' : 'bg-primary text-primary-foreground')}>
               <p className="text-sm">{msg.text}</p>
               {renderOptions(msg)}
             </div>
