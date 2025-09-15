@@ -5,29 +5,16 @@ import { VidyaanIcon } from './icons';
 export default function LoadingState() {
   return (
     <div className="flex flex-col items-center justify-center h-full min-h-[50vh] text-center p-4">
-      <div className="relative w-28 h-28">
-        <VidyaanIcon className="w-24 h-24 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-        <svg className="w-full h-full animate-spin" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <circle 
-                className="stroke-primary/20"
-                cx="50" 
-                cy="50" 
-                r="42" 
-                strokeWidth="8" 
-                fill="transparent" 
-            />
-            <circle 
-                className="stroke-primary"
-                cx="50" 
-                cy="50" 
-                r="42" 
-                strokeWidth="8" 
-                fill="transparent" 
-                strokeDasharray="264" 
-                strokeDashoffset="198"
-                strokeLinecap="round"
-            />
-        </svg>
+      <div className="relative w-48 h-28 flex items-center justify-center gap-2">
+        <div className="animate-pulse-bar [animation-delay:-0.4s] h-16 w-3 bg-primary/30 rounded-full"></div>
+        <div className="animate-pulse-bar [animation-delay:-0.2s] h-24 w-3 bg-primary/30 rounded-full"></div>
+        <div className="animate-pulse-bar h-28 w-3 bg-primary/30 rounded-full"></div>
+        <div className="absolute inset-0 flex items-center justify-center">
+            <VidyaanIcon className="w-20 h-20 animate-pulse-logo" />
+        </div>
+        <div className="animate-pulse-bar h-28 w-3 bg-primary/30 rounded-full"></div>
+        <div className="animate-pulse-bar [animation-delay:0.2s] h-24 w-3 bg-primary/30 rounded-full"></div>
+        <div className="animate-pulse-bar [animation-delay:0.4s] h-16 w-3 bg-primary/30 rounded-full"></div>
       </div>
       <h2 className="mt-6 text-2xl font-bold tracking-tight text-foreground">
         Generating Your Personalized Roadmap...

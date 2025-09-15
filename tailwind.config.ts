@@ -93,9 +93,13 @@ export default {
             '50%': { transform: 'translateY(-20px) rotate(180deg)' },
             '100%': { transform: 'translateY(0px) rotate(360deg)' },
         },
-        'pulse-dot': {
-          '0%, 100%': { opacity: '1', transform: 'scale(1)' },
-          '50%': { opacity: '0.5', transform: 'scale(0.75)' },
+        'pulse-logo': {
+          '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+          '50%': { transform: 'scale(0.95)', opacity: '0.8' },
+        },
+        'pulse-bar': {
+            '0%, 100%': { height: '4rem' },
+            '50%': { height: '7rem' },
         },
         'gradient-xy': {
             '0%, 100%': {
@@ -117,7 +121,8 @@ export default {
         'accordion-up': 'accordion-up 0.2s ease-out',
         'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
         'float': 'float 12s ease-in-out infinite',
-        'pulse-dot': 'pulse-dot 1.4s infinite ease-in-out',
+        'pulse-logo': 'pulse-logo 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'pulse-bar': 'pulse-bar 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'gradient-xy': 'gradient-xy 15s ease infinite',
         'spin': 'spin 1s linear infinite',
       },
