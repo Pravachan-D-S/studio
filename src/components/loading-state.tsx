@@ -51,7 +51,7 @@ export default function LoadingState() {
         </div>
       </div>
       <h2 className="mt-6 text-2xl font-bold tracking-tight text-foreground">
-        Crafting Your Future map
+        Crafting Your Future Map...
       </h2>
       <p className="mt-2 text-lg text-muted-foreground">
         Hold tight! Our AI is charting your unique path to success.
