@@ -106,20 +106,16 @@ const Checklist = ({
                     })}>
                         {item}
                     </span>
-                    {canVerify ? (
-                         isCompleted ? (
-                             <CheckCircle2 className="w-5 h-5 text-green-500" />
-                         ) : (
-                            <Button 
-                                size="sm" 
-                                variant="outline" 
-                                onClick={() => handleVerifyClick(item)}
-                                className="opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                                <HelpCircle className="w-4 h-4 mr-2" />
-                                Verify
-                            </Button>
-                         )
+                    {canVerify && !isCompleted ? (
+                        <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => handleVerifyClick(item)}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                            <HelpCircle className="w-4 h-4 mr-2" />
+                            Verify
+                        </Button>
                     ) : (
                         isSkillLocked ? (
                              <Lock className="w-4 h-4 text-muted-foreground" />
@@ -230,10 +226,13 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     }
 
     // Footer
-    const footerCanvas = await html2canvas(content.querySelector('#pdf-footer') as HTMLElement, { scale: 2 });
-    const footerHeight = (footerCanvas.height * contentWidth) / footerCanvas.width;
-    addPageIfNeeded(footerHeight + 20);
-    pdf.addImage(footerCanvas.toDataURL('image/png'), 'PNG', margin, yPos, contentWidth, footerHeight);
+    const footerEl = content.querySelector('#pdf-footer') as HTMLElement;
+    if (footerEl) {
+        const footerCanvas = await html2canvas(footerEl, { scale: 2 });
+        const footerHeight = (footerCanvas.height * contentWidth) / footerCanvas.width;
+        addPageIfNeeded(footerHeight + 20);
+        pdf.addImage(footerCanvas.toDataURL('image/png'), 'PNG', margin, yPos, contentWidth, footerHeight);
+    }
 
     pdf.save('Vidyaan-Roadmap.pdf');
     setIsGeneratingPdf(false);
@@ -363,4 +362,5 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
   );
 }
 
+    
     
