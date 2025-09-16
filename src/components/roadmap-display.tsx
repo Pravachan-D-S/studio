@@ -219,17 +219,31 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
 
     const pdf = new jsPDF('p', 'pt', 'a4');
     const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
     const margin = 40;
     const contentWidth = pdfWidth - (margin * 2);
     let yPos = margin;
 
+    const addWatermark = () => {
+      pdf.setFontSize(100);
+      pdf.setTextColor(230, 230, 230);
+      pdf.text('Vidyaan', pdfWidth / 2, pdfHeight / 2, {
+        angle: -45,
+        align: 'center',
+      });
+      pdf.setTextColor(0, 0, 0); // Reset text color
+    };
+
     const checkPageBreak = (neededHeight: number) => {
       if (yPos + neededHeight > pdf.internal.pageSize.getHeight() - margin) {
         pdf.addPage();
+        addWatermark();
         yPos = margin;
       }
     };
     
+    addWatermark();
+
     // Header
     pdf.setFontSize(24).setFont('helvetica', 'bold');
     pdf.text('Vidyaan', margin, yPos);
