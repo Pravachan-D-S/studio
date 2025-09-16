@@ -38,7 +38,7 @@ export function VidyaanLogo(props: SVGProps<SVGSVGElement>) {
           fontWeight="800"
           fill="hsl(var(--foreground))"
         >
-          Vidyaan
+          vidyaan
         </text>
       </svg>
   );
