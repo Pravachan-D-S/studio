@@ -36,7 +36,8 @@ export function QuizDialog({ isOpen, skill, studentData, onClose }: QuizDialogPr
   const [quizState, setQuizState] = useState<QuizState>('loading');
   const [answers, setAnswers] = useState<Answers>({});
   
-  const allQuestionsAnswered = Object.values(answers).filter(Boolean).length === 5;
+  const allQuestionsAnswered = quizData && Object.values(answers).filter(Boolean).length === (2 + (quizData.quizType === 'Engineering' ? 3 : (quizData.quizType === 'MBA' ? 3 : 3)));
+
 
   const fetchQuiz = async () => {
     setQuizState('loading');
@@ -95,8 +96,8 @@ export function QuizDialog({ isOpen, skill, studentData, onClose }: QuizDialogPr
       if (hasAnswered('conceptual')) otherCorrect++;
     }
     
-    // Passing rule: at least 1 MCQ correct + at least 2 other questions answered
-    if (mcqCorrect >= 1 && otherCorrect >= 2) {
+    // Passing rule: at least 1 MCQ correct + at least 1 other question answered
+    if (mcqCorrect >= 1 && otherCorrect >= 1) {
       setQuizState('passed');
     } else {
       setQuizState('failed');
