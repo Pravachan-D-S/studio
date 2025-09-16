@@ -18,53 +18,46 @@ export function UserIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function VidyaanIcon(props: SVGProps<SVGSVGElement>) {
-  // This is deprecated but kept to avoid breaking any potential lingering imports.
-  // The primary logo is VidyaanLogo.
-  return <VidyaanLogo {...props} />;
-}
-
 export function VidyaanLogo(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
-      width="549"
-      height="473"
-      viewBox="0 0 549 473"
+      width="200"
+      height="150"
+      viewBox="0 0 200 150"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
       <defs>
-        <linearGradient id="capGradient" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#0082C8" />
-          <stop offset="100%" stopColor="#FFE082" />
+        <linearGradient id="gradCap" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#708090" />
+          <stop offset="100%" stopColor="#2F4F4F" />
         </linearGradient>
-        <linearGradient id="bookGradient" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#005B96" />
-          <stop offset="100%" stopColor="#003F5C" />
+        <linearGradient id="gradTassel" x1="0" y1="0" x2="1" y2="0">
+           <stop offset="0%" stopColor="#E6E6FA" />
+           <stop offset="100%" stopColor="#B0C4DE" />
         </linearGradient>
       </defs>
-      <polygon
-        points="275,70 370,110 275,150 180,110"
-        fill="url(#capGradient)"
-      />
-      <rect x="235" y="140" width="80" height="40" rx="20" fill="#005B96" />
-      <rect x="355" y="110" width="20" height="50" rx="10" fill="#FFE082" />
-      <circle cx="365" cy="160" r="8" fill="#FFE082" />
-      <path
-        d="M185 170 Q275 210 275 300 Q185 260 185 170 Z"
-        fill="url(#bookGradient)"
-      />
-      <path
-        d="M365 170 Q275 210 275 300 Q365 260 365 170 Z"
-        fill="url(#bookGradient)"
-      />
-      <text
-        x="75"
-        y="410"
-        fontFamily="Arial, Helvetica, sans-serif"
-        fontSize="110"
-        fill="#005B96"
+      
+      {/* Mortarboard */}
+      <path d="M10 50 L100 10 L190 50 L100 90 Z" fill="url(#gradCap)" />
+
+      {/* Cap base */}
+      <path d="M30 55 C 30 45, 170 45, 170 55 L 160 75 L 40 75 Z" fill="#2F4F4F" />
+
+      {/* Tassel */}
+      <line x1="100" y1="10" x2="100" y2="40" stroke="url(#gradTassel)" strokeWidth="3" />
+      <circle cx="100" cy="10" r="4" fill="#E6E6FA" />
+      <path d="M95 40 L105 40 L100 55 Z" fill="url(#gradTassel)" />
+
+      {/* Text */}
+      <text 
+        x="100" 
+        y="130" 
+        fontFamily="Inter, Arial, sans-serif"
+        fontSize="30" 
+        fill="#708090"
+        textAnchor="middle"
         fontWeight="bold"
       >
         Vidyaan
