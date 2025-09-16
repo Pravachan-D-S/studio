@@ -21,22 +21,25 @@ export function UserIcon(props: SVGProps<SVGSVGElement>) {
 export function VidyaanLogo(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
-        width="550"
-        height="470"
-        viewBox="0 0 120 40"
+        width="150"
+        height="100"
+        viewBox="0 0 100 80"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         {...props}
       >
-        <path d="M10 20L20 15L30 20L20 25L10 20Z" fill="hsl(var(--primary))" />
-        <path d="M20 25L30 20L40 25L30 30L20 25Z" fill="hsl(var(--primary))" opacity="0.7" />
+        <g transform="translate(25, 0)">
+            <path d="M10 20L20 15L30 20L20 25L10 20Z" fill="hsl(var(--primary))" />
+            <path d="M20 25L30 20L40 25L30 30L20 25Z" fill="hsl(var(--primary))" opacity="0.7" />
+        </g>
         <text
           x="50"
-          y="28"
+          y="65"
           fontFamily="Inter, Arial, sans-serif"
           fontSize="20"
           fontWeight="800"
           fill="hsl(var(--foreground))"
+          textAnchor="middle"
         >
           vidyaan
         </text>
