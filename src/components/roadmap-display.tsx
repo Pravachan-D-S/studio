@@ -23,12 +23,15 @@ import {
   Award,
   HelpCircle,
   CheckCircle2,
+  Check,
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { QuizDialog } from './quiz-dialog';
 import { RoadmapPDF } from './roadmap-pdf';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 
 interface RoadmapDisplayProps {
   data: GeneratePersonalizedRoadmapOutput;
@@ -53,7 +56,22 @@ const SectionCard = ({ title, icon: Icon, children, className }: { title: string
   </Card>
 );
 
-const Checklist = ({ 
+const SimpleChecklist = ({ items, sectionId, onToggle, completedItems }: { items: string[], sectionId: string, onToggle: (id: string) => void, completedItems: Set<string> }) => (
+    <ul className="space-y-3">
+        {items.map((item, index) => {
+            const id = `${sectionId}-${index}`;
+            const isCompleted = completedItems.has(id);
+            return (
+                <li key={id} className="flex items-center gap-3">
+                    <Checkbox id={id} checked={isCompleted} onCheckedChange={() => onToggle(id)} />
+                    <Label htmlFor={id} className={cn('flex-1 cursor-pointer', { 'line-through text-muted-foreground': isCompleted, 'text-foreground': !isCompleted })}>{item}</Label>
+                </li>
+            )
+        })}
+    </ul>
+);
+
+const LockedChecklist = ({ 
   items, 
   sectionId, 
   completedItems,
@@ -157,11 +175,23 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     ...sections.toolsToMaster.map((_, i) => `toolsToMaster-${i}`),
   ], [sections]);
 
-  const totalChecklistItems = allSkills.length;
+  const totalChecklistItems = useMemo(() => allSkills.length, [allSkills]);
   
   const unlockedItemIndex = useMemo(() => {
     return allSkills.findIndex(id => !completedItems.has(id));
   }, [completedItems, allSkills]);
+  
+  const handleSimpleChecklistToggle = (itemId: string) => {
+    setCompletedItems(prev => {
+        const newSet = new Set(prev);
+        if (newSet.has(itemId)) {
+            newSet.delete(itemId);
+        } else {
+            newSet.add(itemId);
+        }
+        return newSet;
+    });
+  };
 
   const handleQuizComplete = (itemId: string, skillName: string) => {
     setCompletedItems(prev => {
@@ -242,10 +272,15 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
   const progressPercentage = totalChecklistItems > 0 ? (completedItems.size / totalChecklistItems) * 100 : 0;
 
   const getNextMilestone = () => {
-    if (unlockedItemIndex === -1) {
-        return "You've completed all milestones!";
+    if (unlockedItemIndex === -1 && totalChecklistItems > 0) {
+        return "You've completed all verifiable skills!";
+    }
+    if (totalChecklistItems === 0) {
+        return "No verifiable skills in this roadmap.";
     }
     const nextId = allSkills[unlockedItemIndex];
+    if (!nextId) return "All skills verified!";
+
     const [section, indexStr] = nextId.split('-');
     const index = parseInt(indexStr, 10);
     // @ts-ignore
@@ -298,7 +333,7 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between gap-2">
-             <span>Progress Tracker</span>
+             <span>Progress Tracker (Verifiable Skills)</span>
              {getProgressBadge()}
           </CardTitle>
         </CardHeader>
@@ -327,15 +362,24 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
           return (
             <SectionCard key={section.id} title={section.title} icon={section.icon} className={section.className}>
               {section.items ? (
-                <Checklist 
-                    items={section.items} 
-                    sectionId={section.id} 
-                    completedItems={completedItems} 
-                    studentData={studentData}
-                    onQuizComplete={handleQuizComplete}
-                    isLocked={section.isLocked}
-                    unlockedIndex={sectionUnlockedIndex}
-                />
+                 section.isLocked ? (
+                    <LockedChecklist 
+                        items={section.items} 
+                        sectionId={section.id} 
+                        completedItems={completedItems} 
+                        studentData={studentData}
+                        onQuizComplete={handleQuizComplete}
+                        isLocked={section.isLocked}
+                        unlockedIndex={sectionUnlockedIndex}
+                    />
+                 ) : (
+                    <SimpleChecklist
+                        items={section.items}
+                        sectionId={section.id}
+                        completedItems={completedItems}
+                        onToggle={handleSimpleChecklistToggle}
+                    />
+                 )
               ) : (
                  section.id === 'motivationalNudge' ? (
                      <p className="italic">"{section.content}"</p>
@@ -361,6 +405,3 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     </div>
   );
 }
-
-    
-    
