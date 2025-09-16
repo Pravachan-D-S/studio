@@ -26,7 +26,7 @@ export type GeneratePersonalizedRoadmapInput = z.infer<typeof GeneratePersonaliz
 
 const GeneratePersonalizedRoadmapOutputSchema = z.object({
   motivationalNudge: z.string().describe('A short, encouraging message for the student.'),
-  skillRoadmap: z.string().describe('A list of technical and soft skills to learn, presented as a newline-separated list.'),
+  skillRoadmap: z.string().describe('A list of technical skills to learn, presented as a newline-separated list.'),
   toolsToMaster: z.string().describe('A list of programming languages, frameworks, IDEs, and libraries to master, presented as a newline-separated list.'),
   timeline: z.string().describe('A realistic plan based on the student’s program duration and career goal, estimating how many years it might take to reach the goal. It should be tailored to the student\'s current year of study.'),
   projects: z.string().describe('A list of 3-4 projects with increasing difficulty, suitable for a GitHub portfolio. Each project should be a single line. The projects should be appropriate for the student\'s current year of study.'),
@@ -198,13 +198,13 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
   **Roadmap Output:**
 
   1.  **Motivational Nudge:** A short, uplifting message to get the student excited.
-  2.  **Skill Roadmap:** A list of essential technical and soft skills based on the Knowledge Map.
+  2.  **Skill Roadmap:** A list of essential technical skills based on the Knowledge Map.
   3.  **Tools to Master:** Specific programming languages, frameworks, and libraries from the Knowledge Map.
   4.  **Estimated Timeline:** An estimation of how many years it will take to achieve the career goal, based on the Knowledge Map and **considering their current year of study**.
   5.  **Project Ideas:** 3-4 project ideas with increasing difficulty from the Knowledge Map, **appropriate for their current year**.
   6.  **Learning Resources:** Suggest top free and paid courses, books, and communities from the Knowledge Map.
   7.  **Career Growth:** Describe potential career growth and future opportunities for the chosen path.
-  8.  **Resume & Interview Prep:** A brief resume outline and 3-5 common interview questions.
+  8.  **Resume & Interview Prep:** A brief resume outline and 3-5 common interview questions. Do not include 'Technical Skills' or 'Soft Skills' in the resume outline.
   9.  **Job Market Insights:** Insights on demand and salary ranges from the Knowledge Map.`,
 });
 
@@ -220,3 +220,5 @@ const generatePersonalizedRoadmapFlow = ai.defineFlow(
     return output!;
   }
 );
+
+    
