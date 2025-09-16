@@ -242,11 +242,9 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
 
   return (
     <div className="flex flex-col h-screen bg-background text-foreground overflow-hidden">
-      <header className="flex items-center p-4 border-b">
-        <VidyaanLogo className="h-10 w-auto" />
-      </header>
-
-      <div className="flex-1 overflow-y-auto p-4 space-y-6 relative">
+      <div className="flex-1 overflow-y-auto p-4 space-y-6 relative pt-16">
+        <VidyaanLogo className="h-10 w-auto absolute top-4 left-4" />
+        
         {/* Animated Background Shapes */}
         {currentQuestionIndex >= 2 && <AnimatedShape className="w-48 h-48 top-20 left-10 bg-primary" delay="0s" />}
         {currentQuestionIndex >= 4 && <AnimatedShape className="w-32 h-32 bottom-24 right-5 bg-sky-300" delay="2s" />}
