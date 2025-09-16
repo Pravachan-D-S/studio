@@ -19,7 +19,7 @@ import {
   BarChart,
   Download,
   Loader2,
-  Lock,
+  Unlock,
   Award,
   HelpCircle,
   CheckCircle2,
@@ -75,22 +75,18 @@ const SimpleChecklist = ({ items, sectionId, onToggle, completedItems }: { items
     </ul>
 );
 
-const LockedChecklist = ({ 
+const UnlockedChecklist = ({ 
   items, 
   sectionId, 
   completedItems,
   studentData,
   onQuizComplete,
-  isLocked,
-  unlockedIndex,
 }: { 
   items: string[], 
   sectionId: string, 
   completedItems: Set<string>,
   studentData: FormValues,
   onQuizComplete: (skillId: string, skillName: string) => void,
-  isLocked: boolean,
-  unlockedIndex: number,
 }) => {
     const [quizSkill, setQuizSkill] = useState<string | null>(null);
     const [isQuizOpen, setIsQuizOpen] = useState(false);
@@ -115,20 +111,18 @@ const LockedChecklist = ({
           {items.map((item, index) => {
             const id = `${sectionId}-${index}`;
             const isCompleted = completedItems.has(id);
-            const canVerify = isLocked ? index === unlockedIndex : !isCompleted;
-            const isSkillLocked = isLocked && index > unlockedIndex;
+            const canVerify = !isCompleted;
 
             return (
               <li key={id} className="flex items-start gap-3 group">
                  <div className="flex items-center w-full justify-between">
                     <span className={cn('flex-1', {
                         'line-through text-green-600': isCompleted,
-                        'text-foreground': !isCompleted && !isSkillLocked,
-                        'text-muted-foreground': isSkillLocked,
+                        'text-foreground': !isCompleted
                     })}>
                         {item}
                     </span>
-                    {canVerify && !isCompleted ? (
+                    {canVerify ? (
                         <Button 
                             size="sm" 
                             variant="outline" 
@@ -139,11 +133,7 @@ const LockedChecklist = ({
                             Verify
                         </Button>
                     ) : (
-                        isSkillLocked ? (
-                             <Lock className="w-4 h-4 text-muted-foreground" />
-                        ) : isCompleted ? (
-                             <CheckCircle2 className="w-5 h-5 text-green-500" />
-                        ) : null
+                         <CheckCircle2 className="w-5 h-5 text-green-500" />
                     )}
                  </div>
               </li>
@@ -170,15 +160,8 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
   const [user] = useAuthState(auth);
 
   const sections = useMemo(() => {
-    const skillRoadmap = parseList(data.skillRoadmap).filter(
-      (skill) =>
-        !['Problem-solving and analytical thinking', 'Attention to detail', 'Communication skills (for reporting and teamwork)'].includes(
-          skill
-        )
-    );
-    const resumeInterviewPrep = parseList(data.resumeInterviewPrep).filter(
-        (item) => !item.toLowerCase().includes('technical skills') && !item.toLowerCase().includes('soft skills')
-      );
+    const skillRoadmap = parseList(data.skillRoadmap);
+    const resumeInterviewPrep = parseList(data.resumeInterviewPrep);
 
     return {
       skillRoadmap,
@@ -188,16 +171,12 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     };
   }, [data]);
 
-  const allSkills = useMemo(() => [
+  const verifiableSkills = useMemo(() => [
     ...sections.skillRoadmap.map((_, i) => `skillRoadmap-${i}`),
     ...sections.toolsToMaster.map((_, i) => `toolsToMaster-${i}`),
   ], [sections]);
 
-  const totalChecklistItems = useMemo(() => allSkills.length, [allSkills]);
-  
-  const unlockedItemIndex = useMemo(() => {
-    return allSkills.findIndex(id => !completedItems.has(id));
-  }, [completedItems, allSkills]);
+  const totalChecklistItems = useMemo(() => verifiableSkills.length, [verifiableSkills]);
   
   const handleSimpleChecklistToggle = (itemId: string) => {
     setCompletedItems(prev => {
@@ -233,7 +212,6 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     const margin = 40;
     const contentWidth = pdfWidth - margin * 2;
 
-    const sections = content.querySelectorAll('[data-pdf-section]');
     let yPos = margin;
 
     const addPageIfNeeded = (elementHeight: number) => {
@@ -242,44 +220,16 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
             yPos = margin;
         }
     };
-
-    // Header
-    const headerCanvas = await html2canvas(content.querySelector('#pdf-header') as HTMLElement, { scale: 2 });
-    const headerImgData = headerCanvas.toDataURL('image/png');
-    const headerHeight = (headerCanvas.height * contentWidth) / headerCanvas.width;
-    addPageIfNeeded(headerHeight);
-    pdf.addImage(headerImgData, 'PNG', margin, yPos, contentWidth, headerHeight);
-    yPos += headerHeight + 20;
-
-    // Motivational Nudge
-    const nudgeEl = content.querySelector('#pdf-nudge') as HTMLElement;
-    if (nudgeEl) {
-        const nudgeCanvas = await html2canvas(nudgeEl, { scale: 2 });
-        const nudgeHeight = (nudgeCanvas.height * contentWidth) / nudgeCanvas.width;
-        addPageIfNeeded(nudgeHeight + 20);
-        pdf.addImage(nudgeCanvas.toDataURL('image/png'), 'PNG', margin, yPos, contentWidth, nudgeHeight);
-        yPos += nudgeHeight + 20;
-    }
     
-    // Main content sections
-    for (const section of Array.from(sections)) {
-        const canvas = await html2canvas(section as HTMLElement, { scale: 2 });
+    for (const child of Array.from(content.children) as HTMLElement[]) {
+        const canvas = await html2canvas(child, { scale: 2 });
         const imgData = canvas.toDataURL('image/png');
-        const sectionHeight = (canvas.height * contentWidth) / canvas.width;
+        const elementHeight = (canvas.height * contentWidth) / canvas.width;
 
-        addPageIfNeeded(sectionHeight + 10);
+        addPageIfNeeded(elementHeight + 10);
         
-        pdf.addImage(imgData, 'PNG', margin, yPos, contentWidth, sectionHeight);
-        yPos += sectionHeight + 10; // Add some padding between sections
-    }
-
-    // Footer
-    const footerEl = content.querySelector('#pdf-footer') as HTMLElement;
-    if (footerEl) {
-        const footerCanvas = await html2canvas(footerEl, { scale: 2 });
-        const footerHeight = (footerCanvas.height * contentWidth) / footerCanvas.width;
-        addPageIfNeeded(footerHeight + 20);
-        pdf.addImage(footerCanvas.toDataURL('image/png'), 'PNG', margin, yPos, contentWidth, footerHeight);
+        pdf.addImage(imgData, 'PNG', margin, yPos, contentWidth, elementHeight);
+        yPos += elementHeight + 10;
     }
 
     pdf.save('Vidyaan-Roadmap.pdf');
@@ -288,23 +238,21 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
 
 
   const progressPercentage = totalChecklistItems > 0 ? (completedItems.size / totalChecklistItems) * 100 : 0;
-
+  
   const getNextMilestone = () => {
-    if (unlockedItemIndex === -1 && totalChecklistItems > 0) {
-        return "You've completed all verifiable skills!";
+    if (totalChecklistItems > 0 && completedItems.size === totalChecklistItems) {
+      return "You've verified all skills!";
     }
-    if (totalChecklistItems === 0) {
-        return "No verifiable skills in this roadmap.";
-    }
-    const nextId = allSkills[unlockedItemIndex];
-    if (!nextId) return "All skills verified!";
-
-    const [section, indexStr] = nextId.split('-');
+    const nextSkillId = verifiableSkills.find(id => !completedItems.has(id));
+    if (!nextSkillId) return "No verifiable skills to track.";
+    
+    const [section, indexStr] = nextSkillId.split('-');
     const index = parseInt(indexStr, 10);
     // @ts-ignore
     const itemText = sections[section][index];
     return itemText.length > 40 ? itemText.substring(0, 40) + '...' : itemText;
-  }
+  };
+
 
   const getProgressBadge = () => {
     const percentage = Math.round(progressPercentage);
@@ -319,18 +267,15 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
 
   const sectionsConfig = [
     { id: 'motivationalNudge', title: 'Motivational Nudge', icon: Award, content: data.motivationalNudge, className: 'lg:col-span-3' },
-    { id: 'skillRoadmap', title: 'Skill Roadmap', icon: List, items: sections.skillRoadmap, className: 'lg:col-span-1', isLocked: true },
-    { id: 'toolsToMaster', title: 'Tools to Master', icon: Wrench, items: sections.toolsToMaster, className: 'lg:col-span-1', isLocked: true },
+    { id: 'skillRoadmap', title: 'Skill Roadmap', icon: List, items: sections.skillRoadmap, className: 'lg:col-span-1', isVerifiable: true },
+    { id: 'toolsToMaster', title: 'Tools to Master', icon: Wrench, items: sections.toolsToMaster, className: 'lg:col-span-1', isVerifiable: true },
     { id: 'timeline', title: 'Estimated Timeline', icon: Calendar, content: data.timeline, className: 'lg:col-span-1' },
-    { id: 'projects', title: 'Project Ideas', icon: FlaskConical, items: sections.projects, className: 'lg:col-span-3', isLocked: false },
+    { id: 'projects', title: 'Project Ideas', icon: FlaskConical, items: sections.projects, className: 'lg:col-span-3', isVerifiable: false },
     { id: 'resources', title: 'Learning Resources', icon: Lightbulb, content: data.resources, className: 'lg:col-span-2' },
     { id: 'careerGrowth', title: 'Career Growth', icon: TrendingUp, content: data.careerGrowth, className: 'lg:col-span-1' },
-    { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', icon: Briefcase, items: sections.resumeInterviewPrep, className: 'lg:col-span-2', isLocked: false },
+    { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', icon: Briefcase, items: sections.resumeInterviewPrep, className: 'lg:col-span-2', isVerifiable: false },
     { id: 'jobMarketInsights', title: 'Job Market Insights', icon: BarChart, content: data.jobMarketInsights, className: 'lg:col-span-1' },
   ];
-  
-  const unlockedSectionName = allSkills[unlockedItemIndex] ? allSkills[unlockedItemIndex].split('-')[0] : null;
-
 
   return (
     <div className="space-y-8 animate-in fade-in-50 duration-500">
@@ -373,28 +318,19 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
       </Card>
       
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sectionsConfig.map((section, idx) => {
+        {sectionsConfig.map((section) => {
           if ((!section.items || section.items.length === 0) && !section.content) return null;
-           
-           let sectionUnlockedIndex = -1;
-           if (section.id === 'skillRoadmap' && unlockedSectionName === 'skillRoadmap') {
-               sectionUnlockedIndex = unlockedItemIndex;
-           } else if (section.id === 'toolsToMaster' && unlockedSectionName === 'toolsToMaster') {
-               sectionUnlockedIndex = unlockedItemIndex - sections.skillRoadmap.length;
-           }
 
           return (
             <SectionCard key={section.id} title={section.title} icon={section.icon} className={section.className}>
               {section.items ? (
-                 section.isLocked ? (
-                    <LockedChecklist 
+                 section.isVerifiable ? (
+                    <UnlockedChecklist 
                         items={section.items} 
                         sectionId={section.id} 
                         completedItems={completedItems} 
                         studentData={studentData}
                         onQuizComplete={handleQuizComplete}
-                        isLocked={section.isLocked}
-                        unlockedIndex={sectionUnlockedIndex}
                     />
                  ) : (
                     <SimpleChecklist
