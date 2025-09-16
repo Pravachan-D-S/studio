@@ -24,6 +24,7 @@ import {
   HelpCircle,
   CheckCircle2,
   Check,
+  Save,
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -32,6 +33,9 @@ import { RoadmapPDF } from './roadmap-pdf';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '@/lib/firebase';
+import { SaveRoadmapDialog } from './save-roadmap-dialog';
 
 interface RoadmapDisplayProps {
   data: GeneratePersonalizedRoadmapOutput;
@@ -161,14 +165,28 @@ const LockedChecklist = ({
 export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDisplayProps) {
   const [completedItems, setCompletedItems] = useState<Set<string>>(new Set());
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
   const pdfContainerRef = useRef<HTMLDivElement>(null);
+  const [user] = useAuthState(auth);
 
-  const sections = useMemo(() => ({
-    skillRoadmap: parseList(data.skillRoadmap),
-    toolsToMaster: parseList(data.toolsToMaster),
-    projects: parseList(data.projects),
-    resumeInterviewPrep: parseList(data.resumeInterviewPrep),
-  }), [data]);
+  const sections = useMemo(() => {
+    const skillRoadmap = parseList(data.skillRoadmap).filter(
+      (skill) =>
+        !['Problem-solving and analytical thinking', 'Attention to detail', 'Communication skills (for reporting and teamwork)'].includes(
+          skill
+        )
+    );
+    const resumeInterviewPrep = parseList(data.resumeInterviewPrep).filter(
+        (item) => !item.toLowerCase().includes('technical skills') && !item.toLowerCase().includes('soft skills')
+      );
+
+    return {
+      skillRoadmap,
+      toolsToMaster: parseList(data.toolsToMaster),
+      projects: parseList(data.projects),
+      resumeInterviewPrep,
+    };
+  }, [data]);
 
   const allSkills = useMemo(() => [
     ...sections.skillRoadmap.map((_, i) => `skillRoadmap-${i}`),
@@ -322,6 +340,12 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
           <p className="text-muted-foreground">Here is your AI-generated path to becoming a pro.</p>
         </div>
         <div className="flex items-center gap-2">
+            {user && (
+                <Button onClick={() => setIsSaveDialogOpen(true)}>
+                    <Save />
+                    Save Roadmap
+                </Button>
+            )}
             <Button onClick={handleDownloadPdf} disabled={isGeneratingPdf}>
                 {isGeneratingPdf ? <Loader2 className="animate-spin" /> : <Download />}
                 {isGeneratingPdf ? 'Generating...' : 'Download as PDF'}
@@ -402,8 +426,16 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
       <div className="fixed top-[-10000px] left-[-10000px] z-[-1]">
         <RoadmapPDF data={data} studentData={studentData} innerRef={pdfContainerRef} />
       </div>
+
+       {user && (
+          <SaveRoadmapDialog
+              isOpen={isSaveDialogOpen}
+              onClose={() => setIsSaveDialogOpen(false)}
+              roadmapData={data}
+              studentData={studentData}
+              userId={user.uid}
+            />
+        )}
     </div>
   );
 }
-
-    
