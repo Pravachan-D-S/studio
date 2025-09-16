@@ -7,7 +7,7 @@ import { Loader2, Send, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { formSchema, FormValues } from '@/lib/types';
-import { VidyaanIcon, UserIcon, VidyaanLogo } from '@/components/icons';
+import { UserIcon, VidyaanLogo } from '@/components/icons';
 import {
   streams,
   specializations,
@@ -256,7 +256,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
           <div key={index} className={cn('flex items-start gap-3 animate-fade-in-up', msg.sender === 'user' ? 'flex-row-reverse' : '')}>
             <Avatar className="w-8 h-8">
               <AvatarFallback className="bg-transparent">
-                {msg.sender === 'ai' ? <VidyaanIcon className="w-8 h-8"/> : <UserIcon className="w-6 h-6"/>}
+                {msg.sender === 'ai' ? <VidyaanLogo className="w-8 h-8" /> : <UserIcon className="w-6 h-6"/>}
               </AvatarFallback>
             </Avatar>
             <div className={cn('rounded-lg px-4 py-3 max-w-[80%]', msg.sender === 'ai' ? 'bg-secondary text-secondary-foreground' : 'bg-primary text-primary-foreground')}>
@@ -268,7 +268,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
          {isLoading && isComplete && (
             <div className="flex justify-center items-center gap-3 animate-fade-in-up">
                  <Avatar className="w-8 h-8">
-                    <AvatarFallback className="bg-transparent"><VidyaanIcon className="w-8 h-8"/></AvatarFallback>
+                    <AvatarFallback className="bg-transparent"><VidyaanLogo className="w-8 h-8"/></AvatarFallback>
                 </Avatar>
                 <Loader2 className="animate-spin text-primary" />
             </div>

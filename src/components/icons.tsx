@@ -18,84 +18,57 @@ export function UserIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-// Deprecated: VidyaanIcon is no longer used and is replaced by the new VidyaanLogo.
 export function VidyaanIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      width="32"
-      height="32"
-      viewBox="0 0 32 32"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-        <defs>
-          <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="hsl(var(--primary))" />
-            <stop offset="100%" stopColor="hsl(var(--chart-2))" />
-          </linearGradient>
-        </defs>
-        {/* Book shape */}
-        <path
-          d="M4 24V6C4 5.44772 4.44772 5 5 5H27C27.5523 5 28 5.44772 28 6V24C28 24.5523 27.5523 25 27 25H5C4.44772 25 4 24.5523 4 24Z"
-          fill="hsl(var(--primary))"
-          fillOpacity="0.1"
-        />
-        <path
-          d="M4 24V6C4 5.44772 4.44772 5 5 5H16V25H5C4.44772 25 4 24.5523 4 24Z"
-          fill="hsl(var(--primary))"
-          fillOpacity="0.2"
-        />
-        <path
-          d="M16 5V25H27C27.5523 25 28 24.5523 28 24V6C28 5.44772 27.5523 5 27 5H16Z"
-          fill="hsl(var(--primary))"
-          fillOpacity="0.3"
-        />
-        {/* Graduation cap */}
-        <path
-          d="M2 14L16 21L30 14L16 7L2 14Z"
-          fill="url(#logo-grad)"
-        />
-        <path d="M13 20V26H19V20" stroke="hsl(var(--primary))" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-  );
+  // This is deprecated but kept to avoid breaking any potential lingering imports.
+  // The primary logo is VidyaanLogo.
+  return <VidyaanLogo {...props} />;
 }
-
 
 export function VidyaanLogo(props: SVGProps<SVGSVGElement>) {
   return (
-    <div className="flex items-center justify-center font-headline">
-       <svg
-        {...props}
-        viewBox="0 0 150 100"
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-16 w-auto"
+    <svg
+      width="549"
+      height="473"
+      viewBox="0 0 549 473"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <defs>
+        <linearGradient id="capGradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#0082C8" />
+          <stop offset="100%" stopColor="#FFE082" />
+        </linearGradient>
+        <linearGradient id="bookGradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#005B96" />
+          <stop offset="100%" stopColor="#003F5C" />
+        </linearGradient>
+      </defs>
+      <polygon
+        points="275,70 370,110 275,150 180,110"
+        fill="url(#capGradient)"
+      />
+      <rect x="235" y="140" width="80" height="40" rx="20" fill="#005B96" />
+      <rect x="355" y="110" width="20" height="50" rx="10" fill="#FFE082" />
+      <circle cx="365" cy="160" r="8" fill="#FFE082" />
+      <path
+        d="M185 170 Q275 210 275 300 Q185 260 185 170 Z"
+        fill="url(#bookGradient)"
+      />
+      <path
+        d="M365 170 Q275 210 275 300 Q365 260 365 170 Z"
+        fill="url(#bookGradient)"
+      />
+      <text
+        x="75"
+        y="410"
+        fontFamily="Arial, Helvetica, sans-serif"
+        fontSize="110"
+        fill="#005B96"
+        fontWeight="bold"
       >
-        <defs>
-          <linearGradient id="cap-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="hsl(var(--primary))" />
-            <stop offset="100%" stopColor="hsl(var(--chart-2))" />
-          </linearGradient>
-        </defs>
-
-        {/* Abstract student figure */}
-        <circle cx="75" cy="25" r="10" fill="url(#cap-grad)" />
-        <path d="M60 40 Q 75 55, 90 40" stroke="hsl(var(--primary))" strokeWidth="4" fill="none" strokeLinecap="round" />
-
-        {/* Open book shape */}
-        <path
-          d="M20 90 C 40 70, 110 70, 130 90 L 130 85 C 110 65, 40 65, 20 85 Z"
-          fill="hsl(var(--primary))"
-          fillOpacity="0.8"
-        />
-         <path
-          d="M25 88 C 45 72, 105 72, 125 88"
-          fill="none"
-          stroke="hsl(var(--background))"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
-      </svg>
-    </div>
+        Vidyaan
+      </text>
+    </svg>
   );
 }
