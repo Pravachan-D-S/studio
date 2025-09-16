@@ -77,24 +77,26 @@ export function QuizDialog({ isOpen, skill, studentData, onClose }: QuizDialogPr
     if (answers['mcq-0'] === data.mcqs[0].correctAnswer) mcqCorrect++;
     if (answers['mcq-1'] === data.mcqs[1].correctAnswer) mcqCorrect++;
 
-    // Check other questions (simple truthy check for now)
+    // For open-ended questions, we'll just check if an answer was provided.
+    // In a real application, this would need a more sophisticated grading system.
+    const hasAnswered = (key: string) => !!answers[key]?.trim();
+
     if (quizType === 'Engineering') {
-      if (answers['coding']) otherCorrect++;
-      if (answers['error']) otherCorrect++;
-      if (answers['conceptual']) otherCorrect++;
+      if (hasAnswered('coding')) otherCorrect++;
+      if (hasAnswered('error')) otherCorrect++;
+      if (hasAnswered('conceptual')) otherCorrect++;
     } else if (quizType === 'MBA') {
-      if (answers['case']) otherCorrect++;
-      if (answers['strategy']) otherCorrect++;
-      if (answers['conceptual']) otherCorrect++;
+      if (hasAnswered('case')) otherCorrect++;
+      if (hasAnswered('strategy')) otherCorrect++;
+      if (hasAnswered('conceptual')) otherCorrect++;
     } else { // Non-Tech
-      if (answers['practical']) otherCorrect++;
-      if (answers['error']) otherCorrect++;
-      if (answers['conceptual']) otherCorrect++;
+      if (hasAnswered('practical')) otherCorrect++;
+      if (hasAnswered('error')) otherCorrect++;
+      if (hasAnswered('conceptual')) otherCorrect++;
     }
     
-    // Passing rule: at least 1 correct from first 2 + at least 1 correct from last 3
-    // Since we can't auto-grade open-ended questions, we'll simplify: 1 MCQ + 1 other submitted
-    if (mcqCorrect >= 1 && Object.keys(answers).length >= 3) {
+    // Passing rule: at least 1 MCQ correct + at least 2 other questions answered
+    if (mcqCorrect >= 1 && otherCorrect >= 2) {
       setQuizState('passed');
     } else {
       setQuizState('failed');
@@ -128,7 +130,7 @@ export function QuizDialog({ isOpen, skill, studentData, onClose }: QuizDialogPr
 
     return (
         <div className="space-y-6 max-h-[70vh] overflow-y-auto p-1 pr-4">
-            {renderQuestion('mcq-0', 'Question 1: MCQ', 
+            {renderQuestion('mcq-0', 'Question 1: Basic Concept (MCQ)', 
                 <>
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{data.mcqs[0].question}</ReactMarkdown>
                     <RadioGroup onValueChange={(val) => handleAnswerChange('mcq-0', val)} value={answers['mcq-0']} className="mt-2 space-y-1">
@@ -142,7 +144,7 @@ export function QuizDialog({ isOpen, skill, studentData, onClose }: QuizDialogPr
                 </>
             )}
             <Separator />
-            {renderQuestion('mcq-1', 'Question 2: MCQ', 
+            {renderQuestion('mcq-1', 'Question 2: Application-based MCQ', 
                 <>
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{data.mcqs[1].question}</ReactMarkdown>
                     <RadioGroup onValueChange={(val) => handleAnswerChange('mcq-1', val)} value={answers['mcq-1']} className="mt-2 space-y-1">
@@ -159,10 +161,10 @@ export function QuizDialog({ isOpen, skill, studentData, onClose }: QuizDialogPr
 
             {quizType === 'Engineering' && (
                 <>
-                {renderQuestion('coding', 'Question 3: Coding Challenge', data.codingQuestion)}
-                <Textarea placeholder="Write your code here..." onChange={(e) => handleAnswerChange('coding', e.target.value)} value={answers['coding'] || ''} rows={6} />
+                {renderQuestion('coding', 'Question 3: Problem Solving', data.codingQuestion)}
+                <Textarea placeholder="Write your solution here..." onChange={(e) => handleAnswerChange('coding', e.target.value)} value={answers['coding'] || ''} rows={6} />
                 <Separator />
-                {renderQuestion('error', 'Question 4: Find the Bug', data.errorFindingQuestion)}
+                {renderQuestion('error', 'Question 4: Debugging Challenge', data.errorFindingQuestion)}
                 <Textarea placeholder="Describe the error and your fix..." onChange={(e) => handleAnswerChange('error', e.target.value)} value={answers['error'] || ''} />
                 <Separator />
                 {renderQuestion('conceptual', 'Question 5: Conceptual Question', data.conceptualQuestion)}
@@ -188,7 +190,7 @@ export function QuizDialog({ isOpen, skill, studentData, onClose }: QuizDialogPr
                 {renderQuestion('practical', 'Question 3: Practical Question', data.practicalQuestion)}
                 <Textarea placeholder="Describe your answer..." onChange={(e) => handleAnswerChange('practical', e.target.value)} value={answers['practical'] || ''} rows={4}/>
                 <Separator />
-                {renderQuestion('error', 'Question 4: Error Identification', data.errorIdentificationQuestion)}
+                {renderQuestion('error', 'Question 4: Mistake Spotting', data.errorIdentificationQuestion)}
                 <Textarea placeholder="Identify and explain the error..." onChange={(e) => handleAnswerChange('error', e.target.value)} value={answers['error'] || ''} />
                 <Separator />
                 {renderQuestion('conceptual', 'Question 5: Conceptual Question', data.conceptualQuestion)}
@@ -245,7 +247,7 @@ export function QuizDialog({ isOpen, skill, studentData, onClose }: QuizDialogPr
 
         <DialogFooter className="mt-6">
           {quizState === 'ready' && <Button onClick={handleSubmit} disabled={!allQuestionsAnswered}>Submit Quiz</Button>}
-          {quizState === 'passed' && <Button onClick={() => onClose(true, skill)}>Close</Button>}
+          {quizState === 'passed' && <Button onClick={() => onClose(true, skill)}>Next Skill</Button>}
           {quizState === 'failed' && (
             <div className="flex gap-2">
                 <Button variant="outline" onClick={() => onClose(false, skill)}>Close</Button>

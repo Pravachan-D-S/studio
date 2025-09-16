@@ -79,24 +79,38 @@ export const RoadmapPDF = ({ data, studentData, innerRef }: { data: GeneratePers
 
     return (
         <div ref={innerRef} id="pdf-content" className="p-8 bg-white text-gray-800" style={{ width: '210mm' }}>
-            {/* This content is for html2canvas to render */}
+            <style>{`
+              @media print {
+                html, body {
+                  width: 210mm;
+                  height: 297mm;
+                }
+                @page {
+                  size: A4;
+                  margin: 10mm;
+                }
+                .break-inside-avoid {
+                  page-break-inside: avoid;
+                }
+              }
+            `}</style>
             <div className="flex items-center justify-between pb-4 border-b mb-6">
                 <VidyaanLogo />
                 <h1 className="text-2xl font-bold text-gray-700">Your Personalized Career Roadmap</h1>
             </div>
 
             {data.motivationalNudge && (
-              <div className="mb-6 p-4 bg-sky-50 rounded-lg text-center">
+              <div className="mb-6 p-4 bg-sky-50 rounded-lg text-center break-inside-avoid">
                   <p className="text-sm italic text-sky-800">"{data.motivationalNudge}"</p>
               </div>
             )}
             
-            <div className="grid grid-cols-2 gap-x-8">
+            <div className="columns-2 gap-x-8">
                 {sectionsConfig.map(section => {
                      if ((!section.items || section.items.length === 0) && (!section.content || section.content.length === 0)) return null;
                      const content = section.items || section.content;
                      return(
-                         <div key={section.id} data-pdf-section className="mb-4 break-inside-avoid col-span-2">
+                         <div key={section.id} data-pdf-section className="mb-4 break-inside-avoid">
                              <PDFSection title={section.title} icon={section.icon} isList={section.isList}>
                                 {content?.map((item: any, index: number) => <div key={index}>{item}</div>)}
                             </PDFSection>
