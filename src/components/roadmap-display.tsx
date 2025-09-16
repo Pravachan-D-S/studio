@@ -225,13 +225,25 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     let yPos = margin;
 
     const addWatermark = () => {
-      pdf.setFontSize(100);
-      pdf.setTextColor(230, 230, 230);
-      pdf.text('Vidyaan', pdfWidth / 2, pdfHeight / 2, {
-        angle: -45,
-        align: 'center',
-      });
-      pdf.setTextColor(0, 0, 0); // Reset text color
+        const logoPaths = [
+            "M22 10v6M2 10l10-5 10 5-10 5z",
+            "M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"
+        ];
+        const scale = 8;
+        const x = pdfWidth / 2 - (12 * scale);
+        const y = pdfHeight / 2 - (12 * scale);
+        pdf.saveGraphicsState();
+        pdf.setGState(new (pdf.GState as any)({opacity: 0.1}));
+        pdf.setStrokeColor('#708090');
+        pdf.setLineWidth(1);
+        pdf.translate(pdfWidth / 2, pdfHeight / 2);
+        pdf.rotate(-45);
+        pdf.translate(-pdfWidth / 2, -pdfHeight / 2);
+        
+        pdf.setDrawColor('#708090');
+        pdf.path(logoPaths).stroke();
+
+        pdf.restoreGraphicsState();
     };
 
     const checkPageBreak = (neededHeight: number) => {
