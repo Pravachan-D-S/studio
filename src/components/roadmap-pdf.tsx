@@ -3,7 +3,6 @@
 import React, { useMemo } from 'react';
 import type { GeneratePersonalizedRoadmapOutput } from '@/ai/flows/generate-personalized-roadmap';
 import type { FormValues } from '@/lib/types';
-import { VidyaanLogo } from './icons';
 import {
   List,
   Wrench,
@@ -95,7 +94,7 @@ export const RoadmapPDF = ({ data, studentData, innerRef }: { data: GeneratePers
               }
             `}</style>
             <div id="pdf-header" className="flex items-center justify-between pb-4 border-b mb-6">
-                <h1 className="text-3xl font-bold text-gray-800" style={{ color: '#005B96' }}>Vidyaan</h1>
+                <h1 className="text-3xl font-bold text-gray-800" style={{ color: '#005B96' }}>vidyaan</h1>
                 <h2 className="text-2xl font-semibold text-gray-700">Your Personalized Career Roadmap</h2>
             </div>
 
