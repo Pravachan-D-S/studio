@@ -21,68 +21,25 @@ export function UserIcon(props: SVGProps<SVGSVGElement>) {
 export function VidyaanLogo(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
-      width="550"
-      height="470"
-      viewBox="0 0 550 470"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      <defs>
-        <linearGradient
-          id="capGradient"
-          x1="0"
-          y1="0"
-          x2="1"
-          y2="1"
-          gradientTransform="rotate(45)"
-        >
-          <stop offset="0%" stopColor="#0082C8" />
-          <stop offset="100%" stopColor="#FFEE82" />
-        </linearGradient>
-        <linearGradient id="bookGradient" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#005B96" />
-          <stop offset="100%" stopColor="#003F5C" />
-        </linearGradient>
-      </defs>
-
-      {/* Graduation Cap */}
-      <polygon
-        points="275,20 450,110 275,200 100,110"
-        fill="url(#capGradient)"
-      />
-
-      {/* Tassel */}
-      <path
-        d="M 450 110 L 460 180"
-        stroke="#FFEE82"
-        strokeWidth="4"
-        strokeLinecap="round"
-      />
-      <circle cx="460" cy="185" r="8" fill="#FFEE82" />
-
-      {/* Open Book */}
-      <path
-        d="M150,220 C200,260 275,280 275,350 C175,320 120,270 150,220 Z"
-        fill="url(#bookGradient)"
-      />
-      <path
-        d="M400,220 C350,260 275,280 275,350 C375,320 430,270 400,220 Z"
-        fill="url(#bookGradient)"
-      />
-
-      {/* Text */}
-      <text
-        x="50%"
-        y="430"
-        fontFamily="Arial Black, Arial, sans-serif"
-        fontSize="80"
-        fill="#005B96"
-        textAnchor="middle"
-        fontWeight="900"
+        width="550"
+        height="470"
+        viewBox="0 0 120 40"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        {...props}
       >
-        Vidyaan
-      </text>
-    </svg>
+        <path d="M10 20L20 15L30 20L20 25L10 20Z" fill="hsl(var(--primary))" />
+        <path d="M20 25L30 20L40 25L30 30L20 25Z" fill="hsl(var(--primary))" opacity="0.7" />
+        <text
+          x="50"
+          y="28"
+          fontFamily="Inter, Arial, sans-serif"
+          fontSize="20"
+          fontWeight="800"
+          fill="hsl(var(--foreground))"
+        >
+          Vidyaan
+        </text>
+      </svg>
   );
 }

@@ -95,10 +95,8 @@ export const RoadmapPDF = ({ data, studentData, innerRef }: { data: GeneratePers
               }
             `}</style>
             <div id="pdf-header" className="flex items-center justify-between pb-4 border-b mb-6">
-                <div className="w-32 h-auto">
-                    <VidyaanLogo />
-                </div>
-                <h1 className="text-2xl font-bold text-gray-700">Your Personalized Career Roadmap</h1>
+                <h1 className="text-3xl font-bold text-gray-800" style={{ color: '#005B96' }}>Vidyaan</h1>
+                <h2 className="text-2xl font-semibold text-gray-700">Your Personalized Career Roadmap</h2>
             </div>
 
             {data.motivationalNudge && (
@@ -127,5 +125,3 @@ export const RoadmapPDF = ({ data, studentData, innerRef }: { data: GeneratePers
         </div>
     )
 }
-
-    
