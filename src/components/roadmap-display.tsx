@@ -23,11 +23,9 @@ import {
   Award,
   HelpCircle,
   CheckCircle2,
-  Check,
   Save,
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
 import { QuizDialog } from './quiz-dialog';
 import { RoadmapPDF } from './roadmap-pdf';
 import { Badge } from '@/components/ui/badge';
@@ -111,7 +109,6 @@ const UnlockedChecklist = ({
           {items.map((item, index) => {
             const id = `${sectionId}-${index}`;
             const isCompleted = completedItems.has(id);
-            const canVerify = !isCompleted;
 
             return (
               <li key={id} className="flex items-start gap-3 group">
@@ -122,7 +119,9 @@ const UnlockedChecklist = ({
                     })}>
                         {item}
                     </span>
-                    {canVerify ? (
+                    {isCompleted ? (
+                         <CheckCircle2 className="w-5 h-5 text-green-500" />
+                    ) : (
                         <Button 
                             size="sm" 
                             variant="outline" 
@@ -132,8 +131,6 @@ const UnlockedChecklist = ({
                             <HelpCircle className="w-4 h-4 mr-2" />
                             Verify
                         </Button>
-                    ) : (
-                         <CheckCircle2 className="w-5 h-5 text-green-500" />
                     )}
                  </div>
               </li>
@@ -170,6 +167,25 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
       resumeInterviewPrep,
     };
   }, [data]);
+  
+    const sectionsConfig = useMemo(() => ([
+        { id: 'studentProfile', title: 'Student Profile', items: [
+            `Stream: ${studentData.stream}`,
+            `Specialization: ${studentData.specialization}`,
+            `Year of Study: ${studentData.yearOfStudy}`,
+            `Aiming Career: ${studentData.aimingCareer}`,
+        ]},
+        { id: 'motivationalNudge', title: 'Motivational Nudge', content: data.motivationalNudge },
+        { id: 'skillRoadmap', title: 'Skill Roadmap', items: parseList(data.skillRoadmap), isVerifiable: true, className: 'lg:col-span-1' },
+        { id: 'toolsToMaster', title: 'Tools to Master', items: parseList(data.toolsToMaster), isVerifiable: true, className: 'lg:col-span-1' },
+        { id: 'timeline', title: 'Estimated Timeline', items: parseList(data.timeline), className: 'lg:col-span-1' },
+        { id: 'projects', title: 'Project Ideas', items: parseList(data.projects), isVerifiable: false, className: 'lg:col-span-3' },
+        { id: 'resources', title: 'Learning Resources', items: parseList(data.resources), className: 'lg:col-span-2' },
+        { id: 'careerGrowth', title: 'Career Growth', items: parseList(data.careerGrowth), className: 'lg:col-span-1' },
+        { id: 'jobMarketInsights', title: 'Job Market Insights', items: parseList(data.jobMarketInsights), className: 'lg:col-span-2' },
+        { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', items: parseList(data.resumeInterviewPrep), isVerifiable: false, className: 'lg:col-span-1' },
+    ]), [data, studentData]);
+
 
   const verifiableSkills = useMemo(() => [
     ...sections.skillRoadmap.map((_, i) => `skillRoadmap-${i}`),
@@ -198,39 +214,74 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     });
   };
 
-  const handleDownloadPdf = async () => {
+    const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
-    const content = pdfContainerRef.current;
-    if (!content) {
-        setIsGeneratingPdf(false);
-        return;
-    }
 
     const pdf = new jsPDF('p', 'pt', 'a4');
     const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
     const margin = 40;
-    const contentWidth = pdfWidth - margin * 2;
-
+    const contentWidth = pdfWidth - (margin * 2);
     let yPos = margin;
 
-    const addPageIfNeeded = (elementHeight: number) => {
-        if (yPos + elementHeight > pdfHeight - margin) {
-            pdf.addPage();
-            yPos = margin;
-        }
+    const checkPageBreak = (neededHeight: number) => {
+      if (yPos + neededHeight > pdf.internal.pageSize.getHeight() - margin) {
+        pdf.addPage();
+        yPos = margin;
+      }
     };
     
-    for (const child of Array.from(content.children) as HTMLElement[]) {
-        const canvas = await html2canvas(child, { scale: 2 });
-        const imgData = canvas.toDataURL('image/png');
-        const elementHeight = (canvas.height * contentWidth) / canvas.width;
+    // Header
+    pdf.setFontSize(24).setFont('helvetica', 'bold');
+    pdf.text('Vidyaan', margin, yPos);
+    yPos += 20;
+    pdf.setFontSize(14).setFont('helvetica', 'normal');
+    pdf.text('Your Personalized Career Roadmap', margin, yPos);
+    yPos += 20;
+    pdf.setDrawColor(200).setLineWidth(1).line(margin, yPos, pdfWidth - margin, yPos);
+    yPos += 30;
 
-        addPageIfNeeded(elementHeight + 10);
-        
-        pdf.addImage(imgData, 'PNG', margin, yPos, contentWidth, elementHeight);
-        yPos += elementHeight + 10;
+    sectionsConfig.forEach(section => {
+      const content = section.items || section.content;
+      if (!content || (Array.isArray(content) && content.length === 0)) return;
+
+      checkPageBreak(30); // space for section header
+
+      pdf.setFontSize(16).setFont('helvetica', 'bold');
+      pdf.text(section.title, margin, yPos);
+      yPos += 20;
+
+      pdf.setFontSize(10).setFont('helvetica', 'normal');
+      
+      if (Array.isArray(content)) {
+          content.forEach(item => {
+              const lines = pdf.splitTextToSize(item, contentWidth - 15);
+              const neededHeight = lines.length * 12 + 5;
+              checkPageBreak(neededHeight);
+              
+              pdf.text('•', margin + 5, yPos + 1); // Bullet point
+              pdf.text(lines, margin + 15, yPos);
+              yPos += neededHeight;
+          });
+      } else { // Motivational Nudge is just a string
+          const lines = pdf.splitTextToSize(`"${content}"`, contentWidth);
+          const neededHeight = lines.length * 12 + 5;
+          checkPageBreak(neededHeight);
+          pdf.setFont('helvetica', 'italic');
+          pdf.text(lines, margin, yPos);
+          pdf.setFont('helvetica', 'normal');
+          yPos += neededHeight;
+      }
+      yPos += 15; // Space after section
+    });
+
+    // Footer
+    const pageCount = pdf.internal.pages.length;
+    for (let i = 1; i <= pageCount; i++) {
+        pdf.setPage(i);
+        pdf.setFontSize(8).setTextColor(150);
+        pdf.text(`Generated by Vidyaan - Your AI Career Guide | Page ${i} of ${pageCount}`, margin, pdf.internal.pageSize.getHeight() - 20);
     }
+    
 
     pdf.save('Vidyaan-Roadmap.pdf');
     setIsGeneratingPdf(false);
@@ -246,10 +297,10 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     const nextSkillId = verifiableSkills.find(id => !completedItems.has(id));
     if (!nextSkillId) return "No verifiable skills to track.";
     
-    const [section, indexStr] = nextSkillId.split('-');
+    const [sectionKey, indexStr] = nextSkillId.split('-');
     const index = parseInt(indexStr, 10);
     // @ts-ignore
-    const itemText = sections[section][index];
+    const itemText = sections[sectionKey][index];
     return itemText.length > 40 ? itemText.substring(0, 40) + '...' : itemText;
   };
 
@@ -265,7 +316,7 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     }
   };
 
-  const sectionsConfig = [
+  const sectionsConfigCards = [
     { id: 'motivationalNudge', title: 'Motivational Nudge', icon: Award, content: data.motivationalNudge, className: 'lg:col-span-3' },
     { id: 'skillRoadmap', title: 'Skill Roadmap', icon: List, items: sections.skillRoadmap, className: 'lg:col-span-1', isVerifiable: true },
     { id: 'toolsToMaster', title: 'Tools to Master', icon: Wrench, items: sections.toolsToMaster, className: 'lg:col-span-1', isVerifiable: true },
@@ -318,7 +369,7 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
       </Card>
       
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sectionsConfig.map((section) => {
+        {sectionsConfigCards.map((section) => {
           if ((!section.items || section.items.length === 0) && !section.content) return null;
 
           return (
