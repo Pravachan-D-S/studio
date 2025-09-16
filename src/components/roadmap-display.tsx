@@ -19,13 +19,13 @@ import {
   BarChart,
   Download,
   Loader2,
-  Heart,
+  Lock,
+  Award,
   HelpCircle,
   CheckCircle2,
-  Award,
-  Lock,
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import { QuizDialog } from './quiz-dialog';
 import { RoadmapPDF } from './roadmap-pdf';
 import { Badge } from '@/components/ui/badge';
@@ -106,20 +106,26 @@ const Checklist = ({
                     })}>
                         {item}
                     </span>
-                    {isCompleted ? (
-                         <CheckCircle2 className="w-5 h-5 text-green-500" />
-                    ) : isSkillLocked ? (
-                        <Lock className="w-4 h-4 text-muted-foreground" />
+                    {canVerify ? (
+                         isCompleted ? (
+                             <CheckCircle2 className="w-5 h-5 text-green-500" />
+                         ) : (
+                            <Button 
+                                size="sm" 
+                                variant="outline" 
+                                onClick={() => handleVerifyClick(item)}
+                                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                                <HelpCircle className="w-4 h-4 mr-2" />
+                                Verify
+                            </Button>
+                         )
                     ) : (
-                        <Button 
-                            size="sm" 
-                            variant="outline" 
-                            onClick={() => handleVerifyClick(item)}
-                            className="opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                            <HelpCircle className="w-4 h-4 mr-2" />
-                            Verify
-                        </Button>
+                        isSkillLocked ? (
+                             <Lock className="w-4 h-4 text-muted-foreground" />
+                        ) : isCompleted ? (
+                             <CheckCircle2 className="w-5 h-5 text-green-500" />
+                        ) : null
                     )}
                  </div>
               </li>
@@ -141,7 +147,7 @@ const Checklist = ({
 export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDisplayProps) {
   const [completedItems, setCompletedItems] = useState<Set<string>>(new Set());
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
-  const pdfRef = useRef<HTMLDivElement>(null);
+  const pdfContainerRef = useRef<HTMLDivElement>(null);
 
   const sections = useMemo(() => ({
     skillRoadmap: parseList(data.skillRoadmap),
@@ -157,7 +163,7 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
 
   const totalChecklistItems = allSkills.length;
   
-  const unlockedSkillIndex = useMemo(() => {
+  const unlockedItemIndex = useMemo(() => {
     return allSkills.findIndex(id => !completedItems.has(id));
   }, [completedItems, allSkills]);
 
@@ -171,57 +177,76 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
 
   const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
-    // The rendering logic for PDF is now handled inside the RoadmapPDF component
-    // We just need to trigger the print.
-    const printIframe = document.createElement('iframe');
-    printIframe.style.position = 'absolute';
-    printIframe.style.width = '0';
-    printIframe.style.height = '0';
-    printIframe.style.border = '0';
-    document.body.appendChild(printIframe);
-
-    const content = pdfRef.current;
-    if (!content || !printIframe.contentWindow) {
-      setIsGeneratingPdf(false);
-      return;
+    const content = pdfContainerRef.current;
+    if (!content) {
+        setIsGeneratingPdf(false);
+        return;
     }
 
-    const doc = printIframe.contentWindow.document;
-    doc.open();
-    doc.write(content.innerHTML);
-    doc.close();
-    
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const margin = 10;
-    
-    // Use html2canvas on the iframe content
-    const canvas = await jsPDF.html(doc.body, {
-        html2canvas: {
-            scale: 0.25, // Adjust scale to fit content, might need tweaking
-            useCORS: true,
-            logging: false,
-        },
-        margin: [margin, margin, margin, margin],
-        autoPaging: 'text',
-        width: pageWidth - (margin * 2),
-        windowWidth: doc.body.scrollWidth,
-    });
+    const pdf = new jsPDF('p', 'pt', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const margin = 40;
+    const contentWidth = pdfWidth - margin * 2;
 
-    await canvas.save('Vidyaan-Roadmap.pdf');
+    const sections = content.querySelectorAll('[data-pdf-section]');
+    let yPos = margin;
 
-    document.body.removeChild(printIframe);
+    const addPageIfNeeded = (elementHeight: number) => {
+        if (yPos + elementHeight > pdfHeight - margin) {
+            pdf.addPage();
+            yPos = margin;
+        }
+    };
+
+    // Header
+    const headerCanvas = await html2canvas(content.querySelector('#pdf-header') as HTMLElement, { scale: 2 });
+    const headerImgData = headerCanvas.toDataURL('image/png');
+    const headerHeight = (headerCanvas.height * contentWidth) / headerCanvas.width;
+    addPageIfNeeded(headerHeight);
+    pdf.addImage(headerImgData, 'PNG', margin, yPos, contentWidth, headerHeight);
+    yPos += headerHeight + 20;
+
+    // Motivational Nudge
+    const nudgeEl = content.querySelector('#pdf-nudge') as HTMLElement;
+    if (nudgeEl) {
+        const nudgeCanvas = await html2canvas(nudgeEl, { scale: 2 });
+        const nudgeHeight = (nudgeCanvas.height * contentWidth) / nudgeCanvas.width;
+        addPageIfNeeded(nudgeHeight + 20);
+        pdf.addImage(nudgeCanvas.toDataURL('image/png'), 'PNG', margin, yPos, contentWidth, nudgeHeight);
+        yPos += nudgeHeight + 20;
+    }
+    
+    // Main content sections
+    for (const section of Array.from(sections)) {
+        const canvas = await html2canvas(section as HTMLElement, { scale: 2 });
+        const imgData = canvas.toDataURL('image/png');
+        const sectionHeight = (canvas.height * contentWidth) / canvas.width;
+
+        addPageIfNeeded(sectionHeight + 10);
+        
+        pdf.addImage(imgData, 'PNG', margin, yPos, contentWidth, sectionHeight);
+        yPos += sectionHeight + 10; // Add some padding between sections
+    }
+
+    // Footer
+    const footerCanvas = await html2canvas(content.querySelector('#pdf-footer') as HTMLElement, { scale: 2 });
+    const footerHeight = (footerCanvas.height * contentWidth) / footerCanvas.width;
+    addPageIfNeeded(footerHeight + 20);
+    pdf.addImage(footerCanvas.toDataURL('image/png'), 'PNG', margin, yPos, contentWidth, footerHeight);
+
+    pdf.save('Vidyaan-Roadmap.pdf');
     setIsGeneratingPdf(false);
   };
+
 
   const progressPercentage = totalChecklistItems > 0 ? (completedItems.size / totalChecklistItems) * 100 : 0;
 
   const getNextMilestone = () => {
-    if (unlockedSkillIndex === -1) {
+    if (unlockedItemIndex === -1) {
         return "You've completed all milestones!";
     }
-    const nextId = allSkills[unlockedSkillIndex];
+    const nextId = allSkills[unlockedItemIndex];
     const [section, indexStr] = nextId.split('-');
     const index = parseInt(indexStr, 10);
     // @ts-ignore
@@ -231,17 +256,17 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
 
   const getProgressBadge = () => {
     const percentage = Math.round(progressPercentage);
-    if (percentage >= 100) {
-      return <Badge className="text-xs px-2 py-1 bg-green-100 text-green-800 border-green-200">Completed</Badge>;
-    } else if (percentage > 0) {
-      return <Badge variant="secondary" className="text-xs px-2 py-1">In Progress</Badge>;
+    if (percentage >= 80) {
+      return <Badge className="text-xs px-2 py-1 bg-yellow-400 text-yellow-900 border-yellow-500"><Award className="mr-1" /> Gold</Badge>;
+    } else if (percentage >= 40) {
+      return <Badge className="text-xs px-2 py-1 bg-gray-300 text-gray-800 border-gray-400"><Award className="mr-1" /> Silver</Badge>;
     } else {
-      return <Badge variant="outline" className="text-xs px-2 py-1">Not Started</Badge>;
+      return <Badge className="text-xs px-2 py-1 bg-orange-400 text-orange-900 border-orange-500"><Award className="mr-1" /> Bronze</Badge>;
     }
   };
 
   const sectionsConfig = [
-    { id: 'motivationalNudge', title: 'Motivational Nudge', icon: Heart, content: data.motivationalNudge, className: 'lg:col-span-3' },
+    { id: 'motivationalNudge', title: 'Motivational Nudge', icon: Award, content: data.motivationalNudge, className: 'lg:col-span-3' },
     { id: 'skillRoadmap', title: 'Skill Roadmap', icon: List, items: sections.skillRoadmap, className: 'lg:col-span-1', isLocked: true },
     { id: 'toolsToMaster', title: 'Tools to Master', icon: Wrench, items: sections.toolsToMaster, className: 'lg:col-span-1', isLocked: true },
     { id: 'timeline', title: 'Estimated Timeline', icon: Calendar, content: data.timeline, className: 'lg:col-span-1' },
@@ -252,7 +277,7 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     { id: 'jobMarketInsights', title: 'Job Market Insights', icon: BarChart, content: data.jobMarketInsights, className: 'lg:col-span-1' },
   ];
   
-  const unlockedSectionIndex = allSkills[unlockedSkillIndex] ? allSkills[unlockedSkillIndex].startsWith('skillRoadmap') ? 0 : 1 : -1;
+  const unlockedSectionName = allSkills[unlockedItemIndex] ? allSkills[unlockedItemIndex].split('-')[0] : null;
 
 
   return (
@@ -294,10 +319,10 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
           if ((!section.items || section.items.length === 0) && !section.content) return null;
            
            let sectionUnlockedIndex = -1;
-           if (section.id === 'skillRoadmap' && unlockedSectionIndex === 0) {
-               sectionUnlockedIndex = unlockedSkillIndex;
-           } else if (section.id === 'toolsToMaster' && unlockedSectionIndex === 1) {
-               sectionUnlockedIndex = unlockedSkillIndex - sections.skillRoadmap.length;
+           if (section.id === 'skillRoadmap' && unlockedSectionName === 'skillRoadmap') {
+               sectionUnlockedIndex = unlockedItemIndex;
+           } else if (section.id === 'toolsToMaster' && unlockedSectionName === 'toolsToMaster') {
+               sectionUnlockedIndex = unlockedItemIndex - sections.skillRoadmap.length;
            }
 
           return (
@@ -332,8 +357,10 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
       </div>
       {/* Hidden container for PDF rendering */}
       <div className="fixed top-[-10000px] left-[-10000px] z-[-1]">
-        <RoadmapPDF data={data} studentData={studentData} innerRef={pdfRef} />
+        <RoadmapPDF data={data} studentData={studentData} innerRef={pdfContainerRef} />
       </div>
     </div>
   );
 }
+
+    
