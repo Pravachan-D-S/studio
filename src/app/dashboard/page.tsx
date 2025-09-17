@@ -80,10 +80,18 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Your Saved Roadmaps</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">Your Saved Roadmaps</h1>
+        <Button asChild>
+          <Link href="/">
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Create New Roadmap
+          </Link>
+        </Button>
+      </div>
        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {roadmaps.map(roadmap => (
-          <Link href={`/roadmap/${roadmap.id}`} key={roadmap.id}>
+          <Link href={`/roadmap/${roadmap.id}`} key={roadmap.id} className="block hover:scale-105 transition-transform duration-200">
              <RoadmapCard roadmap={roadmap} />
           </Link>
         ))}

@@ -39,6 +39,8 @@ interface RoadmapDisplayProps {
   data: GeneratePersonalizedRoadmapOutput;
   onReset: () => void;
   studentData: FormValues;
+  isSavedRoadmap?: boolean;
+  roadmapName?: string;
 }
 
 const parseList = (text: string | undefined): string[] => {
@@ -149,7 +151,7 @@ const UnlockedChecklist = ({
     );
 };
 
-export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDisplayProps) {
+export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoadmap = false, roadmapName }: RoadmapDisplayProps) {
   const [completedItems, setCompletedItems] = useState<Set<string>>(new Set());
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
@@ -267,7 +269,7 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     pdf.text('Vidyatej', margin, yPos);
     yPos += 20;
     pdf.setFontSize(14).setFont('helvetica', 'normal');
-    pdf.text('Your Personalized Career Roadmap', margin, yPos);
+    pdf.text(isSavedRoadmap ? roadmapName || 'Your Saved Roadmap' : 'Your Personalized Career Roadmap', margin, yPos);
     yPos += 20;
     pdf.setDrawColor(200).setLineWidth(1).line(margin, yPos, pdfWidth - margin, yPos);
     yPos += 30;
@@ -364,11 +366,17 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     <div className="space-y-8 animate-in fade-in-50 duration-500">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight">Your Personalized Roadmap</h1>
-          <p className="text-muted-foreground">Here is your AI-generated path to becoming a pro.</p>
+           <h1 className="text-3xl font-extrabold tracking-tight">
+            {isSavedRoadmap ? roadmapName : 'Your Personalized Roadmap'}
+          </h1>
+          <p className="text-muted-foreground">
+            {isSavedRoadmap
+              ? `A detailed plan for a career as a ${studentData.aimingCareer}.`
+              : 'Here is your AI-generated path to becoming a pro.'}
+          </p>
         </div>
         <div className="flex items-center gap-2">
-            {user && (
+            {user && !isSavedRoadmap && (
                 <Button onClick={() => setIsSaveDialogOpen(true)}>
                     <Save />
                     Save Roadmap
@@ -378,7 +386,7 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
                 {isGeneratingPdf ? <Loader2 className="animate-spin" /> : <Download />}
                 {isGeneratingPdf ? 'Generating...' : 'Download as PDF'}
             </Button>
-            <Button onClick={onReset} variant="outline">Start Over</Button>
+            {!isSavedRoadmap && <Button onClick={onReset} variant="outline">Start Over</Button>}
         </div>
       </div>
 

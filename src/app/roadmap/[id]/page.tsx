@@ -34,18 +34,20 @@ export default async function SavedRoadmapPage({ params }: { params: { id: strin
     notFound();
   }
   
+  // The onReset prop is required, but for a saved roadmap, we want a different behavior.
+  // The button in RoadmapDisplay will be hidden via a prop, and we provide a "Back to Dashboard" button in the header.
   const handleReset = () => {
     // This is a dummy function to satisfy the component's prop requirement.
-    // On the saved roadmap page, we'll likely navigate back to the dashboard.
-    // The button for this is handled within the component.
   };
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
         <header className="px-4 lg:px-6 h-16 flex items-center shadow-sm bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40">
             <div className="flex items-center gap-2">
-              <VidyatejLogo className="h-8 w-auto" />
-              <span className="font-bold text-lg">Vidyatej</span>
+              <Link href="/dashboard" className="flex items-center gap-2">
+                <VidyatejLogo className="h-8 w-auto" />
+                <span className="font-bold text-lg">Vidyatej</span>
+              </Link>
             </div>
             <div className="ml-auto">
                 <Button asChild variant="outline">
@@ -58,8 +60,11 @@ export default async function SavedRoadmapPage({ params }: { params: { id: strin
               data={roadmapData.roadmapData} 
               onReset={handleReset} 
               studentData={roadmapData.studentData}
+              isSavedRoadmap={true}
+              roadmapName={roadmapData.name}
             />
           </main>
     </div>
   );
 }
+
