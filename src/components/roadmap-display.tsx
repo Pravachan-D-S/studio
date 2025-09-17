@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import type { GeneratePersonalizedRoadmapOutput } from '@/ai/flows/generate-personalized-roadmap';
-import type { FormValues } from '@/lib/types';
+import type { FormValues, Roadmap } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -19,21 +19,22 @@ import {
   BarChart,
   Download,
   Loader2,
-  Unlock,
-  Award,
   HelpCircle,
   CheckCircle2,
   Save,
+  Award,
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { QuizDialog } from './quiz-dialog';
-import { RoadmapPDF } from './roadmap-pdf';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/lib/firebase';
 import { SaveRoadmapDialog } from './save-roadmap-dialog';
+import { doc, getDoc, collection, onSnapshot, setDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { useToast } from '@/hooks/use-toast';
 
 interface RoadmapDisplayProps {
   data: GeneratePersonalizedRoadmapOutput;
@@ -41,6 +42,7 @@ interface RoadmapDisplayProps {
   studentData: FormValues;
   isSavedRoadmap?: boolean;
   roadmapName?: string;
+  roadmapId?: string;
 }
 
 const parseList = (text: string | undefined): string[] => {
@@ -119,11 +121,10 @@ const UnlockedChecklist = ({
                         'line-through text-green-600': isCompleted,
                         'text-foreground': !isCompleted
                     })}>
+                        {isCompleted && <CheckCircle2 className="inline w-4 h-4 mr-2 text-green-500" />}
                         {item}
                     </span>
-                    {isCompleted ? (
-                         <CheckCircle2 className="w-5 h-5 text-green-500" />
-                    ) : (
+                    {!isCompleted && (
                         <Button 
                             size="sm" 
                             variant="outline" 
@@ -151,22 +152,19 @@ const UnlockedChecklist = ({
     );
 };
 
-export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoadmap = false, roadmapName }: RoadmapDisplayProps) {
+export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoadmap = false, roadmapName, roadmapId }: RoadmapDisplayProps) {
   const [completedItems, setCompletedItems] = useState<Set<string>>(new Set());
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
-  const pdfContainerRef = useRef<HTMLDivElement>(null);
   const [user] = useAuthState(auth);
+  const { toast } = useToast();
 
   const sections = useMemo(() => {
-    const skillRoadmap = parseList(data.skillRoadmap);
-    const resumeInterviewPrep = parseList(data.resumeInterviewPrep);
-
     return {
-      skillRoadmap,
+      skillRoadmap: parseList(data.skillRoadmap),
       toolsToMaster: parseList(data.toolsToMaster),
       projects: parseList(data.projects),
-      resumeInterviewPrep,
+      resumeInterviewPrep: parseList(data.resumeInterviewPrep),
     };
   }, [data]);
   
@@ -178,44 +176,71 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
             `Aiming Career: ${studentData.aimingCareer}`,
         ]},
         { id: 'motivationalNudge', title: 'Motivational Nudge', content: data.motivationalNudge },
-        { id: 'skillRoadmap', title: 'Skill Roadmap', items: parseList(data.skillRoadmap), isVerifiable: true, className: 'lg:col-span-1' },
-        { id: 'toolsToMaster', title: 'Tools to Master', items: parseList(data.toolsToMaster), isVerifiable: true, className: 'lg:col-span-1' },
+        { id: 'skillRoadmap', title: 'Skill Roadmap', items: sections.skillRoadmap, isVerifiable: true, className: 'lg:col-span-1' },
+        { id: 'toolsToMaster', title: 'Tools to Master', items: sections.toolsToMaster, isVerifiable: true, className: 'lg:col-span-1' },
         { id: 'timeline', title: 'Estimated Timeline', items: parseList(data.timeline), className: 'lg:col-span-1' },
-        { id: 'projects', title: 'Project Ideas', items: parseList(data.projects), isVerifiable: false, className: 'lg:col-span-3' },
+        { id: 'projects', title: 'Project Ideas', items: sections.projects, isVerifiable: false, className: 'lg:col-span-3' },
         { id: 'resources', title: 'Learning Resources', items: parseList(data.resources), className: 'lg:col-span-2' },
         { id: 'careerGrowth', title: 'Career Growth', items: parseList(data.careerGrowth), className: 'lg:col-span-1' },
         { id: 'jobMarketInsights', title: 'Job Market Insights', items: parseList(data.jobMarketInsights), className: 'lg:col-span-2' },
-        { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', items: parseList(data.resumeInterviewPrep), isVerifiable: false, className: 'lg:col-span-1' },
-    ]), [data, studentData]);
+        { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', items: sections.resumeInterviewPrep, isVerifiable: false, className: 'lg:col-span-1' },
+    ]), [data, studentData, sections]);
 
 
   const verifiableSkills = useMemo(() => [
     ...sections.skillRoadmap.map((_, i) => `skillRoadmap-${i}`),
     ...sections.toolsToMaster.map((_, i) => `toolsToMaster-${i}`),
   ], [sections]);
-
-  const totalChecklistItems = useMemo(() => verifiableSkills.length, [verifiableSkills]);
   
-  const handleSimpleChecklistToggle = (itemId: string) => {
-    setCompletedItems(prev => {
-        const newSet = new Set(prev);
-        if (newSet.has(itemId)) {
-            newSet.delete(itemId);
-        } else {
-            newSet.add(itemId);
+  const simpleChecklistItems = useMemo(() => [
+    ...sections.projects.map((_, i) => `projects-${i}`),
+    ...sections.resumeInterviewPrep.map((_, i) => `resumeInterviewPrep-${i}`),
+  ], [sections]);
+
+  const totalVerifiableItems = useMemo(() => verifiableSkills.length, [verifiableSkills]);
+  const completedVerifiableItems = useMemo(() => new Set([...completedItems].filter(item => verifiableSkills.includes(item))), [completedItems, verifiableSkills]);
+
+
+  useEffect(() => {
+    if (isSavedRoadmap && user && roadmapId) {
+      const progressRef = doc(db, 'users', user.uid, 'progress', roadmapId);
+      const unsubscribe = onSnapshot(progressRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const progressData = docSnap.data();
+          setCompletedItems(new Set(progressData.completedItems || []));
         }
-        return newSet;
-    });
+      });
+      return () => unsubscribe();
+    }
+  }, [isSavedRoadmap, user, roadmapId]);
+
+  const updateProgressInDb = async (newCompletedSet: Set<string>) => {
+    if (isSavedRoadmap && user && roadmapId) {
+        try {
+            const progressRef = doc(db, 'users', user.uid, 'progress', roadmapId);
+            await setDoc(progressRef, { completedItems: Array.from(newCompletedSet) });
+        } catch (error) {
+            console.error("Failed to save progress:", error);
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "Could not save your progress. Please try again.",
+            });
+        }
+    }
   };
 
-  const handleQuizComplete = (itemId: string, skillName: string) => {
-    setCompletedItems(prev => {
-        const newSet = new Set(prev);
+  const handleToggleItem = (itemId: string) => {
+    const newSet = new Set(completedItems);
+    if (newSet.has(itemId)) {
+        newSet.delete(itemId);
+    } else {
         newSet.add(itemId);
-        return newSet;
-    });
+    }
+    setCompletedItems(newSet);
+    updateProgressInDb(newSet);
   };
-
+  
     const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
 
@@ -232,14 +257,12 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
             "M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"
         ];
         pdf.saveGraphicsState();
-        pdf.setGState(new (pdf.GState as any)({opacity: 0.1}));
-        pdf.setStrokeColor('#708090');
-        pdf.setLineWidth(1);
+        pdf.setGState(new (pdf.GState as any)({opacity: 0.05}));
         
         // Center and rotate the watermark
         pdf.translate(pdfWidth / 2, pdfHeight / 2);
         pdf.rotate(-45);
-        pdf.translate(-pdfWidth / 2, -pdfHeight / 2);
+        pdf.translate(-(pdfWidth / 2), -(pdfHeight / 2));
 
         // Scale and position the logo
         const scale = 8;
@@ -248,7 +271,7 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
         pdf.translate(x, y);
         pdf.scale(scale);
 
-        pdf.setDrawColor('#708090');
+        pdf.setDrawColor('#000000');
         pdf.path(logoPaths).stroke();
 
         pdf.restoreGraphicsState();
@@ -309,7 +332,7 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
     });
 
     // Footer
-    const pageCount = pdf.internal.pages.length;
+    const pageCount = (pdf as any).internal.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
         pdf.setPage(i);
         pdf.setFontSize(8).setTextColor(150);
@@ -321,14 +344,13 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
     setIsGeneratingPdf(false);
   };
 
-
-  const progressPercentage = totalChecklistItems > 0 ? (completedItems.size / totalChecklistItems) * 100 : 0;
+  const progressPercentage = totalVerifiableItems > 0 ? (completedVerifiableItems.size / totalVerifiableItems) * 100 : 0;
   
   const getNextMilestone = () => {
-    if (totalChecklistItems > 0 && completedItems.size === totalChecklistItems) {
+    if (totalVerifiableItems > 0 && completedVerifiableItems.size === totalVerifiableItems) {
       return "You've verified all skills!";
     }
-    const nextSkillId = verifiableSkills.find(id => !completedItems.has(id));
+    const nextSkillId = verifiableSkills.find(id => !completedVerifiableItems.has(id));
     if (!nextSkillId) return "No verifiable skills to track.";
     
     const [sectionKey, indexStr] = nextSkillId.split('-');
@@ -338,15 +360,17 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
     return itemText.length > 40 ? itemText.substring(0, 40) + '...' : itemText;
   };
 
-
   const getProgressBadge = () => {
     const percentage = Math.round(progressPercentage);
-    if (percentage >= 80) {
-      return <Badge className="text-xs px-2 py-1 bg-yellow-400 text-yellow-900 border-yellow-500"><Award className="mr-1" /> Gold</Badge>;
+    if (percentage === 100) {
+      return <Badge className="text-xs px-2 py-1 bg-green-500 text-white border-green-600"><Award className="mr-1" /> Mastered</Badge>;
+    }
+    if (percentage >= 75) {
+      return <Badge className="text-xs px-2 py-1 bg-yellow-400 text-yellow-900 border-yellow-500"><Award className="mr-1" /> Expert</Badge>;
     } else if (percentage >= 40) {
-      return <Badge className="text-xs px-2 py-1 bg-gray-300 text-gray-800 border-gray-400"><Award className="mr-1" /> Silver</Badge>;
+      return <Badge className="text-xs px-2 py-1 bg-gray-300 text-gray-800 border-gray-400"><Award className="mr-1" /> Proficient</Badge>;
     } else {
-      return <Badge className="text-xs px-2 py-1 bg-orange-400 text-orange-900 border-orange-500"><Award className="mr-1" /> Bronze</Badge>;
+      return <Badge className="text-xs px-2 py-1 bg-orange-400 text-orange-900 border-orange-500"><Award className="mr-1" /> Beginner</Badge>;
     }
   };
 
@@ -378,12 +402,12 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
         <div className="flex items-center gap-2">
             {user && !isSavedRoadmap && (
                 <Button onClick={() => setIsSaveDialogOpen(true)}>
-                    <Save />
+                    <Save className="mr-2" />
                     Save Roadmap
                 </Button>
             )}
             <Button onClick={handleDownloadPdf} disabled={isGeneratingPdf}>
-                {isGeneratingPdf ? <Loader2 className="animate-spin" /> : <Download />}
+                {isGeneratingPdf ? <Loader2 className="animate-spin mr-2" /> : <Download className="mr-2" />}
                 {isGeneratingPdf ? 'Generating...' : 'Download as PDF'}
             </Button>
             {!isSavedRoadmap && <Button onClick={onReset} variant="outline">Start Over</Button>}
@@ -399,7 +423,7 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-              <Progress value={progressPercentage} className="w-full h-2" />
+              <Progress value={progressPercentage} className="w-full h-3" />
               <div className="flex justify-between text-sm flex-wrap gap-2">
                   <p className="text-foreground"><span className="font-semibold">{Math.round(progressPercentage)}%</span> complete</p>
                   <p className="text-muted-foreground">Next: <span className="font-semibold text-foreground">{getNextMilestone()}</span></p>
@@ -421,14 +445,14 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
                         sectionId={section.id} 
                         completedItems={completedItems} 
                         studentData={studentData}
-                        onQuizComplete={handleQuizComplete}
+                        onQuizComplete={(itemId) => handleToggleItem(itemId)}
                     />
                  ) : (
                     <SimpleChecklist
                         items={section.items}
                         sectionId={section.id}
                         completedItems={completedItems}
-                        onToggle={handleSimpleChecklistToggle}
+                        onToggle={handleToggleItem}
                     />
                  )
               ) : (
@@ -448,10 +472,6 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
             </SectionCard>
           );
         })}
-      </div>
-      {/* Hidden container for PDF rendering */}
-      <div className="fixed top-[-10000px] left-[-10000px] z-[-1]">
-        <RoadmapPDF data={data} studentData={studentData} innerRef={pdfContainerRef} />
       </div>
 
        {user && (
