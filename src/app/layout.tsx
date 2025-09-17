@@ -4,8 +4,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'Vidyaan',
-  description: 'Your AI-powered guide to a successful tech career.',
+  title: 'Vidyatej',
+  description: 'Vidyatej - Igniting Bright Futures.',
 };
 
 export default function RootLayout({

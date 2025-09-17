@@ -7,7 +7,7 @@ import { Loader2, Send, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { formSchema, FormValues } from '@/lib/types';
-import { UserIcon, VidyaanLogo } from '@/components/icons';
+import { UserIcon, VidyatejLogo } from '@/components/icons';
 import {
   streams,
   specializations,
@@ -243,7 +243,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
   return (
     <div className="flex flex-col h-screen bg-background text-foreground overflow-hidden">
       <div className="flex-1 overflow-y-auto p-4 space-y-6 relative pt-16">
-        <VidyaanLogo className="h-10 w-auto absolute top-4 left-4" />
+        <VidyatejLogo className="h-10 w-auto absolute top-4 left-4" />
         
         {/* Animated Background Shapes */}
         {currentQuestionIndex >= 2 && <AnimatedShape className="w-48 h-48 top-20 left-10 bg-primary" delay="0s" />}
@@ -254,7 +254,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
           <div key={index} className={cn('flex items-start gap-3 animate-fade-in-up', msg.sender === 'user' ? 'flex-row-reverse' : '')}>
             <Avatar className="w-8 h-8">
               <AvatarFallback className="bg-transparent">
-                {msg.sender === 'ai' ? <VidyaanLogo className="w-8 h-8" /> : <UserIcon className="w-6 h-6"/>}
+                {msg.sender === 'ai' ? <VidyatejLogo className="w-8 h-8" /> : <UserIcon className="w-6 h-6"/>}
               </AvatarFallback>
             </Avatar>
             <div className={cn('rounded-lg px-4 py-3 max-w-[80%]', msg.sender === 'ai' ? 'bg-secondary text-secondary-foreground' : 'bg-primary text-primary-foreground')}>
@@ -266,7 +266,7 @@ export default function ChatScreen({ onSubmit }: ChatScreenProps) {
          {isLoading && isComplete && (
             <div className="flex justify-center items-center gap-3 animate-fade-in-up">
                  <Avatar className="w-8 h-8">
-                    <AvatarFallback className="bg-transparent"><VidyaanLogo className="w-8 h-8"/></AvatarFallback>
+                    <AvatarFallback className="bg-transparent"><VidyatejLogo className="w-8 h-8"/></AvatarFallback>
                 </Avatar>
                 <Loader2 className="animate-spin text-primary" />
             </div>

@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { VidyaanLogo } from '@/components/icons';
+import { VidyatejLogo } from '@/components/icons';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -54,7 +54,7 @@ export default function LoginPage() {
     <Card className="w-full max-w-sm">
       <CardHeader className="space-y-1 text-center">
         <div className="inline-block mx-auto">
-             <VidyaanLogo />
+             <VidyatejLogo />
         </div>
         <CardTitle className="text-2xl">Welcome Back</CardTitle>
         <CardDescription>Enter your email below to login to your account</CardDescription>

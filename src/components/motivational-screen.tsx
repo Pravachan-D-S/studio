@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { VidyaanLogo } from '@/components/icons';
+import { VidyatejLogo } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Info } from 'lucide-react';
@@ -42,11 +42,11 @@ export default function MotivationalScreen({ onStart }: MotivationalScreenProps)
           "relative z-10 text-center transition-all duration-1000 ease-in-out",
           show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
       )}>
-        <VidyaanLogo className="h-40 w-auto mx-auto" />
+        <VidyatejLogo className="h-40 w-auto mx-auto" />
 
         <h2 className="mt-4 text-2xl font-bold tracking-tight">Your AI Career Guide</h2>
         <p className="max-w-md mx-auto mt-2 text-muted-foreground">
-          Get a personalized roadmap to land your dream job.
+          Igniting Bright Futures. Get a personalized roadmap to land your dream job.
         </p>
         
         <div className="mt-8 h-16 flex items-center justify-center">
@@ -68,22 +68,22 @@ export default function MotivationalScreen({ onStart }: MotivationalScreenProps)
                 <DialogTrigger asChild>
                     <Button variant="ghost" className="text-sm text-muted-foreground">
                         <Info className="mr-2 h-4 w-4" />
-                        About Vidyaan
+                        About Vidyatej
                     </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
-                        <DialogTitle>About Vidyaan</DialogTitle>
+                        <DialogTitle>About Vidyatej</DialogTitle>
                         <DialogDescription>
-                            Your AI-powered guide to a successful tech career.
+                            Igniting Bright Futures.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4 text-sm text-muted-foreground">
                        <p>
-                           Vidyaan is an intelligent career counseling platform designed to help students and professionals navigate their career paths with confidence.
+                           Vidyatej is an intelligent career counseling platform designed to help students and professionals navigate their career paths with confidence.
                        </p>
                        <p>
-                           By analyzing your academic background, skills, and career aspirations, our advanced AI generates a personalized, step-by-step roadmap to help you achieve your goals. From identifying skill gaps to suggesting projects and preparing you for interviews, Vidyaan is your personal mentor for success.
+                           By analyzing your academic background, skills, and career aspirations, our advanced AI generates a personalized, step-by-step roadmap to help you achieve your goals. From identifying skill gaps to suggesting projects and preparing you for interviews, Vidyatej is your personal mentor for success.
                        </p>
                     </div>
                 </DialogContent>

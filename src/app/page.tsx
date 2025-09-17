@@ -16,7 +16,7 @@ import ChatScreen from '@/components/chat-screen';
 import LoadingState from '@/components/loading-state';
 import MissingSkillsScreen from '@/components/missing-skills-screen';
 import RoadmapDisplay from '@/components/roadmap-display';
-import { VidyaanLogo } from '@/components/icons';
+import { VidyatejLogo } from '@/components/icons';
 
 type View = 'splash' | 'motivational' | 'chat' | 'loading' | 'missing-skills' | 'results';
 
@@ -125,8 +125,8 @@ export default function Home() {
         <>
           <header className="px-4 lg:px-6 h-16 flex items-center shadow-sm bg-card">
             <div className="flex items-center gap-2">
-              <VidyaanLogo className="h-8 w-auto" />
-              <span className="font-bold text-lg">Vidyaan</span>
+              <VidyatejLogo className="h-8 w-auto" />
+              <span className="font-bold text-lg">Vidyatej</span>
             </div>
           </header>
           <main className="flex-1 p-4 sm:p-6 md:p-8">

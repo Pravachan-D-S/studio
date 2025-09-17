@@ -1,6 +1,6 @@
 'use client';
 
-import { VidyaanLogo } from './icons';
+import { VidyatejLogo } from './icons';
 
 export default function LoadingState() {
   return (
@@ -47,7 +47,7 @@ export default function LoadingState() {
         </svg>
 
         <div className="absolute flex items-center justify-center">
-            <VidyaanLogo className="w-20 h-20 animate-pulse-logo" />
+            <VidyatejLogo className="w-20 h-20 animate-pulse-logo" />
         </div>
       </div>
       <h2 className="mt-6 text-2xl font-bold tracking-tight text-foreground">

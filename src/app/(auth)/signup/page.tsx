@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { VidyaanLogo } from '@/components/icons';
+import { VidyatejLogo } from '@/components/icons';
 
 
 export default function SignupPage() {
@@ -48,7 +48,7 @@ export default function SignupPage() {
     <Card className="w-full max-w-sm">
       <CardHeader className="text-center">
         <div className="inline-block mx-auto">
-             <VidyaanLogo />
+             <VidyatejLogo />
         </div>
         <CardTitle className="text-2xl">Create an account</CardTitle>
         <CardDescription>Enter your email and password to get started.</CardDescription>

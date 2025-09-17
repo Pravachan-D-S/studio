@@ -4,7 +4,7 @@ import type { AnalyzeSkillGapsOutput } from "@/ai/flows/analyze-skill-gaps";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, ArrowRight } from "lucide-react";
-import { VidyaanLogo } from "./icons";
+import { VidyatejLogo } from "./icons";
 
 interface MissingSkillsScreenProps {
     data: AnalyzeSkillGapsOutput;
@@ -17,7 +17,7 @@ export default function MissingSkillsScreen({ data, onProceed }: MissingSkillsSc
     return (
         <div className="flex flex-col min-h-screen bg-background">
             <header className="px-4 lg:px-6 h-16 flex items-center">
-                <VidyaanLogo className="h-8 w-auto" />
+                <VidyatejLogo className="h-8 w-auto" />
             </header>
             <main className="flex-1 flex items-center justify-center p-4">
                 <Card className="w-full max-w-2xl text-center animate-fade-in-up shadow-2xl bg-card">

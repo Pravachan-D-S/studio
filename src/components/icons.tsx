@@ -18,7 +18,7 @@ export function UserIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function VidyaanLogo(props: SVGProps<SVGSVGElement>) {
+export function VidyatejLogo(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
