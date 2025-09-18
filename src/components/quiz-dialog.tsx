@@ -96,8 +96,8 @@ export function QuizDialog({ isOpen, skill, studentData, onClose }: QuizDialogPr
       if (hasAnswered('conceptual')) otherCorrect++;
     }
     
-    // Passing rule: at least 1 MCQ correct + at least 1 other question answered
-    if (mcqCorrect >= 1 && otherCorrect >= 1) {
+    // Passing rule: at least 1 MCQ correct + at least 2 other questions answered
+    if (mcqCorrect >= 1 && otherCorrect >= 2) {
       setQuizState('passed');
     } else {
       setQuizState('failed');

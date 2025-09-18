@@ -88,7 +88,7 @@ const generateQuizFlow = ai.defineFlow(
     return {
         quizType,
         quizData: output!,
-        passingCriteria: "You must answer at least one of the first two MCQs correctly AND at least one of the remaining three questions correctly to pass.",
+        passingCriteria: "You must answer at least one of the first two MCQs correctly AND at least two of the remaining three questions correctly to pass.",
         hints: [
             `Review the fundamental concepts of ${input.skill}.`,
             `Try some practical exercises or tutorials related to ${input.skill}.`,
