@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import type { GeneratePersonalizedRoadmapOutput } from '@/ai/flows/generate-personalized-roadmap';
 import type { FormValues } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -29,16 +29,12 @@ import { QuizDialog } from './quiz-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
 interface RoadmapDisplayProps {
   data: GeneratePersonalizedRoadmapOutput;
   onReset: () => void;
   studentData: FormValues;
-  isSavedRoadmap?: boolean;
-  roadmapName?: string;
-  roadmapId?: string;
 }
 
 const parseList = (text: string | undefined): string[] => {
@@ -148,10 +144,9 @@ const UnlockedChecklist = ({
     );
 };
 
-export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoadmap = false, roadmapName, roadmapId }: RoadmapDisplayProps) {
+export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDisplayProps) {
   const [completedItems, setCompletedItems] = useState<Set<string>>(new Set());
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
-  const { toast } = useToast();
 
   const sections = useMemo(() => {
     return {
@@ -162,33 +157,28 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
     };
   }, [data]);
   
-    const sectionsConfig = useMemo(() => ([
-        { id: 'studentProfile', title: 'Student Profile', items: [
-            `Stream: ${studentData.stream}`,
-            `Specialization: ${studentData.specialization}`,
-            `Year of Study: ${studentData.yearOfStudy}`,
-            `Aiming Career: ${studentData.aimingCareer}`,
-        ]},
-        { id: 'motivationalNudge', title: 'Motivational Nudge', content: data.motivationalNudge },
-        { id: 'skillRoadmap', title: 'Skill Roadmap', items: sections.skillRoadmap, isVerifiable: true, className: 'lg:col-span-1' },
-        { id: 'toolsToMaster', title: 'Tools to Master', items: sections.toolsToMaster, isVerifiable: true, className: 'lg:col-span-1' },
-        { id: 'timeline', title: 'Estimated Timeline', items: parseList(data.timeline), className: 'lg:col-span-1' },
-        { id: 'projects', title: 'Project Ideas', items: sections.projects, isVerifiable: false, className: 'lg:col-span-3' },
-        { id: 'resources', title: 'Learning Resources', items: parseList(data.resources), className: 'lg:col-span-2' },
-        { id: 'careerGrowth', title: 'Career Growth', items: parseList(data.careerGrowth), className: 'lg:col-span-1' },
-        { id: 'jobMarketInsights', title: 'Job Market Insights', items: parseList(data.jobMarketInsights), className: 'lg:col-span-2' },
-        { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', items: sections.resumeInterviewPrep, isVerifiable: false, className: 'lg:col-span-1' },
-    ]), [data, studentData, sections]);
+  const sectionsConfig = useMemo(() => ([
+      { id: 'studentProfile', title: 'Student Profile', items: [
+          `Stream: ${studentData.stream}`,
+          `Specialization: ${studentData.specialization}`,
+          `Year of Study: ${studentData.yearOfStudy}`,
+          `Aiming Career: ${studentData.aimingCareer}`,
+      ]},
+      { id: 'motivationalNudge', title: 'Motivational Nudge', content: data.motivationalNudge },
+      { id: 'skillRoadmap', title: 'Skill Roadmap', items: sections.skillRoadmap, isVerifiable: true },
+      { id: 'toolsToMaster', title: 'Tools to Master', items: sections.toolsToMaster, isVerifiable: true },
+      { id: 'timeline', title: 'Estimated Timeline', items: parseList(data.timeline) },
+      { id: 'projects', title: 'Project Ideas', items: sections.projects, isVerifiable: false },
+      { id: 'resources', title: 'Learning Resources', items: parseList(data.resources) },
+      { id: 'careerGrowth', title: 'Career Growth', items: parseList(data.careerGrowth) },
+      { id: 'jobMarketInsights', title: 'Job Market Insights', items: parseList(data.jobMarketInsights) },
+      { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', items: sections.resumeInterviewPrep, isVerifiable: false },
+  ]), [data, studentData, sections]);
 
 
   const verifiableSkills = useMemo(() => [
     ...sections.skillRoadmap.map((_, i) => `skillRoadmap-${i}`),
     ...sections.toolsToMaster.map((_, i) => `toolsToMaster-${i}`),
-  ], [sections]);
-  
-  const simpleChecklistItems = useMemo(() => [
-    ...sections.projects.map((_, i) => `projects-${i}`),
-    ...sections.resumeInterviewPrep.map((_, i) => `resumeInterviewPrep-${i}`),
   ], [sections]);
 
   const totalVerifiableItems = useMemo(() => verifiableSkills.length, [verifiableSkills]);
@@ -204,14 +194,12 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
     setCompletedItems(newSet);
   };
   
-    const handleDownloadPdf = async () => {
+  const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
 
     const pdf = new jsPDF('p', 'pt', 'a4');
     const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
     const margin = 40;
-    const contentWidth = pdfWidth - (margin * 2);
     let yPos = margin;
 
     const addWatermark = () => {
@@ -222,15 +210,13 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
         pdf.saveGraphicsState();
         pdf.setGState(new (pdf.GState as any)({opacity: 0.05}));
         
-        // Center and rotate the watermark
-        pdf.translate(pdfWidth / 2, pdfHeight / 2);
+        pdf.translate(pdfWidth / 2, pdf.internal.pageSize.getHeight() / 2);
         pdf.rotate(-45);
-        pdf.translate(-(pdfWidth / 2), -(pdfHeight / 2));
+        pdf.translate(-(pdfWidth / 2), -(pdf.internal.pageSize.getHeight() / 2));
 
-        // Scale and position the logo
         const scale = 8;
         const x = pdfWidth / 2 - (12 * scale / 2);
-        const y = pdfHeight / 2 - (12 * scale / 2);
+        const y = pdf.internal.pageSize.getHeight() / 2 - (12 * scale / 2);
         pdf.translate(x, y);
         pdf.scale(scale);
 
@@ -250,12 +236,11 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
     
     addWatermark();
 
-    // Header
     pdf.setFontSize(24).setFont('helvetica', 'bold');
     pdf.text('Vidyatej', margin, yPos);
     yPos += 20;
     pdf.setFontSize(14).setFont('helvetica', 'normal');
-    pdf.text(isSavedRoadmap ? roadmapName || 'Your Saved Roadmap' : 'Your Personalized Career Roadmap', margin, yPos);
+    pdf.text('Your Personalized Career Roadmap', margin, yPos);
     yPos += 20;
     pdf.setDrawColor(200).setLineWidth(1).line(margin, yPos, pdfWidth - margin, yPos);
     yPos += 30;
@@ -264,7 +249,7 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
       const content = section.items || section.content;
       if (!content || (Array.isArray(content) && content.length === 0)) return;
 
-      checkPageBreak(30); // space for section header
+      checkPageBreak(30);
 
       pdf.setFontSize(16).setFont('helvetica', 'bold');
       pdf.text(section.title, margin, yPos);
@@ -274,16 +259,16 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
       
       if (Array.isArray(content)) {
           content.forEach(item => {
-              const lines = pdf.splitTextToSize(item, contentWidth - 15);
+              const lines = pdf.splitTextToSize(item, pdfWidth - margin * 2 - 15);
               const neededHeight = lines.length * 12 + 5;
               checkPageBreak(neededHeight);
               
-              pdf.text('•', margin + 5, yPos + 1); // Bullet point
+              pdf.text('•', margin + 5, yPos + 1);
               pdf.text(lines, margin + 15, yPos);
               yPos += neededHeight;
           });
-      } else { // Motivational Nudge is just a string
-          const lines = pdf.splitTextToSize(`"${content}"`, contentWidth);
+      } else {
+          const lines = pdf.splitTextToSize(`"${content}"`, pdfWidth - margin * 2);
           const neededHeight = lines.length * 12 + 5;
           checkPageBreak(neededHeight);
           pdf.setFont('helvetica', 'italic');
@@ -291,10 +276,9 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
           pdf.setFont('helvetica', 'normal');
           yPos += neededHeight;
       }
-      yPos += 15; // Space after section
+      yPos += 15;
     });
 
-    // Footer
     const pageCount = (pdf as any).internal.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
         pdf.setPage(i);
@@ -302,7 +286,6 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
         pdf.text(`Generated by Vidyatej - Igniting Bright Futures | Page ${i} of ${pageCount}`, margin, pdf.internal.pageSize.getHeight() - 20);
     }
     
-
     pdf.save('Vidyatej-Roadmap.pdf');
     setIsGeneratingPdf(false);
   };
@@ -343,7 +326,7 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
     { id: 'toolsToMaster', title: 'Tools to Master', icon: Wrench, items: sections.toolsToMaster, className: 'lg:col-span-1', isVerifiable: true },
     { id: 'timeline', title: 'Estimated Timeline', icon: Calendar, content: data.timeline, className: 'lg:col-span-1' },
     { id: 'projects', title: 'Project Ideas', icon: FlaskConical, items: sections.projects, className: 'lg:col-span-3', isVerifiable: false },
-    { id: 'resources', title: 'Learning Resources', icon: Lightbulb, content: data.resources, className: 'lg:col-2' },
+    { id: 'resources', title: 'Learning Resources', icon: Lightbulb, content: data.resources, className: 'lg:col-span-2' },
     { id: 'careerGrowth', title: 'Career Growth', icon: TrendingUp, content: data.careerGrowth, className: 'lg:col-span-1' },
     { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', icon: Briefcase, items: sections.resumeInterviewPrep, className: 'lg:col-span-2', isVerifiable: false },
     { id: 'jobMarketInsights', title: 'Job Market Insights', icon: BarChart, content: data.jobMarketInsights, className: 'lg:col-span-1' },
@@ -364,12 +347,10 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
            <h1 className="text-3xl font-extrabold tracking-tight">
-            {isSavedRoadmap ? roadmapName : 'Your Personalized Roadmap'}
+            Your Personalized Roadmap
           </h1>
           <p className="text-muted-foreground">
-            {isSavedRoadmap
-              ? `A detailed plan for a career as a ${studentData.aimingCareer}.`
-              : 'Here is your AI-generated path to becoming a pro.'}
+            Here is your AI-generated path to becoming a pro.
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
@@ -383,7 +364,7 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
                 {isGeneratingPdf ? <Loader2 className="animate-spin mr-2" /> : <Download className="mr-2" />}
                 {isGeneratingPdf ? 'Generating...' : 'Download PDF'}
             </Button>
-            {!isSavedRoadmap && <Button onClick={onReset} variant="outline">Start Over</Button>}
+            <Button onClick={onReset} variant="outline">Start Over</Button>
         </div>
       </div>
 

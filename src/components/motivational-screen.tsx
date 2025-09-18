@@ -85,6 +85,10 @@ export default function MotivationalScreen({ onStart }: MotivationalScreenProps)
                        <p>
                            By analyzing your academic background, skills, and career aspirations, our advanced AI generates a personalized, step-by-step roadmap to help you achieve your goals. From identifying skill gaps to suggesting projects and preparing you for interviews, Vidyatej is your personal mentor for success.
                        </p>
+                       <div className="text-xs text-center pt-2 border-t mt-2">
+                           <p><span className="font-semibold">Founder:</span> Pravachan D S</p>
+                           <p><span className="font-semibold">Co-Founder:</span> Pranav S Handral</p>
+                       </div>
                     </div>
                 </DialogContent>
             </Dialog>
