@@ -24,7 +24,6 @@ import {
   Award,
   Search,
 } from 'lucide-react';
-import { jsPDF } from 'jspdf';
 import { QuizDialog } from './quiz-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -43,7 +42,7 @@ const parseList = (text: string | undefined): string[] => {
 };
 
 const SectionCard = ({ title, icon: Icon, children, className }: { title: string; icon: React.ElementType; children: React.ReactNode; className?: string }) => (
-  <Card className={cn("flex flex-col", className)}>
+  <Card className={cn("flex flex-col print:shadow-none print:border-gray-300", className)}>
     <CardHeader className="flex flex-row items-center gap-3">
       <Icon className="w-6 h-6 text-primary" />
       <CardTitle className="text-lg">{title}</CardTitle>
@@ -61,8 +60,11 @@ const SimpleChecklist = ({ items, sectionId, onToggle, completedItems }: { items
             const isCompleted = completedItems.has(id);
             return (
                 <li key={id} className="flex items-center gap-3">
-                    <Checkbox id={id} checked={isCompleted} onCheckedChange={() => onToggle(id)} />
-                    <Label htmlFor={id} className={cn('flex-1 cursor-pointer', { 'line-through text-muted-foreground': isCompleted, 'text-foreground': !isCompleted })}>{item}</Label>
+                    <Checkbox id={id} checked={isCompleted} onCheckedChange={() => onToggle(id)} className="print:hidden"/>
+                    <Label htmlFor={id} className={cn('flex-1 cursor-pointer', { 'line-through text-muted-foreground': isCompleted, 'text-foreground': !isCompleted })}>
+                       <span className="print:hidden">{item}</span>
+                       <span className="hidden print:inline">{isCompleted ? '✓' : '☐'} {item}</span>
+                    </Label>
                 </li>
             )
         })}
@@ -113,7 +115,8 @@ const UnlockedChecklist = ({
                         'line-through text-green-600': isCompleted,
                         'text-foreground': !isCompleted
                     })}>
-                        {isCompleted && <CheckCircle2 className="inline w-4 h-4 mr-2 text-green-500" />}
+                        {isCompleted && <CheckCircle2 className="inline w-4 h-4 mr-2 text-green-500 print:hidden" />}
+                        <span className="hidden print:inline">{isCompleted ? '✓' : '☐'} </span>
                         {item}
                     </span>
                     {!isCompleted && (
@@ -121,7 +124,7 @@ const UnlockedChecklist = ({
                             size="sm" 
                             variant="outline" 
                             onClick={() => handleVerifyClick(item)}
-                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="opacity-0 group-hover:opacity-100 transition-opacity print:hidden"
                         >
                             <HelpCircle className="w-4 h-4 mr-2" />
                             Verify
@@ -146,7 +149,6 @@ const UnlockedChecklist = ({
 
 export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDisplayProps) {
   const [completedItems, setCompletedItems] = useState<Set<string>>(new Set());
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
   const sections = useMemo(() => {
     return {
@@ -156,25 +158,6 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
       resumeInterviewPrep: parseList(data.resumeInterviewPrep),
     };
   }, [data]);
-  
-  const sectionsConfig = useMemo(() => ([
-      { id: 'studentProfile', title: 'Student Profile', items: [
-          `Stream: ${studentData.stream}`,
-          `Specialization: ${studentData.specialization}`,
-          `Year of Study: ${studentData.yearOfStudy}`,
-          `Aiming Career: ${studentData.aimingCareer}`,
-      ]},
-      { id: 'motivationalNudge', title: 'Motivational Nudge', content: data.motivationalNudge },
-      { id: 'skillRoadmap', title: 'Skill Roadmap', items: sections.skillRoadmap, isVerifiable: true },
-      { id: 'toolsToMaster', title: 'Tools to Master', items: sections.toolsToMaster, isVerifiable: true },
-      { id: 'timeline', title: 'Estimated Timeline', items: parseList(data.timeline) },
-      { id: 'projects', title: 'Project Ideas', items: sections.projects, isVerifiable: false },
-      { id: 'resources', title: 'Learning Resources', items: parseList(data.resources) },
-      { id: 'careerGrowth', title: 'Career Growth', items: parseList(data.careerGrowth) },
-      { id: 'jobMarketInsights', title: 'Job Market Insights', items: parseList(data.jobMarketInsights) },
-      { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', items: sections.resumeInterviewPrep, isVerifiable: false },
-  ]), [data, studentData, sections]);
-
 
   const verifiableSkills = useMemo(() => [
     ...sections.skillRoadmap.map((_, i) => `skillRoadmap-${i}`),
@@ -185,109 +168,19 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
   const completedVerifiableItems = useMemo(() => new Set([...completedItems].filter(item => verifiableSkills.includes(item))), [completedItems, verifiableSkills]);
 
   const handleToggleItem = (itemId: string) => {
-    const newSet = new Set(completedItems);
-    if (newSet.has(itemId)) {
-        newSet.delete(itemId);
-    } else {
-        newSet.add(itemId);
-    }
-    setCompletedItems(newSet);
+    setCompletedItems(prev => {
+        const newSet = new Set(prev);
+        if (newSet.has(itemId)) {
+            newSet.delete(itemId);
+        } else {
+            newSet.add(itemId);
+        }
+        return newSet;
+    });
   };
   
-  const handleDownloadPdf = async () => {
-    setIsGeneratingPdf(true);
-
-    const pdf = new jsPDF('p', 'pt', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const margin = 40;
-    let yPos = margin;
-
-    const addWatermark = () => {
-        const logoPaths = [
-            "M22 10v6M2 10l10-5 10 5-10 5z",
-            "M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"
-        ];
-        pdf.saveGraphicsState();
-        pdf.setGState(new (pdf.GState as any)({opacity: 0.05}));
-        
-        pdf.translate(pdfWidth / 2, pdf.internal.pageSize.getHeight() / 2);
-        pdf.rotate(-45);
-        pdf.translate(-(pdfWidth / 2), -(pdf.internal.pageSize.getHeight() / 2));
-
-        const scale = 8;
-        const x = pdfWidth / 2 - (12 * scale / 2);
-        const y = pdf.internal.pageSize.getHeight() / 2 - (12 * scale / 2);
-        pdf.translate(x, y);
-        pdf.scale(scale);
-
-        pdf.setDrawColor('#000000');
-        pdf.path(logoPaths).stroke();
-
-        pdf.restoreGraphicsState();
-    };
-
-    const checkPageBreak = (neededHeight: number) => {
-      if (yPos + neededHeight > pdf.internal.pageSize.getHeight() - margin) {
-        pdf.addPage();
-        addWatermark();
-        yPos = margin;
-      }
-    };
-    
-    addWatermark();
-
-    pdf.setFontSize(24).setFont('helvetica', 'bold');
-    pdf.text('Vidyatej', margin, yPos);
-    yPos += 20;
-    pdf.setFontSize(14).setFont('helvetica', 'normal');
-    pdf.text('Your Personalized Career Roadmap', margin, yPos);
-    yPos += 20;
-    pdf.setDrawColor(200).setLineWidth(1).line(margin, yPos, pdfWidth - margin, yPos);
-    yPos += 30;
-
-    sectionsConfig.forEach(section => {
-      const content = section.items || section.content;
-      if (!content || (Array.isArray(content) && content.length === 0)) return;
-
-      checkPageBreak(30);
-
-      pdf.setFontSize(16).setFont('helvetica', 'bold');
-      pdf.text(section.title, margin, yPos);
-      yPos += 20;
-
-      pdf.setFontSize(10).setFont('helvetica', 'normal');
-      
-      if (Array.isArray(content)) {
-          content.forEach(item => {
-              const lines = pdf.splitTextToSize(item, pdfWidth - margin * 2 - 15);
-              const neededHeight = lines.length * 12 + 5;
-              checkPageBreak(neededHeight);
-              
-              pdf.text('•', margin + 5, yPos + 1);
-              pdf.text(lines, margin + 15, yPos);
-              yPos += neededHeight;
-          });
-      } else {
-          const lines = pdf.splitTextToSize(`"${content}"`, pdfWidth - margin * 2);
-          const neededHeight = lines.length * 12 + 5;
-          checkPageBreak(neededHeight);
-          pdf.setFont('helvetica', 'italic');
-          pdf.text(lines, margin, yPos);
-          pdf.setFont('helvetica', 'normal');
-          yPos += neededHeight;
-      }
-      yPos += 15;
-    });
-
-    const pageCount = (pdf as any).internal.getNumberOfPages();
-    for (let i = 1; i <= pageCount; i++) {
-        pdf.setPage(i);
-        pdf.setFontSize(8).setTextColor(150);
-        pdf.text(`Generated by Vidyatej - Igniting Bright Futures | Page ${i} of ${pageCount}`, margin, pdf.internal.pageSize.getHeight() - 20);
-    }
-    
-    pdf.save('Vidyatej-Roadmap.pdf');
-    setIsGeneratingPdf(false);
+  const handlePrint = () => {
+    window.print();
   };
 
   const progressPercentage = totalVerifiableItems > 0 ? (completedVerifiableItems.size / totalVerifiableItems) * 100 : 0;
@@ -344,7 +237,7 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
 
   return (
     <div className="space-y-8 animate-in fade-in-50 duration-500">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 print:hidden">
         <div>
            <h1 className="text-3xl font-extrabold tracking-tight">
             Your Personalized Roadmap
@@ -360,15 +253,22 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
                     Find Jobs
                 </Link>
             </Button>
-            <Button onClick={handleDownloadPdf} disabled={isGeneratingPdf} variant="outline">
-                {isGeneratingPdf ? <Loader2 className="animate-spin mr-2" /> : <Download className="mr-2" />}
-                {isGeneratingPdf ? 'Generating...' : 'Download PDF'}
+            <Button onClick={handlePrint} variant="outline">
+                <Download className="mr-2" />
+                Download PDF
             </Button>
             <Button onClick={onReset} variant="outline">Start Over</Button>
         </div>
       </div>
+       <div className="hidden print:block mb-4">
+            <h1 className="text-3xl font-extrabold tracking-tight">Vidyatej Career Roadmap</h1>
+            <p className="text-muted-foreground">
+                Your personalized path to becoming a {studentData.aimingCareer}.
+            </p>
+       </div>
 
-      <Card>
+
+      <Card className="print:hidden">
         <CardHeader>
           <CardTitle className="flex items-center justify-between gap-2">
              <span>Progress Tracker (Verifiable Skills)</span>
