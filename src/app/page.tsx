@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -30,21 +31,23 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && user) {
+    if (loading) {
+      setView('splash');
+      return;
+    }
+
+    if (user) {
       router.replace('/dashboard');
       return;
     }
+    
+    const splashTimer = setTimeout(() => {
+        setView('motivational');
+    }, 3000); 
+
+    return () => clearTimeout(splashTimer);
   }, [user, loading, router]);
 
-  useEffect(() => {
-    if (!loading && !user) {
-        const splashTimer = setTimeout(() => {
-            setView('motivational');
-        }, 3000); 
-
-        return () => clearTimeout(splashTimer);
-    }
-  }, [user, loading]);
 
   if (loading || user) {
     return <SplashScreen />;
