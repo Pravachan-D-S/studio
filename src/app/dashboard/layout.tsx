@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -17,12 +18,14 @@ export default function DashboardLayout({
   const [user, loading] = useAuthState(auth);
   const router = useRouter();
 
-  if (loading) {
-    return <SplashScreen />;
-  }
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace('/login');
+    }
+  }, [user, loading, router]);
 
-  if (!user) {
-    router.replace('/login');
+
+  if (loading || !user) {
     return <SplashScreen />;
   }
 
