@@ -1,7 +1,5 @@
 import { z } from 'zod';
 import { streams, salaryRanges } from './constants';
-import type { GeneratePersonalizedRoadmapOutput } from '@/ai/flows/generate-personalized-roadmap';
-import type { Timestamp } from 'firebase/firestore';
 
 const skillLevels = ['Beginner', 'Intermediate', 'Advanced'] as const;
 
@@ -61,11 +59,5 @@ export const GenerateQuizOutputSchema = z.object({
 });
 export type GenerateQuizOutput = z.infer<typeof GenerateQuizOutputSchema>;
 
-export interface Roadmap {
-    id: string;
-    userId: string;
-    name: string;
-    roadmapData: GeneratePersonalizedRoadmapOutput;
-    studentData: FormValues;
-    createdAt: Timestamp;
-}
+// This was for saved roadmaps, which is removed.
+export interface Roadmap {}

@@ -14,8 +14,6 @@ import type { FormValues, GenerateQuizInput, GenerateQuizOutput, Roadmap } from 
 import {
   generateQuiz,
 } from '@/ai/flows/generate-quiz';
-import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 
 interface RoadmapActionResult {
@@ -33,11 +31,6 @@ interface SkillGapActionResult {
 interface QuizActionResult {
     success: boolean;
     data?: GenerateQuizOutput;
-    error?: string;
-}
-
-interface SaveRoadmapResult {
-    success: boolean;
     error?: string;
 }
 
@@ -93,32 +86,5 @@ export async function generateQuizAction(
     } catch (e: any) {
         console.error(e);
         return { success: false, error: e.message || 'An unknown error occurred.' };
-    }
-}
-
-export async function saveRoadmapAction(
-    roadmapData: GeneratePersonalizedRoadmapOutput, 
-    studentData: FormValues,
-    userId: string,
-    name: string
-): Promise<SaveRoadmapResult> {
-    if (!userId) {
-        return { success: false, error: 'User is not authenticated.' };
-    }
-
-    try {
-        const roadmapToSave: Omit<Roadmap, 'id'> = {
-            userId,
-            name,
-            roadmapData,
-            studentData,
-            createdAt: serverTimestamp(),
-        };
-
-        await addDoc(collection(db, 'roadmaps'), roadmapToSave);
-        return { success: true };
-    } catch (e: any) {
-        console.error('Error saving roadmap: ', e);
-        return { success: false, error: e.message || 'Failed to save roadmap.' };
     }
 }

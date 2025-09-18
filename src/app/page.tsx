@@ -1,10 +1,6 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '@/lib/firebase';
 import type { GeneratePersonalizedRoadmapOutput } from '@/ai/flows/generate-personalized-roadmap';
 import type { AnalyzeSkillGapsOutput } from '@/ai/flows/analyze-skill-gaps';
 import type { FormValues } from '@/lib/types';
@@ -27,31 +23,14 @@ export default function Home() {
   const [missingSkillsData, setMissingSkillsData] = useState<AnalyzeSkillGapsOutput | null>(null);
   const [formData, setFormData] = useState<FormValues | null>(null);
   const { toast } = useToast();
-  const [user, loading] = useAuthState(auth);
-  const router = useRouter();
 
   useEffect(() => {
-    if (loading) {
-      setView('splash');
-      return;
-    }
-
-    if (user) {
-      router.replace('/dashboard');
-      return;
-    }
-    
     const splashTimer = setTimeout(() => {
         setView('motivational');
     }, 3000); 
 
     return () => clearTimeout(splashTimer);
-  }, [user, loading, router]);
-
-
-  if (loading || user) {
-    return <SplashScreen />;
-  }
+  }, []);
 
   const handleStartJourney = () => {
     setView('chat');

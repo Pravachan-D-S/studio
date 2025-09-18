@@ -1,9 +1,8 @@
-
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import type { GeneratePersonalizedRoadmapOutput } from '@/ai/flows/generate-personalized-roadmap';
-import type { FormValues, Roadmap } from '@/lib/types';
+import type { FormValues } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -22,7 +21,6 @@ import {
   Loader2,
   HelpCircle,
   CheckCircle2,
-  Save,
   Award,
   Search,
 } from 'lucide-react';
@@ -31,11 +29,6 @@ import { QuizDialog } from './quiz-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '@/lib/firebase';
-import { SaveRoadmapDialog } from './save-roadmap-dialog';
-import { doc, getDoc, collection, onSnapshot, setDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
@@ -158,8 +151,6 @@ const UnlockedChecklist = ({
 export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoadmap = false, roadmapName, roadmapId }: RoadmapDisplayProps) {
   const [completedItems, setCompletedItems] = useState<Set<string>>(new Set());
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
-  const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
-  const [user] = useAuthState(auth);
   const { toast } = useToast();
 
   const sections = useMemo(() => {
@@ -203,36 +194,6 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
   const totalVerifiableItems = useMemo(() => verifiableSkills.length, [verifiableSkills]);
   const completedVerifiableItems = useMemo(() => new Set([...completedItems].filter(item => verifiableSkills.includes(item))), [completedItems, verifiableSkills]);
 
-
-  useEffect(() => {
-    if (isSavedRoadmap && user && roadmapId) {
-      const progressRef = doc(db, 'users', user.uid, 'progress', roadmapId);
-      const unsubscribe = onSnapshot(progressRef, (docSnap) => {
-        if (docSnap.exists()) {
-          const progressData = docSnap.data();
-          setCompletedItems(new Set(progressData.completedItems || []));
-        }
-      });
-      return () => unsubscribe();
-    }
-  }, [isSavedRoadmap, user, roadmapId]);
-
-  const updateProgressInDb = async (newCompletedSet: Set<string>) => {
-    if (isSavedRoadmap && user && roadmapId) {
-        try {
-            const progressRef = doc(db, 'users', user.uid, 'progress', roadmapId);
-            await setDoc(progressRef, { completedItems: Array.from(newCompletedSet) });
-        } catch (error) {
-            console.error("Failed to save progress:", error);
-            toast({
-                variant: "destructive",
-                title: "Error",
-                description: "Could not save your progress. Please try again.",
-            });
-        }
-    }
-  };
-
   const handleToggleItem = (itemId: string) => {
     const newSet = new Set(completedItems);
     if (newSet.has(itemId)) {
@@ -241,7 +202,6 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
         newSet.add(itemId);
     }
     setCompletedItems(newSet);
-    updateProgressInDb(newSet);
   };
   
     const handleDownloadPdf = async () => {
@@ -419,12 +379,6 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
                     Find Jobs
                 </Link>
             </Button>
-            {user && !isSavedRoadmap && (
-                <Button onClick={() => setIsSaveDialogOpen(true)}>
-                    <Save className="mr-2" />
-                    Save Roadmap
-                </Button>
-            )}
             <Button onClick={handleDownloadPdf} disabled={isGeneratingPdf} variant="outline">
                 {isGeneratingPdf ? <Loader2 className="animate-spin mr-2" /> : <Download className="mr-2" />}
                 {isGeneratingPdf ? 'Generating...' : 'Download PDF'}
@@ -492,16 +446,6 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
           );
         })}
       </div>
-
-       {user && (
-          <SaveRoadmapDialog
-              isOpen={isSaveDialogOpen}
-              onClose={() => setIsSaveDialogOpen(false)}
-              roadmapData={data}
-              studentData={studentData}
-              userId={user.uid}
-            />
-        )}
     </div>
   );
 }
