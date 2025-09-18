@@ -30,7 +30,8 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import { generatePdf } from '@/lib/pdf-generator';
+
 
 interface RoadmapDisplayProps {
   data: GeneratePersonalizedRoadmapOutput;
@@ -151,6 +152,7 @@ const UnlockedChecklist = ({
 
 export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDisplayProps) {
   const [completedItems, setCompletedItems] = useState<Set<string>>(new Set());
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
 
   const sections = useMemo(() => {
     return {
@@ -179,6 +181,18 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
         }
         return newSet;
     });
+  };
+
+   const handleDownloadPdf = () => {
+    setIsDownloadingPdf(true);
+    try {
+        generatePdf(data, studentData);
+    } catch (error) {
+        console.error("Failed to generate PDF", error);
+        alert("Sorry, there was an error generating the PDF. Please try again.");
+    } finally {
+        setIsDownloadingPdf(false);
+    }
   };
   
   const progressPercentage = totalVerifiableItems > 0 ? (completedVerifiableItems.size / totalVerifiableItems) * 100 : 0;
@@ -215,7 +229,7 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     { id: 'motivationalNudge', title: 'Motivational Nudge', icon: Award, content: data.motivationalNudge, className: 'lg:col-span-3' },
     { id: 'skillRoadmap', title: 'Skill Roadmap', icon: List, items: sections.skillRoadmap, className: 'lg:col-span-1', isVerifiable: true },
     { id: 'toolsToMaster', title: 'Tools to Master', icon: Wrench, items: sections.toolsToMaster, className: 'lg:col-span-1', isVerifiable: true },
-    { id: 'timeline', title: 'Estimated Timeline', icon: Calendar, content: data.timeline, className: 'lg:col-span-1' },
+    { id: 'timeline', title: 'Estimated Timeline', icon: Calendar, content: data.timeline, className: 'lg-col-span-1' },
     { id: 'projects', title: 'Project Ideas', icon: FlaskConical, items: sections.projects, className: 'lg:col-span-3', isVerifiable: false },
     { id: 'resources', title: 'Learning Resources', icon: Lightbulb, content: data.resources, className: 'lg:col-span-2' },
     { id: 'careerGrowth', title: 'Career Growth', icon: TrendingUp, content: data.careerGrowth, className: 'lg:col-span-1' },
@@ -251,19 +265,14 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
                     Find Jobs
                 </Link>
             </Button>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button onClick={() => window.print()} variant="outline">
-                    <Printer className="mr-2" />
-                    Print or Save PDF
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>This will open your browser's print dialog. Choose "Save as PDF" as the destination to download.</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+             <Button onClick={handleDownloadPdf} variant="outline" disabled={isDownloadingPdf}>
+                {isDownloadingPdf ? (
+                    <Loader2 className="mr-2 animate-spin" />
+                ) : (
+                    <Download className="mr-2" />
+                )}
+                Download PDF
+            </Button>
             <Button onClick={onReset} variant="outline">Start Over</Button>
         </div>
       </div>
