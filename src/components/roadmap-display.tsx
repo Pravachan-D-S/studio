@@ -24,6 +24,7 @@ import {
   CheckCircle2,
   Save,
   Award,
+  Search,
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { QuizDialog } from './quiz-dialog';
@@ -36,6 +37,7 @@ import { SaveRoadmapDialog } from './save-roadmap-dialog';
 import { doc, getDoc, collection, onSnapshot, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
+import Link from 'next/link';
 
 interface RoadmapDisplayProps {
   data: GeneratePersonalizedRoadmapOutput;
@@ -387,6 +389,16 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
     { id: 'jobMarketInsights', title: 'Job Market Insights', icon: BarChart, content: data.jobMarketInsights, className: 'lg:col-span-1' },
   ];
 
+  const jobsUrl = useMemo(() => {
+    if (!studentData) return '/';
+    const params = new URLSearchParams();
+    params.set('stream', studentData.stream);
+    params.set('specialization', studentData.specialization);
+    params.set('aimingCareer', studentData.aimingCareer);
+    params.set('salaryRange', studentData.salaryRange);
+    return `/jobs?${params.toString()}`;
+  }, [studentData]);
+
   return (
     <div className="space-y-8 animate-in fade-in-50 duration-500">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -400,16 +412,22 @@ export default function RoadmapDisplay({ data, onReset, studentData, isSavedRoad
               : 'Here is your AI-generated path to becoming a pro.'}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+            <Button asChild>
+                <Link href={jobsUrl}>
+                    <Search className="mr-2" />
+                    Find Jobs
+                </Link>
+            </Button>
             {user && !isSavedRoadmap && (
                 <Button onClick={() => setIsSaveDialogOpen(true)}>
                     <Save className="mr-2" />
                     Save Roadmap
                 </Button>
             )}
-            <Button onClick={handleDownloadPdf} disabled={isGeneratingPdf}>
+            <Button onClick={handleDownloadPdf} disabled={isGeneratingPdf} variant="outline">
                 {isGeneratingPdf ? <Loader2 className="animate-spin mr-2" /> : <Download className="mr-2" />}
-                {isGeneratingPdf ? 'Generating...' : 'Download as PDF'}
+                {isGeneratingPdf ? 'Generating...' : 'Download PDF'}
             </Button>
             {!isSavedRoadmap && <Button onClick={onReset} variant="outline">Start Over</Button>}
         </div>
