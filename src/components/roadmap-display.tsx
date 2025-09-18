@@ -23,12 +23,14 @@ import {
   CheckCircle2,
   Award,
   Search,
+  Printer,
 } from 'lucide-react';
 import { QuizDialog } from './quiz-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 interface RoadmapDisplayProps {
   data: GeneratePersonalizedRoadmapOutput;
@@ -179,10 +181,6 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     });
   };
   
-  const handlePrint = () => {
-    window.print();
-  };
-
   const progressPercentage = totalVerifiableItems > 0 ? (completedVerifiableItems.size / totalVerifiableItems) * 100 : 0;
   
   const getNextMilestone = () => {
@@ -253,10 +251,19 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
                     Find Jobs
                 </Link>
             </Button>
-            <Button onClick={handlePrint} variant="outline">
-                <Download className="mr-2" />
-                Download PDF
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button onClick={() => window.print()} variant="outline">
+                    <Printer className="mr-2" />
+                    Print or Save PDF
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>This will open your browser's print dialog. Choose "Save as PDF" as the destination to download.</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <Button onClick={onReset} variant="outline">Start Over</Button>
         </div>
       </div>
