@@ -2,7 +2,8 @@
 'use client';
 
 import { Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { jobsData, type Company } from '@/lib/jobs-data';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -114,8 +115,6 @@ function JobCard({ company, role }: { company: Company, role: string }) {
 
 
 export default function JobsPage() {
-    const router = useRouter();
-
     return (
         <div className="min-h-screen bg-background">
              <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -125,9 +124,11 @@ export default function JobsPage() {
                         <span className="font-bold">Vidyatej Job Matcher</span>
                     </div>
                     <div className="flex flex-1 items-center justify-end space-x-4">
-                        <Button variant="outline" onClick={() => router.back()}>
-                           <ArrowLeft className="mr-2" />
-                           Back to Roadmap
+                        <Button asChild variant="outline">
+                           <Link href="/?from=jobs">
+                             <ArrowLeft className="mr-2" />
+                             Back to Roadmap
+                           </Link>
                         </Button>
                     </div>
                 </div>

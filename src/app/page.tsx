@@ -1,6 +1,8 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import type { GeneratePersonalizedRoadmapOutput } from '@/ai/flows/generate-personalized-roadmap';
 import type { AnalyzeSkillGapsOutput } from '@/ai/flows/analyze-skill-gaps';
 import type { FormValues } from '@/lib/types';
@@ -17,20 +19,35 @@ import { VidyatejLogo } from '@/components/icons';
 
 type View = 'splash' | 'motivational' | 'chat' | 'loading' | 'missing-skills' | 'results';
 
+// Keep state outside of the component to persist it across navigations
+let persistedRoadmapData: GeneratePersonalizedRoadmapOutput | null = null;
+let persistedMissingSkillsData: AnalyzeSkillGapsOutput | null = null;
+let persistedFormData: FormValues | null = null;
+
+
 export default function Home() {
+  const searchParams = useSearchParams();
   const [view, setView] = useState<View>('splash');
-  const [roadmapData, setRoadmapData] = useState<GeneratePersonalizedRoadmapOutput | null>(null);
-  const [missingSkillsData, setMissingSkillsData] = useState<AnalyzeSkillGapsOutput | null>(null);
-  const [formData, setFormData] = useState<FormValues | null>(null);
+  const [roadmapData, setRoadmapData] = useState<GeneratePersonalizedRoadmapOutput | null>(persistedRoadmapData);
+  const [missingSkillsData, setMissingSkillsData] = useState<AnalyzeSkillGapsOutput | null>(persistedMissingSkillsData);
+  const [formData, setFormData] = useState<FormValues | null>(persistedFormData);
   const { toast } = useToast();
 
   useEffect(() => {
-    const splashTimer = setTimeout(() => {
-        setView('motivational');
-    }, 3000); 
+    // This effect runs only once on initial mount
+    const fromJobs = searchParams.get('from') === 'jobs';
+    if (fromJobs && persistedRoadmapData) {
+        // If returning from jobs page and we have data, go directly to results
+        setView('results');
+    } else {
+        // Otherwise, start the normal flow
+        const splashTimer = setTimeout(() => {
+            setView('motivational');
+        }, 3000); 
 
-    return () => clearTimeout(splashTimer);
-  }, []);
+        return () => clearTimeout(splashTimer);
+    }
+  }, []); // Empty dependency array ensures this runs only once
 
   const handleStartJourney = () => {
     setView('chat');
@@ -39,10 +56,12 @@ export default function Home() {
   const handleFormSubmit = async (data: FormValues) => {
     setView('loading');
     setFormData(data);
+    persistedFormData = data; // Persist state
     const result = await analyzeGapsAction(data);
 
     if (result.success && result.data) {
       setMissingSkillsData(result.data);
+      persistedMissingSkillsData = result.data; // Persist state
       setView('missing-skills');
     } else {
       toast({
@@ -69,6 +88,7 @@ export default function Home() {
     
     if (result.success && result.data) {
         setRoadmapData(result.data);
+        persistedRoadmapData = result.data; // Persist state
         setView('results');
     } else {
         toast({
@@ -81,6 +101,11 @@ export default function Home() {
   };
   
   const handleReset = () => {
+    // Clear persisted state
+    persistedRoadmapData = null;
+    persistedMissingSkillsData = null;
+    persistedFormData = null;
+    // Clear component state
     setRoadmapData(null);
     setMissingSkillsData(null);
     setFormData(null);
