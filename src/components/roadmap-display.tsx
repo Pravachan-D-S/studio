@@ -23,7 +23,6 @@ import {
   CheckCircle2,
   Award,
   Search,
-  Printer,
 } from 'lucide-react';
 import { QuizDialog } from './quiz-dialog';
 import { Badge } from '@/components/ui/badge';
@@ -45,7 +44,7 @@ const parseList = (text: string | undefined): string[] => {
 };
 
 const SectionCard = ({ title, icon: Icon, children, className }: { title: string; icon: React.ElementType; children: React.ReactNode; className?: string }) => (
-  <Card className={cn("flex flex-col print:shadow-none print:border-gray-300", className)}>
+  <Card className={cn("flex flex-col", className)}>
     <CardHeader className="flex flex-row items-center gap-3">
       <Icon className="w-6 h-6 text-primary" />
       <CardTitle className="text-lg">{title}</CardTitle>
@@ -63,10 +62,9 @@ const SimpleChecklist = ({ items, sectionId, onToggle, completedItems }: { items
             const isCompleted = completedItems.has(id);
             return (
                 <li key={id} className="flex items-center gap-3">
-                    <Checkbox id={id} checked={isCompleted} onCheckedChange={() => onToggle(id)} className="print:hidden"/>
+                    <Checkbox id={id} checked={isCompleted} onCheckedChange={() => onToggle(id)} />
                     <Label htmlFor={id} className={cn('flex-1 cursor-pointer', { 'line-through text-muted-foreground': isCompleted, 'text-foreground': !isCompleted })}>
-                       <span className="print:hidden">{item}</span>
-                       <span className="hidden print:inline">{isCompleted ? '✓' : '☐'} {item}</span>
+                       {item}
                     </Label>
                 </li>
             )
@@ -118,8 +116,7 @@ const UnlockedChecklist = ({
                         'line-through text-green-600': isCompleted,
                         'text-foreground': !isCompleted
                     })}>
-                        {isCompleted && <CheckCircle2 className="inline w-4 h-4 mr-2 text-green-500 print:hidden" />}
-                        <span className="hidden print:inline">{isCompleted ? '✓' : '☐'} </span>
+                        {isCompleted && <CheckCircle2 className="inline w-4 h-4 mr-2 text-green-500" />}
                         {item}
                     </span>
                     {!isCompleted && (
@@ -127,7 +124,7 @@ const UnlockedChecklist = ({
                             size="sm" 
                             variant="outline" 
                             onClick={() => handleVerifyClick(item)}
-                            className="opacity-0 group-hover:opacity-100 transition-opacity print:hidden"
+                            className="opacity-0 group-hover:opacity-100 transition-opacity"
                         >
                             <HelpCircle className="w-4 h-4 mr-2" />
                             Verify
@@ -249,7 +246,7 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
 
   return (
     <div className="space-y-8 animate-in fade-in-50 duration-500">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 print:hidden">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
            <h1 className="text-3xl font-extrabold tracking-tight">
             Your Personalized Roadmap
@@ -276,15 +273,9 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
             <Button onClick={onReset} variant="outline">Start Over</Button>
         </div>
       </div>
-       <div className="hidden print:block mb-4">
-            <h1 className="text-3xl font-extrabold tracking-tight">Vidyatej Career Roadmap</h1>
-            <p className="text-muted-foreground">
-                Your personalized path to becoming a {studentData.aimingCareer}.
-            </p>
-       </div>
 
 
-      <Card className="print:hidden">
+      <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between gap-2">
              <span>Progress Tracker (Verifiable Skills)</span>
