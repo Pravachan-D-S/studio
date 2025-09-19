@@ -27,8 +27,6 @@ import {
 } from 'lucide-react';
 import { QuizDialog } from './quiz-dialog';
 import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { generatePdf } from '@/lib/pdf-generator';
 
@@ -56,17 +54,13 @@ const SectionCard = ({ title, icon: Icon, children, className }: { title: string
   </Card>
 );
 
-const SimpleChecklist = ({ items, sectionId, onToggle, completedItems }: { items: string[], sectionId: string, onToggle: (id: string) => void, completedItems: Set<string> }) => (
+const BulletedList = ({ items }: { items: string[] }) => (
     <ul className="space-y-3">
         {items.map((item, index) => {
-            const id = `${sectionId}-${index}`;
-            const isCompleted = completedItems.has(id);
             return (
-                <li key={id} className="flex items-center gap-3">
-                    <Checkbox id={id} checked={isCompleted} onCheckedChange={() => onToggle(id)} />
-                    <Label htmlFor={id} className={cn('flex-1 cursor-pointer', { 'line-through text-muted-foreground': isCompleted, 'text-foreground': !isCompleted })}>
-                       {item}
-                    </Label>
+                <li key={index} className="flex items-start gap-3">
+                    <ChevronRight className="w-4 h-4 mt-1 text-primary shrink-0"/>
+                    <span className='flex-1 text-foreground'>{item}</span>
                 </li>
             )
         })}
@@ -310,11 +304,8 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
                         onQuizComplete={(itemId) => handleToggleItem(itemId)}
                     />
                  ) : (
-                    <SimpleChecklist
+                    <BulletedList
                         items={section.items}
-                        sectionId={section.id}
-                        completedItems={completedItems}
-                        onToggle={handleToggleItem}
                     />
                  )
               ) : (
