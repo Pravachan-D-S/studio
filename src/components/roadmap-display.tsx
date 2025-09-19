@@ -29,6 +29,7 @@ import { QuizDialog } from './quiz-dialog';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { generatePdf } from '@/lib/pdf-generator';
+import { Checkbox } from '@/components/ui/checkbox';
 
 
 interface RoadmapDisplayProps {
@@ -67,7 +68,17 @@ const BulletedList = ({ items }: { items: string[] }) => (
     </ul>
 );
 
-const ResumePrepDisplay = ({ content }: { content: string }) => {
+const ResumePrepDisplay = ({ 
+    content, 
+    sectionId, 
+    completedItems, 
+    onToggleItem 
+}: { 
+    content: string,
+    sectionId: string,
+    completedItems: Set<string>,
+    onToggleItem: (itemId: string) => void
+}) => {
     const sections = useMemo(() => {
         const lines = content.split('\n').filter(Boolean);
         const resumeIndex = lines.findIndex(line => line.toLowerCase().includes('resume outline'));
@@ -91,18 +102,36 @@ const ResumePrepDisplay = ({ content }: { content: string }) => {
         return result;
     }, [content]);
 
+    let overallIndex = 0;
+
     return (
         <div className="space-y-4">
             {Object.entries(sections).map(([title, items]) => (
                 <div key={title}>
                     <h4 className="font-semibold text-foreground mb-2">{title}:</h4>
-                    <ul className="space-y-2 pl-4">
-                        {items.map((item, index) => (
-                            <li key={index} className="flex items-start gap-2">
-                                <span className="text-primary mt-1">&bull;</span>
-                                <span className="flex-1 text-foreground">{item}</span>
-                            </li>
-                        ))}
+                    <ul className="space-y-3 pl-2">
+                        {items.map((item, index) => {
+                           const id = `${sectionId}-${overallIndex++}`;
+                           const isCompleted = completedItems.has(id);
+                           return (
+                             <li key={id} className="flex items-start gap-3">
+                                 <Checkbox
+                                     id={id}
+                                     checked={isCompleted}
+                                     onCheckedChange={() => onToggleItem(id)}
+                                     className="mt-1"
+                                 />
+                                 <label
+                                     htmlFor={id}
+                                     className={cn("flex-1 text-foreground cursor-pointer", {
+                                         'line-through text-muted-foreground': isCompleted,
+                                     })}
+                                 >
+                                     {item}
+                                 </label>
+                             </li>
+                           );
+                        })}
                     </ul>
                 </div>
             ))}
@@ -195,17 +224,18 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
       skillRoadmap: parseList(data.skillRoadmap),
       toolsToMaster: parseList(data.toolsToMaster),
       projects: parseList(data.projects),
-      // resumeInterviewPrep is handled separately due to its complex structure
+      resumeInterviewPrep: parseList(data.resumeInterviewPrep)
     };
   }, [data]);
 
-  const verifiableSkills = useMemo(() => [
+  const allVerifiableItems = useMemo(() => [
     ...sections.skillRoadmap.map((_, i) => `skillRoadmap-${i}`),
     ...sections.toolsToMaster.map((_, i) => `toolsToMaster-${i}`),
+    ...sections.resumeInterviewPrep.map((_,i) => `resumeInterviewPrep-${i}`)
   ], [sections]);
 
-  const totalVerifiableItems = useMemo(() => verifiableSkills.length, [verifiableSkills]);
-  const completedVerifiableItems = useMemo(() => new Set([...completedItems].filter(item => verifiableSkills.includes(item))), [completedItems, verifiableSkills]);
+  const totalVerifiableItems = useMemo(() => allVerifiableItems.length, [allVerifiableItems]);
+  const completedVerifiableItems = useMemo(() => new Set([...completedItems].filter(item => allVerifiableItems.includes(item))), [completedItems, allVerifiableItems]);
 
   const handleToggleItem = (itemId: string) => {
     setCompletedItems(prev => {
@@ -237,7 +267,7 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     if (totalVerifiableItems > 0 && completedVerifiableItems.size === totalVerifiableItems) {
       return "You've verified all skills!";
     }
-    const nextSkillId = verifiableSkills.find(id => !completedVerifiableItems.has(id));
+    const nextSkillId = allVerifiableItems.find(id => !completedVerifiableItems.has(id));
     if (!nextSkillId) return "No verifiable skills to track.";
     
     const [sectionKey, indexStr] = nextSkillId.split('-');
@@ -317,7 +347,7 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between gap-2">
-             <span>Progress Tracker (Verifiable Skills)</span>
+             <span>Progress Tracker</span>
              {getProgressBadge()}
           </CardTitle>
         </CardHeader>
@@ -340,7 +370,12 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
             <SectionCard key={section.id} title={section.title} icon={section.icon} className={section.className}>
               {(() => {
                 if (section.id === 'resumeInterviewPrep' && section.content) {
-                    return <ResumePrepDisplay content={section.content} />;
+                    return <ResumePrepDisplay 
+                        content={section.content} 
+                        sectionId={section.id}
+                        completedItems={completedItems}
+                        onToggleItem={handleToggleItem}
+                    />;
                 }
                 if (section.items) {
                     if (section.isVerifiable) {
