@@ -18,49 +18,6 @@ export interface JobsData {
 
 export const jobsData: JobsData = {
    "Engineering": {
-     "CSE / ISE": [
-       {
-         "role": "Software Developer",
-         "companies": [
-           {"company": "Infosys", "package": "3-5 LPA", "website": "https://careers.infosys.com"},
-           {"company": "Wipro", "package": "3-5 LPA", "website": "https://careers.wipro.com/"},
-           {"company": "Accenture", "package": "5-8 LPA", "website": "https://www.accenture.com/in-en/careers"},
-           {"company": "Microsoft", "package": "15-20 LPA", "website": "https://careers.microsoft.com"},
-           {"company": "Adobe", "package": "15-22 LPA", "website": "https://www.adobe.com/careers.html"}
-         ]
-       },
-       {
-         "role": "Data Scientist",
-         "companies": [
-           {"company": "TCS", "package": "6-8 LPA", "website": "https://careers.tcs.com"},
-           {"company": "Infosys", "package": "5-7 LPA", "website": "https://www.infosys.com/careers.html"},
-           {"company": "Amazon", "package": "15-20 LPA", "website": "https://amazon.jobs"},
-           {"company": "Google", "package": "18-25 LPA", "website": "https://careers.google.com/"}
-         ]
-       },
-       {
-         "role": "Cloud Engineer",
-         "companies": [
-          {"company": "Wipro", "package": "5-7 LPA", "website": "https://careers.wipro.com"},
-          {"company": "Capgemini", "package": "5-8 LPA", "website": "https://www.capgemini.com/careers/"}
-        ]
-       },
-       {
-         "role": "AI Engineer",
-         "companies": [
-           {"company": "Amazon", "package": "15-20 LPA", "website": "https://amazon.jobs"},
-           {"company": "NVIDIA", "package": "15-22 LPA", "website": "https://www.nvidia.com/en-us/about-nvidia/careers/"}
-         ]
-       },
-        {
-         "role": "Cybersecurity Analyst",
-         "companies": [
-           {"company": "PwC", "package": "6-9 LPA", "website": "https://www.pwc.in/careers.html"},
-           {"company": "EY", "package": "7-10 LPA", "website": "https://www.ey.com/en_in/careers"},
-           {"company": "KPMG", "package": "8-12 LPA", "website": "https://kpmg.com/in/en/home/careers.html"}
-         ]
-       }
-     ],
      "CSE / ISE / AIML": [
         {
             "role": "AI Engineer",
