@@ -49,24 +49,39 @@ const SectionCard = ({ title, icon: Icon, children, className }: { title: string
       <Icon className="w-6 h-6 text-primary" />
       <CardTitle className="text-lg">{title}</CardTitle>
     </CardHeader>
-    <CardContent className="flex-1 text-sm text-muted-foreground">
+    <CardContent className="flex-1 text-sm text-foreground">
       {children}
     </CardContent>
   </Card>
 );
 
-const BulletedList = ({ items }: { items: string[] }) => (
+const Checklist = ({ items, sectionId, completedItems, onToggleItem }: { items: string[]; sectionId: string; completedItems: Set<string>; onToggleItem: (id: string) => void; }) => (
     <ul className="space-y-3">
         {items.map((item, index) => {
+            const id = `${sectionId}-${index}`;
+            const isCompleted = completedItems.has(id);
             return (
-                <li key={index} className="flex items-start gap-3">
-                    <ChevronRight className="w-4 h-4 mt-1 text-primary shrink-0"/>
-                    <span className='flex-1 text-foreground'>{item}</span>
+                <li key={id} className="flex items-start gap-3">
+                     <Checkbox
+                        id={id}
+                        checked={isCompleted}
+                        onCheckedChange={() => onToggleItem(id)}
+                        className="mt-1"
+                    />
+                    <label
+                        htmlFor={id}
+                        className={cn("flex-1 text-foreground cursor-pointer", {
+                            'line-through text-muted-foreground': isCompleted,
+                        })}
+                    >
+                        {item}
+                    </label>
                 </li>
             )
         })}
     </ul>
 );
+
 
 const ResumePrepDisplay = ({ 
     content, 
@@ -224,15 +239,23 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
       skillRoadmap: parseList(data.skillRoadmap),
       toolsToMaster: parseList(data.toolsToMaster),
       projects: parseList(data.projects),
-      resumeInterviewPrep: parseList(data.resumeInterviewPrep)
+      resumeInterviewPrep: data.resumeInterviewPrep,
     };
   }, [data]);
 
-  const allVerifiableItems = useMemo(() => [
-    ...sections.skillRoadmap.map((_, i) => `skillRoadmap-${i}`),
-    ...sections.toolsToMaster.map((_, i) => `toolsToMaster-${i}`),
-    ...sections.resumeInterviewPrep.map((_,i) => `resumeInterviewPrep-${i}`)
-  ], [sections]);
+  const allVerifiableItems = useMemo(() => {
+    const resumeItems = (sections.resumeInterviewPrep?.split('\n').filter(Boolean).length || 0) > 4 
+      ? Array.from({length: sections.resumeInterviewPrep.split('\n').filter(Boolean).length - 2}, (_, i) => `resumeInterviewPrep-${i}`) 
+      : [];
+      
+    return [
+      ...sections.skillRoadmap.map((_, i) => `skillRoadmap-${i}`),
+      ...sections.toolsToMaster.map((_, i) => `toolsToMaster-${i}`),
+      ...sections.projects.map((_, i) => `projects-${i}`),
+      ...resumeItems,
+    ]
+  }, [sections]);
+  
 
   const totalVerifiableItems = useMemo(() => allVerifiableItems.length, [allVerifiableItems]);
   const completedVerifiableItems = useMemo(() => new Set([...completedItems].filter(item => allVerifiableItems.includes(item))), [completedItems, allVerifiableItems]);
@@ -273,7 +296,8 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     const [sectionKey, indexStr] = nextSkillId.split('-');
     const index = parseInt(indexStr, 10);
     // @ts-ignore
-    const itemText = sections[sectionKey][index];
+    const items = sectionKey === 'resumeInterviewPrep' ? parseList(sections.resumeInterviewPrep) : sections[sectionKey];
+    const itemText = items[index] || '';
     return itemText.length > 40 ? itemText.substring(0, 40) + '...' : itemText;
   };
 
@@ -296,10 +320,10 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     { id: 'skillRoadmap', title: 'Skill Roadmap', icon: List, items: sections.skillRoadmap, className: 'lg:col-span-1', isVerifiable: true },
     { id: 'toolsToMaster', title: 'Tools to Master', icon: Wrench, items: sections.toolsToMaster, className: 'lg:col-span-1', isVerifiable: true },
     { id: 'timeline', title: 'Estimated Timeline', icon: Calendar, content: data.timeline, className: 'lg-col-span-1' },
-    { id: 'projects', title: 'Project Ideas', icon: FlaskConical, items: sections.projects, className: 'lg:col-span-3' },
+    { id: 'projects', title: 'Project Ideas', icon: FlaskConical, items: sections.projects, className: 'lg:col-span-3', isChecklist: true },
     { id: 'resources', title: 'Learning Resources', icon: Lightbulb, content: data.resources, className: 'lg:col-span-2' },
     { id: 'careerGrowth', title: 'Career Growth', icon: TrendingUp, content: data.careerGrowth, className: 'lg:col-span-1' },
-    { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', icon: Briefcase, content: data.resumeInterviewPrep, className: 'lg:col-span-2' },
+    { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', icon: Briefcase, content: sections.resumeInterviewPrep, className: 'lg:col-span-2' },
     { id: 'jobMarketInsights', title: 'Job Market Insights', icon: BarChart, content: data.jobMarketInsights, className: 'lg:col-span-1' },
   ];
 
@@ -377,6 +401,14 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
                         onToggleItem={handleToggleItem}
                     />;
                 }
+                 if (section.items && section.isChecklist) {
+                     return <Checklist 
+                                items={section.items} 
+                                sectionId={section.id} 
+                                completedItems={completedItems} 
+                                onToggleItem={handleToggleItem}
+                            />;
+                 }
                 if (section.items) {
                     if (section.isVerifiable) {
                         return (
@@ -389,17 +421,17 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
                             />
                         );
                     }
-                    return <BulletedList items={section.items} />;
+                    return <Checklist items={section.items} sectionId={section.id} completedItems={completedItems} onToggleItem={handleToggleItem} />;
                 }
                 if (section.id === 'motivationalNudge') {
-                    return <p className="italic">"{section.content}"</p>;
+                    return <p className="italic text-foreground">"{section.content}"</p>;
                 }
                 return (
                     <ul className="space-y-2">
                         {parseList(section.content).map((line, index) => (
                             <li key={index} className="flex items-start gap-2">
                                 <ChevronRight className="w-4 h-4 mt-1 text-primary shrink-0"/>
-                                <span>{line}</span>
+                                <span className="text-foreground">{line}</span>
                             </li>
                         ))}
                     </ul>
