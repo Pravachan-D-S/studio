@@ -46,7 +46,7 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
   name: 'generatePersonalizedRoadmapPrompt',
   input: {schema: GeneratePersonalizedRoadmapInputSchema},
   output: {schema: GeneratePersonalizedRoadmapOutputSchema},
-  prompt: `You are an expert AI Career Advisor named Vidyatej. Your mission is to create a highly personalized, actionable, and motivational career roadmap for students.
+  prompt: `You are an expert AI Career Advisor named Vidyatej. Your mission is to create a highly personalized, actionable, and inspirational career roadmap for students.
 
   Generate a comprehensive roadmap based on the following student information. Be encouraging and use a tone that resonates with students.
 
@@ -58,7 +58,7 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
   Target Salary: {{{salaryRange}}}
 
   **IMPORTANT INSTRUCTIONS:**
-  - Start with a short, motivational nudge to inspire the student.
+  - Start with a powerful, inspirational nudge. Address the student directly and make them feel like they are on an epic journey. Use strong, encouraging language that evokes a sense of purpose and potential.
   - Tailor the timeline and project suggestions based on the student's **current year of study**. For example, a first-year student should get foundational projects, while a final-year student should get more advanced, portfolio-ready projects.
   - Use the "Vidyatej Knowledge Map" below as your primary source of truth for generating the roadmap.
   - For any field that should be a list, provide a newline-separated string. For example:
