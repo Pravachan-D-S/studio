@@ -73,8 +73,7 @@ function JobResults() {
                 <AlertTitle>No Companies Match Your Salary Criteria</AlertTitle>
                 <AlertDescription>
                     No companies for the role of "{aimingCareer}" matched your target salary of {salaryRange}. Consider adjusting your salary expectations or exploring other roles.
-                </Aler
-                tDescription>
+                </AlertDescription>
             </Alert>
         )
     }
