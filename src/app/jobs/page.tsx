@@ -2,7 +2,7 @@
 'use client';
 
 import { Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { jobsData, type Company } from '@/lib/jobs-data';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -116,7 +116,6 @@ function JobCard({ company, role }: { company: Company, role: string }) {
 
 
 export default function JobsPage() {
-    const router = useRouter();
 
     return (
         <div className="min-h-screen bg-background">
