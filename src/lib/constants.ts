@@ -20,7 +20,7 @@ export const skillLevels = ['Beginner', 'Intermediate', 'Advanced'] as const;
 
 export const aimingCareers: { [key: string]: { [key: string]: string[] } | string[] } = {
     Engineering: {
-        'CSE / ISE / AIML': ['AI Engineer', 'Data Scientist', 'Machine Learning Engineer', 'AI Researcher'],
+        'CSE / ISE / AIML': ['Data Scientist', 'Web Developer', 'AI Engineer', 'Cloud Engineer', 'Software Developer', 'Cybersecurity Analyst'],
         'ECE': ['Embedded Systems Engineer', 'VLSI Engineer', 'IoT Developer', 'Telecommunications Engineer', 'Signal Processing Engineer'],
         'Mechanical': ['Automobile Engineer', 'Robotics Engineer', 'Design Engineer (CAD/CAM)', 'Manufacturing Engineer', 'Thermal Systems Engineer'],
         'Civil': ['Structural Engineer', 'Urban Planner', 'Construction Manager', 'Environmental Engineer', 'Surveying & GIS Specialist'],

@@ -1,4 +1,3 @@
-
 export interface Company {
     company: string;
     package: string;
@@ -40,6 +39,34 @@ export const jobsData: JobsData = {
             "companies": [
                 {"company": "Microsoft", "package": "15-20 LPA", "website": "https://careers.microsoft.com"},
                 {"company": "Adobe", "package": "15-22 LPA", "website": "https://www.adobe.com/careers.html"}
+            ]
+        },
+        {
+            "role": "Web Developer",
+            "companies": [
+                {"company": "Accenture", "package": "5-8 LPA", "website": "https://www.accenture.com/in-en/careers"},
+                {"company": "Capgemini", "package": "4-7 LPA", "website": "https://www.capgemini.com/careers/"}
+            ]
+        },
+        {
+            "role": "Cloud Engineer",
+            "companies": [
+                {"company": "Deloitte", "package": "7-10 LPA", "website": "https://careers.deloitte.com"},
+                {"company": "HCL", "package": "6-9 LPA", "website": "https://www.hcltech.com/careers"}
+            ]
+        },
+        {
+            "role": "Software Developer",
+            "companies": [
+                {"company": "Oracle", "package": "8-12 LPA", "website": "https://www.oracle.com/careers/"},
+                {"company": "SAP", "package": "9-14 LPA", "website": "https://jobs.sap.com/"}
+            ]
+        },
+        {
+            "role": "Cybersecurity Analyst",
+            "companies": [
+                {"company": "PwC", "package": "6-10 LPA", "website": "https://www.pwc.in/careers.html"},
+                {"company": "KPMG", "package": "7-11 LPA", "website": "https://kpmg.com/in/en/home/careers.html"}
             ]
         }
      ],

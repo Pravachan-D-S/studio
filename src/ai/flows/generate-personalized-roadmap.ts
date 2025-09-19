@@ -72,7 +72,7 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
   **Vidyatej Knowledge Map (Starter Version)**
 
   **Engineering**
-  1.  **CSE / ISE**
+  1.  **CSE / ISE / AIML**
       *   **Data Scientist**
           *   **Skills:** Python, Statistics, Machine Learning, Deep Learning, SQL
           *   **Tools:** TensorFlow, PyTorch, Scikit-learn, Jupyter
@@ -94,6 +94,27 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
           *   **Projects:** Generative Art with GANs, AI-powered Recommendation System, Automated Content Summarizer
           *   **Job Market:** Very high demand in tech, research, and product innovation.
           *   **Timeline:** 2–3 years
+      *   **Cloud Engineer**
+          *   **Skills:** AWS/GCP/Azure, Docker, Kubernetes, Terraform, CI/CD
+          *   **Tools:** Jenkins, Ansible, GitLab CI, Prometheus
+          *   **Resources:** A Cloud Guru, AWS Certified Cloud Practitioner, KodeKloud
+          *   **Projects:** Deploy a multi-service app on Kubernetes, Automate infrastructure with Terraform, CI/CD pipeline for a web app.
+          *   **Job Market:** Extremely high demand across all industries.
+          *   **Timeline:** 1-2 years
+      *   **Software Developer**
+          *   **Skills:** Java/C++/Python, Data Structures, Algorithms, System Design
+          *   **Tools:** Git, Docker, IntelliJ/VS Code, JUnit
+          *   **Resources:** LeetCode, GeeksforGeeks, "Cracking the Coding Interview" book
+          *   **Projects:** Library Management System, Online Chess Game, Scalable URL Shortener
+          *   **Job Market:** Consistently high demand in product-based companies.
+          *   **Timeline:** 1-2 years
+      *   **Cybersecurity Analyst**
+          *   **Skills:** Networking, Linux, Cryptography, Penetration Testing, SIEM
+          *   **Tools:** Wireshark, Kali Linux, Metasploit, Splunk
+          *   **Resources:** Cybrary, TryHackMe, CompTIA Security+
+          *   **Projects:** Build a home lab for pentesting, Analyze network traffic for anomalies, Secure a vulnerable web application
+          *   **Job Market:** Rapidly growing field with high demand.
+          *   **Timeline:** 2-3 years
   2.  **ECE**
       *   **Embedded Systems Engineer**
           *   **Skills:** C, C++, Microcontrollers, RTOS, Digital Electronics
