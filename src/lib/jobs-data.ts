@@ -18,7 +18,7 @@ export interface JobsData {
 
 export const jobsData: JobsData = {
    "Engineering": {
-     "CSE": [
+     "CSE / ISE": [
        {
          "role": "Data Scientist",
          "companies": [
@@ -49,7 +49,7 @@ export const jobsData: JobsData = {
      ],
      "ECE": [
        {
-         "role": "Embedded Engineer",
+         "role": "Embedded Systems Engineer",
          "companies": [
            {"company": "Bosch", "package": "4-6 LPA", "website": "https://www.bosch.in/careers/"},
            {"company": "Continental", "package": "6-9 LPA", "website": "https://www.continental-jobs.com/"},
@@ -66,7 +66,7 @@ export const jobsData: JobsData = {
          ]
        },
        {
-         "role": "Telecom Engineer",
+         "role": "Telecommunications Engineer",
          "companies": [
            {"company": "Ericsson", "package": "4-7 LPA", "website": "https://www.ericsson.com/en/careers"},
            {"company": "Nokia Networks", "package": "6-9 LPA", "website": "https://www.nokia.com/about-us/careers/"},
@@ -84,7 +84,7 @@ export const jobsData: JobsData = {
          ]
        },
        {
-         "role": "Electrical Design Engineer",
+         "role": "Electrical Engineer",
          "companies": [
            {"company": "Schneider Electric", "package": "4-6 LPA", "website": "https://www.se.com/in/en/about-us/careers/overview.jsp"},
            {"company": "L&T", "package": "5-7 LPA", "website": "https://www.larsentoubro.com/corporate/careers/"},
@@ -94,7 +94,7 @@ export const jobsData: JobsData = {
      ],
      "Mechanical": [
        {
-         "role": "Design Engineer",
+         "role": "Automobile Engineer",
          "companies": [
            {"company": "Ashok Leyland", "package": "3-5 LPA", "website": "https://www.ashokleyland.com/en/careers"},
            {"company": "TVS Motors", "package": "3-5 LPA", "website": "https://www.tvsmotor.com/careers"},
@@ -103,7 +103,7 @@ export const jobsData: JobsData = {
          ]
        },
        {
-         "role": "Manufacturing Engineer",
+         "role": "Robotics Engineer",
          "companies": [
            {"company": "Bosch", "package": "4-6 LPA", "website": "https://www.bosch.in/careers/"},
            {"company": "Hyundai", "package": "5-7 LPA", "website": "https://www.hyundai.com/worldwide/en/company/careers"},
@@ -113,7 +113,7 @@ export const jobsData: JobsData = {
      ],
      "Civil": [
        {
-         "role": "Site Engineer",
+         "role": "Structural Engineer",
          "companies": [
            {"company": "L&T Construction", "package": "3-5 LPA", "website": "https://www.larsentoubro.com/corporate/careers/"},
            {"company": "Shapoorji Pallonji", "package": "4-6 LPA", "website": "https://www.shapoorjipallonji.com/careers"},
@@ -121,7 +121,7 @@ export const jobsData: JobsData = {
          ]
        },
        {
-         "role": "Structural Engineer",
+         "role": "Urban Planner",
          "companies": [
            {"company": "AECOM", "package": "5-8 LPA", "website": "https://aecom.com/careers/"},
            {"company": "Tata Projects", "package": "6-9 LPA", "website": "https://www.tataprojects.com/our-dna/work-with-us/"},
@@ -133,7 +133,7 @@ export const jobsData: JobsData = {
    "MBA": {
      "Finance": [
        {
-         "role": "Finance Analyst",
+         "role": "Financial Analyst",
          "companies": [
            {"company": "HDFC Bank", "package": "5-7 LPA", "website": "https://www.hdfcbank.com/careers"},
            {"company": "ICICI Bank", "package": "6-8 LPA", "website": "https://www.icicicareers.com/"},
@@ -152,7 +152,7 @@ export const jobsData: JobsData = {
      ],
      "Marketing": [
        {
-         "role": "Marketing Manager",
+         "role": "Digital Marketing Manager",
          "companies": [
            {"company": "Hindustan Unilever", "package": "8-12 LPA", "website": "https://www.hul.co.in/careers/"},
            {"company": "P&G", "package": "10-14 LPA", "website": "https://www.pgcareers.com/"},
@@ -180,7 +180,7 @@ export const jobsData: JobsData = {
      ]
    },
    "MCA": {
-     "Software": [
+     "Software Development": [
        {
          "role": "Full Stack Developer",
          "companies": [
@@ -201,6 +201,26 @@ export const jobsData: JobsData = {
      ]
    },
    "Diploma": {
+     "Computer Science": [
+       {
+         "role": "Junior Web Developer",
+         "companies": [
+           {"company": "Infosys", "package": "2.5-3.5 LPA", "website": "https://www.infosys.com/careers.html"},
+           {"company": "TCS", "package": "3-4 LPA", "website": "https://www.tcs.com/careers"},
+           {"company": "Wipro", "package": "3-4 LPA", "website": "https://careers.wipro.com/"}
+         ]
+       }
+     ],
+     "Electronics": [
+        {
+          "role": "Technician / IoT Developer",
+          "companies": [
+             {"company": "BHEL", "package": "2.5-3.5 LPA", "website": "https://www.bhel.com/career-gateway"},
+             {"company": "L&T", "package": "3-4 LPA", "website": "https://www.larsentoubro.com/corporate/careers/"},
+             {"company": "Siemens", "package": "3.5-5 LPA", "website": "https://www.siemens.com/global/en/company/jobs.html"}
+          ]
+        }
+     ],
      "Mechanical": [
        {
          "role": "Technician",
@@ -211,29 +231,9 @@ export const jobsData: JobsData = {
          ]
        }
      ],
-     "Electrical": [
-       {
-         "role": "Junior Electrical Engineer",
-         "companies": [
-           {"company": "BHEL", "package": "2.5-3.5 LPA", "website": "https://www.bhel.com/career-gateway"},
-           {"company": "L&T", "package": "3-4 LPA", "website": "https://www.larsentoubro.com/corporate/careers/"},
-           {"company": "Siemens", "package": "3.5-5 LPA", "website": "https://www.siemens.com/global/en/company/jobs.html"}
-         ]
-       }
-     ],
-     "Computer": [
-       {
-         "role": "Junior Developer",
-         "companies": [
-           {"company": "Infosys", "package": "2.5-3.5 LPA", "website": "https://www.infosys.com/careers.html"},
-           {"company": "TCS", "package": "3-4 LPA", "website": "https://www.tcs.com/careers"},
-           {"company": "Wipro", "package": "3-4 LPA", "website": "https://careers.wipro.com/"}
-         ]
-       }
-     ],
      "Civil": [
        {
-         "role": "Junior Site Engineer",
+         "role": "Site Supervisor",
          "companies": [
            {"company": "L&T Construction", "package": "2.5-3.5 LPA", "website": "https://www.larsentoubro.com/corporate/careers/"},
            {"company": "Sobha Developers", "package": "3-4 LPA", "website": "https://www.sobha.com/careers/"},
