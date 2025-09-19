@@ -87,7 +87,6 @@ export default function MotivationalScreen({ onStart }: MotivationalScreenProps)
                        </p>
                        <div className="text-xs text-center pt-2 border-t mt-2">
                            <p><span className="font-semibold">Founder:</span> Pravachan D S</p>
-                           <p><span className="font-semibold">Co-Founder:</span> Pranav S Handral</p>
                        </div>
                     </div>
                 </DialogContent>
