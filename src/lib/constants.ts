@@ -1,7 +1,7 @@
 export const streams = ['Engineering', 'MBA', 'MCA', 'Diploma'];
 
 export const specializations: { [key: string]: string[] } = {
-  Engineering: ['CSE / ISE', 'ECE', 'Mechanical', 'Civil', 'EEE'],
+  Engineering: ['CSE / ISE', 'CSE / ISE / AIML', 'ECE', 'Mechanical', 'Civil', 'EEE'],
   MBA: ['Finance', 'Marketing', 'HR', 'Operations', 'Analytics'],
   MCA: ['Software Development', 'Data Science', 'Networking', 'Cybersecurity'],
   Diploma: ['Computer Science', 'Electronics', 'Mechanical', 'Civil'],
@@ -21,6 +21,7 @@ export const skillLevels = ['Beginner', 'Intermediate', 'Advanced'] as const;
 export const aimingCareers: { [key: string]: { [key: string]: string[] } | string[] } = {
     Engineering: {
         'CSE / ISE': ['Data Scientist', 'Web Developer', 'AI Engineer', 'Cloud Engineer', 'Software Developer', 'Cybersecurity Analyst'],
+        'CSE / ISE / AIML': ['AI Engineer', 'Data Scientist', 'Machine Learning Engineer', 'AI Researcher'],
         'ECE': ['Embedded Systems Engineer', 'VLSI Engineer', 'IoT Developer', 'Telecommunications Engineer', 'Signal Processing Engineer'],
         'Mechanical': ['Automobile Engineer', 'Robotics Engineer', 'Design Engineer (CAD/CAM)', 'Manufacturing Engineer', 'Thermal Systems Engineer'],
         'Civil': ['Structural Engineer', 'Urban Planner', 'Construction Manager', 'Environmental Engineer', 'Surveying & GIS Specialist'],

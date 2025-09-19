@@ -51,7 +51,40 @@ export const jobsData: JobsData = {
            {"company": "Amazon", "package": "15-20 LPA", "website": "https://amazon.jobs"},
            {"company": "NVIDIA", "package": "15-22 LPA", "website": "https://www.nvidia.com/en-us/about-nvidia/careers/"}
          ]
+       },
+        {
+         "role": "Cybersecurity Analyst",
+         "companies": [
+           {"company": "PwC", "package": "6-9 LPA", "website": "https://www.pwc.in/careers.html"},
+           {"company": "EY", "package": "7-10 LPA", "website": "https://www.ey.com/en_in/careers"},
+           {"company": "KPMG", "package": "8-12 LPA", "website": "https://kpmg.com/in/en/home/careers.html"}
+         ]
        }
+     ],
+     "CSE / ISE / AIML": [
+        {
+            "role": "AI Engineer",
+            "companies": [
+              {"company": "Amazon", "package": "15-20 LPA", "website": "https://amazon.jobs"},
+              {"company": "NVIDIA", "package": "15-22 LPA", "website": "https://www.nvidia.com/en-us/about-nvidia/careers/"},
+              {"company": "Google", "package": "18-25 LPA", "website": "https://careers.google.com/"}
+            ]
+        },
+        {
+            "role": "Data Scientist",
+            "companies": [
+              {"company": "TCS", "package": "6-8 LPA", "website": "https://careers.tcs.com"},
+              {"company": "Infosys", "package": "5-7 LPA", "website": "https://www.infosys.com/careers.html"},
+              {"company": "Wipro", "package": "5-7 LPA", "website": "https://careers.wipro.com/"},
+            ]
+        },
+        {
+            "role": "Machine Learning Engineer",
+            "companies": [
+                {"company": "Microsoft", "package": "15-20 LPA", "website": "https://careers.microsoft.com"},
+                {"company": "Adobe", "package": "15-22 LPA", "website": "https://www.adobe.com/careers.html"}
+            ]
+        }
      ],
      "ECE": [
        {
@@ -168,7 +201,7 @@ export const jobsData: JobsData = {
         {
             "role": "Technician",
             "companies": [
-                {"company": "TVS", "package": "2-3 LPA", "website": "https://www.tvsmotor.com/careers"}
+                {"company": "TVS", "package": "2-3 LPA", "website": "https://careers.tvsmotor.com"}
             ]
         }
      ],
