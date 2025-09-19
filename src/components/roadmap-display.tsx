@@ -67,6 +67,50 @@ const BulletedList = ({ items }: { items: string[] }) => (
     </ul>
 );
 
+const ResumePrepDisplay = ({ content }: { content: string }) => {
+    const sections = useMemo(() => {
+        const lines = content.split('\n').filter(Boolean);
+        const resumeIndex = lines.findIndex(line => line.toLowerCase().includes('resume outline'));
+        const questionsIndex = lines.findIndex(line => line.toLowerCase().includes('common interview questions'));
+
+        let resumeItems: string[] = [];
+        let questionItems: string[] = [];
+
+        if (resumeIndex !== -1 && questionsIndex !== -1) {
+            resumeItems = lines.slice(resumeIndex + 1, questionsIndex).map(s => s.replace(/^-|\*/, '').trim()).filter(Boolean);
+            questionItems = lines.slice(questionsIndex + 1).map(s => s.replace(/^-|\*/, '').trim()).filter(Boolean);
+        } else {
+            // Fallback for unexpected format
+            return { 'Resume & Interview Prep': lines };
+        }
+
+        const result: { [key: string]: string[] } = {};
+        if (resumeItems.length > 0) result['Resume Outline'] = resumeItems;
+        if (questionItems.length > 0) result['Common Interview Questions'] = questionItems;
+
+        return result;
+    }, [content]);
+
+    return (
+        <div className="space-y-4">
+            {Object.entries(sections).map(([title, items]) => (
+                <div key={title}>
+                    <h4 className="font-semibold text-foreground mb-2">{title}:</h4>
+                    <ul className="space-y-2 pl-4">
+                        {items.map((item, index) => (
+                            <li key={index} className="flex items-start gap-2">
+                                <span className="text-primary mt-1">&bull;</span>
+                                <span className="flex-1 text-foreground">{item}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            ))}
+        </div>
+    );
+};
+
+
 const UnlockedChecklist = ({ 
   items, 
   sectionId, 
@@ -151,7 +195,7 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
       skillRoadmap: parseList(data.skillRoadmap),
       toolsToMaster: parseList(data.toolsToMaster),
       projects: parseList(data.projects),
-      resumeInterviewPrep: parseList(data.resumeInterviewPrep),
+      // resumeInterviewPrep is handled separately due to its complex structure
     };
   }, [data]);
 
@@ -222,10 +266,10 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
     { id: 'skillRoadmap', title: 'Skill Roadmap', icon: List, items: sections.skillRoadmap, className: 'lg:col-span-1', isVerifiable: true },
     { id: 'toolsToMaster', title: 'Tools to Master', icon: Wrench, items: sections.toolsToMaster, className: 'lg:col-span-1', isVerifiable: true },
     { id: 'timeline', title: 'Estimated Timeline', icon: Calendar, content: data.timeline, className: 'lg-col-span-1' },
-    { id: 'projects', title: 'Project Ideas', icon: FlaskConical, items: sections.projects, className: 'lg:col-span-3', isVerifiable: false },
+    { id: 'projects', title: 'Project Ideas', icon: FlaskConical, items: sections.projects, className: 'lg:col-span-3' },
     { id: 'resources', title: 'Learning Resources', icon: Lightbulb, content: data.resources, className: 'lg:col-span-2' },
     { id: 'careerGrowth', title: 'Career Growth', icon: TrendingUp, content: data.careerGrowth, className: 'lg:col-span-1' },
-    { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', icon: Briefcase, items: sections.resumeInterviewPrep, className: 'lg:col-span-2', isVerifiable: false },
+    { id: 'resumeInterviewPrep', title: 'Resume & Interview Prep', icon: Briefcase, content: data.resumeInterviewPrep, className: 'lg:col-span-2' },
     { id: 'jobMarketInsights', title: 'Job Market Insights', icon: BarChart, content: data.jobMarketInsights, className: 'lg:col-span-1' },
   ];
 
@@ -294,34 +338,38 @@ export default function RoadmapDisplay({ data, onReset, studentData }: RoadmapDi
 
           return (
             <SectionCard key={section.id} title={section.title} icon={section.icon} className={section.className}>
-              {section.items ? (
-                 section.isVerifiable ? (
-                    <UnlockedChecklist 
-                        items={section.items} 
-                        sectionId={section.id} 
-                        completedItems={completedItems} 
-                        studentData={studentData}
-                        onQuizComplete={(itemId) => handleToggleItem(itemId)}
-                    />
-                 ) : (
-                    <BulletedList
-                        items={section.items}
-                    />
-                 )
-              ) : (
-                 section.id === 'motivationalNudge' ? (
-                     <p className="italic">"{section.content}"</p>
-                 ) : (
+              {(() => {
+                if (section.id === 'resumeInterviewPrep' && section.content) {
+                    return <ResumePrepDisplay content={section.content} />;
+                }
+                if (section.items) {
+                    if (section.isVerifiable) {
+                        return (
+                            <UnlockedChecklist 
+                                items={section.items} 
+                                sectionId={section.id} 
+                                completedItems={completedItems} 
+                                studentData={studentData}
+                                onQuizComplete={(itemId) => handleToggleItem(itemId)}
+                            />
+                        );
+                    }
+                    return <BulletedList items={section.items} />;
+                }
+                if (section.id === 'motivationalNudge') {
+                    return <p className="italic">"{section.content}"</p>;
+                }
+                return (
                     <ul className="space-y-2">
-                    {parseList(section.content).map((line, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                            <ChevronRight className="w-4 h-4 mt-1 text-primary shrink-0"/>
-                            <span>{line}</span>
-                        </li>
-                    ))}
+                        {parseList(section.content).map((line, index) => (
+                            <li key={index} className="flex items-start gap-2">
+                                <ChevronRight className="w-4 h-4 mt-1 text-primary shrink-0"/>
+                                <span>{line}</span>
+                            </li>
+                        ))}
                     </ul>
-                 )
-              )}
+                );
+              })()}
             </SectionCard>
           );
         })}
