@@ -128,7 +128,7 @@ export default function JobsPage() {
                     <div className="flex flex-1 items-center justify-end space-x-4">
                         <Button variant="outline" onClick={() => router.back()}>
                            <ArrowLeft className="mr-2" />
-                           Back to Generator
+                           Back to Roadmap
                         </Button>
                     </div>
                 </div>
