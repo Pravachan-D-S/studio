@@ -21,18 +21,19 @@ export const jobsData: JobsData = {
       {
         "role": "Data Scientist",
         "companies": [
-          {"company": "TCS", "package": "4-6 LPA", "website": "https://careers.tcs.com"},
+          {"company": "TCS", "package": "6-8 LPA", "website": "https://careers.tcs.com"},
           {"company": "Infosys", "package": "5-7 LPA", "website": "https://www.infosys.com/careers.html"},
-          {"company": "Amazon", "package": "12-18 LPA", "website": "https://amazon.jobs"},
+          {"company": "Amazon", "package": "15-20 LPA", "website": "https://amazon.jobs"},
           {"company": "Google", "package": "18-25 LPA", "website": "https://careers.google.com/"}
         ]
       },
       {
         "role": "Software Developer",
         "companies": [
-          {"company": "Wipro", "package": "3-5 LPA", "website": "https://careers.wipro.com/"},
+          {"company": "Infosys", "package": "3-5 LPA", "website": "https://careers.infosys.com"},
+          {"company": "Wipro", "package": "5-7 LPA", "website": "https://careers.wipro.com/"},
           {"company": "Accenture", "package": "5-8 LPA", "website": "https://www.accenture.com/in-en/careers"},
-          {"company": "Microsoft", "package": "12-20 LPA", "website": "https://careers.microsoft.com"},
+          {"company": "Microsoft", "package": "15-20 LPA", "website": "https://careers.microsoft.com"},
           {"company": "Adobe", "package": "15-22 LPA", "website": "https://www.adobe.com/careers.html"}
         ]
       },
@@ -47,6 +48,7 @@ export const jobsData: JobsData = {
       {
           "role": "Web Developer",
           "companies": [
+              {"company": "TCS", "package": "3.5-5.5 LPA", "website": "https://careers.tcs.com"},
               {"company": "Accenture", "package": "5-8 LPA", "website": "https://www.accenture.com/in-en/careers"},
               {"company": "Capgemini", "package": "4-7 LPA", "website": "https://www.capgemini.com/careers/"}
           ]
@@ -54,6 +56,7 @@ export const jobsData: JobsData = {
       {
           "role": "Cloud Engineer",
           "companies": [
+              {"company": "Wipro", "package": "5-7 LPA", "website": "https://careers.wipro.com"},
               {"company": "Deloitte", "package": "7-10 LPA", "website": "https://careers.deloitte.com"},
               {"company": "HCL", "package": "6-9 LPA", "website": "https://www.hcltech.com/careers"}
           ]
@@ -62,7 +65,8 @@ export const jobsData: JobsData = {
           "role": "Cybersecurity Analyst",
           "companies": [
               {"company": "PwC", "package": "6-10 LPA", "website": "https://www.pwc.in/careers.html"},
-              {"company": "KPMG", "package": "7-11 LPA", "website": "https://kpmg.com/in/en/home/careers.html"}
+              {"company": "KPMG", "package": "7-11 LPA", "website": "https://kpmg.com/in/en/home/careers.html"},
+              {"company": "Microsoft", "package": "20+ LPA", "website": "https://careers.microsoft.com"}
           ]
       }
     ],
@@ -81,7 +85,15 @@ export const jobsData: JobsData = {
         "companies": [
           {"company": "Synopsys", "package": "5-8 LPA", "website": "https://www.synopsys.com/careers.html"},
           {"company": "Texas Instruments", "package": "10-14 LPA", "website": "https://careers.ti.com/"},
-          {"company": "NVIDIA", "package": "14-20 LPA", "website": "https://www.nvidia.com/en-us/about-nvidia/careers/"}
+          {"company": "NVIDIA", "package": "14-20 LPA", "website": "https://www.nvidia.com/en-us/about-nvidia/careers/"},
+          {"company": "Intel", "package": "12-18 LPA", "website": "https://jobs.intel.com"}
+        ]
+      },
+       {
+        "role": "IoT Developer",
+        "companies": [
+          {"company": "HCL Technologies", "package": "5-10 LPA", "website": "https://www.hcltech.com/careers"},
+          {"company": "Continental Automotive", "package": "5-10 LPA", "website": "https://www.continental-jobs.com/"}
         ]
       }
     ],
@@ -108,8 +120,8 @@ export const jobsData: JobsData = {
         "role": "Design Engineer (CAD/CAM)",
         "companies": [
           {"company": "Tata Motors", "package": "4-6 LPA", "website": "https://careers.tatamotors.com"},
-          {"company": "Mahindra", "package": "4-6 LPA", "website": "https://careers.mahindra.com"},
-          {"company": "Ford India", "package": "6-9 LPA", "website": "https://www.india.ford.com/about-ford/careers/"}
+          {"company": "Mahindra", "package": "6-8 LPA", "website": "https://careers.mahindra.com"},
+          {"company": "Ashok Leyland", "package": "3-5 LPA", "website": "https://www.ashokleyland.com/careers"}
         ]
       },
        {
@@ -117,7 +129,14 @@ export const jobsData: JobsData = {
         "companies": [
           {"company": "Ashok Leyland", "package": "3-5 LPA", "website": "https://www.ashokleyland.com/careers"},
           {"company": "TVS Motors", "package": "3-5 LPA", "website": "https://www.tvsmotor.com/careers"},
-          {"company": "Bosch", "package": "5-7 LPA", "website": "https://careers.bosch.com"}
+          {"company": "Bosch", "package": "5-7 LPA", "website": "https://careers.bosch.com"},
+          {"company": "Larsen & Toubro (L&T)", "package": "5-10 LPA", "website": "https://www.larsentoubro.com/corporate/careers/"}
+        ]
+       },
+       {
+        "role": "Robotics Engineer",
+        "companies": [
+            {"company": "Tata Motors", "package": "5-10 LPA", "website": "https://careers.tatamotors.com"}
         ]
        }
     ],
@@ -129,6 +148,12 @@ export const jobsData: JobsData = {
           {"company": "Shapoorji Pallonji", "package": "4-6 LPA", "website": "https://www.shapoorjipallonji.com/careers"},
           {"company": "GMR Infra", "package": "5-7 LPA", "website": "https://www.gmrgroup.in/careers"}
         ]
+      },
+      {
+        "role": "Site Supervisor",
+        "companies": [
+            {"company": "Larsen & Toubro (L&T)", "package": "<5 LPA", "website": "https://www.larsentoubro.com/corporate/careers/"}
+        ]
       }
     ]
   },
@@ -137,10 +162,10 @@ export const jobsData: JobsData = {
       {
         "role": "Financial Analyst",
         "companies": [
-          {"company": "HDFC Bank", "package": "5-7 LPA", "website": "https://www.hdfcbank.com/careers"},
+          {"company": "HDFC Bank", "package": "5-10 LPA", "website": "https://www.hdfcbank.com/careers"},
           {"company": "ICICI Bank", "package": "6-8 LPA", "website": "https://www.icicicareers.com/"},
           {"company": "KPMG", "package": "9-12 LPA", "website": "https://kpmg.com/in/en/home/careers.html"},
-          {"company": "Deloitte", "package": "10-15 LPA", "website": "https://careers.deloitte.com"}
+          {"company": "Deloitte", "package": "10-20 LPA", "website": "https://careers.deloitte.com"}
         ]
       },
       {
@@ -176,9 +201,27 @@ export const jobsData: JobsData = {
          "companies": [
            {"company": "Infosys", "package": "6-9 LPA", "website": "https://www.infosys.com/careers.html"},
            {"company": "Wipro", "package": "5-8 LPA", "website": "https://careers.wipro.com/"},
-           {"company": "Deloitte", "package": "9-12 LPA", "website": "https://careers.deloitte.com"}
+           {"company": "Deloitte", "package": "9-12 LPA", "website": "https://careers.deloitte.com"},
+            {"company": "Reliance Jio", "package": "5-10 LPA", "website": "https://careers.jio.com"}
          ]
        }
+     ],
+     "Analytics": [
+        {
+            "role": "Data Analytics Manager",
+            "companies": [
+                {"company": "Cognizant", "package": "10-20 LPA", "website": "https://careers.cognizant.com"},
+                {"company": "Deloitte", "package": "5-10 LPA", "website": "https://careers.deloitte.com"},
+                {"company": "PwC (PricewaterhouseCoopers)", "package": "5-10 LPA", "website": "https://www.pwc.in/careers.html"}
+            ]
+        },
+        {
+            "role": "Business Analyst",
+            "companies": [
+                {"company": "Deloitte", "package": "5-10 LPA", "website": "https://careers.deloitte.com"},
+                 {"company": "PwC (PricewaterhouseCoopers)", "package": "5-10 LPA", "website": "https://www.pwc.in/careers.html"}
+            ]
+        }
      ]
   },
   "MCA": {
@@ -186,7 +229,7 @@ export const jobsData: JobsData = {
       {
         "role": "Full Stack Developer",
         "companies": [
-          {"company": "Cognizant", "package": "3-5 LPA", "website": "https://careers.cognizant.com"},
+          {"company": "Cognizant", "package": "6-8 LPA", "website": "https://careers.cognizant.com"},
           {"company": "Capgemini", "package": "4-6 LPA", "website": "https://www.capgemini.com/careers/"},
           {"company": "IBM", "package": "7-10 LPA", "website": "https://www.ibm.com/careers/in-en/"},
           {"company": "Oracle", "package": "12-16 LPA", "website": "https://www.oracle.com/careers/"}
@@ -197,7 +240,17 @@ export const jobsData: JobsData = {
         {
             "role": "Data Analyst",
             "companies": [
-                {"company": "Infosys", "package": "5-7 LPA", "website": "https://careers.infosys.com"}
+                {"company": "Infosys", "package": "5-7 LPA", "website": "https://careers.infosys.com"},
+                {"company": "HCL Technologies", "package": "5-10 LPA", "website": "https://www.hcltech.com/careers"},
+                {"company": "Cognizant", "package": "5-10 LPA", "website": "https://careers.cognizant.com"}
+            ]
+        }
+    ],
+    "Cybersecurity": [
+        {
+            "role": "Cybersecurity Analyst",
+            "companies": [
+                {"company": "Microsoft India", "package": "20+ LPA", "website": "https://careers.microsoft.com"}
             ]
         }
     ]
@@ -207,9 +260,15 @@ export const jobsData: JobsData = {
         {
             "role": "Junior Web Developer",
             "companies": [
-                {"company": "Infosys", "package": "2.5-3.5 LPA", "website": "https://careers.infosys.com"},
-                {"company": "TCS", "package": "3-4 LPA", "website": "https://careers.tcs.com"},
-                {"company": "Wipro", "package": "3-4 LPA", "website": "https://careers.wipro.com/"}
+                {"company": "Tata Consultancy Services (TCS)", "package": "<5 LPA", "website": "https://careers.tcs.com"},
+                {"company": "Infosys", "package": "2.5-3.5 LPA", "website": "https://careers.infosys.com"}
+            ]
+        },
+        {
+            "role": "IT Support Specialist",
+            "companies": [
+                {"company": "Tata Consultancy Services (TCS)", "package": "<5 LPA", "website": "https://careers.tcs.com"},
+                {"company": "Reliance Jio", "package": "<5 LPA", "website": "https://careers.jio.com"}
             ]
         }
      ],

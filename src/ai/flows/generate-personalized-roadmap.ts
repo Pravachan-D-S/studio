@@ -78,42 +78,42 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
           *   **Tools:** TensorFlow, PyTorch, Scikit-learn, Jupyter
           *   **Resources:** Kaggle, Coursera (Andrew Ng), DataCamp
           *   **Projects:** Stock Price Prediction, Image Classifier, NLP Chatbot
-          *   **Job Market:** Strong demand across IT, healthcare, finance, e-commerce
+          *   **Job Market:** Strong demand across IT, healthcare, finance, e-commerce. Tiered compensation: Services firms (<10 LPA), Product/Startups (10-20 LPA), Global Giants (20+ LPA).
           *   **Timeline:** 2–3 years
       *   **Web Developer**
           *   **Skills:** HTML, CSS, JavaScript, React, Node.js, MongoDB
           *   **Tools:** VS Code, GitHub, Firebase, Docker
           *   **Resources:** FreeCodeCamp, MDN Docs, The Odin Project
           *   **Projects:** Portfolio Website, E-commerce Platform, Blogging App
-          *   **Job Market:** High demand in startups and enterprises
+          *   **Job Market:** High demand in startups and enterprises. Entry-level (<5 LPA), Mid-level (5-15 LPA), Senior (15+ LPA).
           *   **Timeline:** 1–2 years
       *   **AI Engineer**
           *   **Skills:** Python, Data Structures, Algorithms, Linear Algebra, Probability, Machine Learning, Deep Learning
           *   **Tools:** PyTorch, TensorFlow, Keras, Scikit-learn, AWS SageMaker, GCP AI Platform
           *   **Resources:** fast.ai, Coursera AI for Everyone, DeepLearning.AI
           *   **Projects:** Generative Art with GANs, AI-powered Recommendation System, Automated Content Summarizer
-          *   **Job Market:** Very high demand in tech, research, and product innovation.
+          *   **Job Market:** Very high demand. Tiered structure: Startups/Services (10-20 LPA), Top tech (20+ LPA).
           *   **Timeline:** 2–3 years
       *   **Cloud Engineer**
           *   **Skills:** AWS/GCP/Azure, Docker, Kubernetes, Terraform, CI/CD
           *   **Tools:** Jenkins, Ansible, GitLab CI, Prometheus
           *   **Resources:** A Cloud Guru, AWS Certified Cloud Practitioner, KodeKloud
           *   **Projects:** Deploy a multi-service app on Kubernetes, Automate infrastructure with Terraform, CI/CD pipeline for a web app.
-          *   **Job Market:** Extremely high demand across all industries.
+          *   **Job Market:** Extremely high demand across all industries. Mid-level (8-15 LPA), Senior (15-25+ LPA).
           *   **Timeline:** 1-2 years
       *   **Software Developer**
           *   **Skills:** Java/C++/Python, Data Structures, Algorithms, System Design
           *   **Tools:** Git, Docker, IntelliJ/VS Code, JUnit
           *   **Resources:** LeetCode, GeeksforGeeks, "Cracking the Coding Interview" book
           *   **Projects:** Library Management System, Online Chess Game, Scalable URL Shortener
-          *   **Job Market:** Consistently high demand in product-based companies.
+          *   **Job Market:** Consistently high demand. Tiered: Services firms (<8 LPA), Product companies (10-20 LPA), Top MNCs (20+ LPA).
           *   **Timeline:** 1-2 years
       *   **Cybersecurity Analyst**
           *   **Skills:** Networking, Linux, Cryptography, Penetration Testing, SIEM
           *   **Tools:** Wireshark, Kali Linux, Metasploit, Splunk
           *   **Resources:** Cybrary, TryHackMe, CompTIA Security+
           *   **Projects:** Build a home lab for pentesting, Analyze network traffic for anomalies, Secure a vulnerable web application
-          *   **Job Market:** Rapidly growing field with high demand.
+          *   **Job Market:** Rapidly growing field. Mid-level (7-12 LPA), Senior (12-20+ LPA).
           *   **Timeline:** 2-3 years
   2.  **ECE**
       *   **Embedded Systems Engineer**
@@ -121,14 +121,14 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
           *   **Tools:** Arduino, Raspberry Pi, Keil, Proteus
           *   **Resources:** NPTEL Embedded Systems, FreeCodeCamp IoT, IEEE Journals
           *   **Projects:** IoT Smart Home, Autonomous Robot, Sensor Networks
-          *   **Job Market:** High demand in IoT, automotive, robotics
+          *   **Job Market:** High demand in IoT, automotive, robotics. Mid-level (6-12 LPA), Senior roles at top firms (15+ LPA).
           *   **Timeline:** 2–3 years
       *   **VLSI Engineer**
           *   **Skills:** Verilog, VHDL, ASIC Design, Semiconductor Physics
           *   **Tools:** Cadence, Synopsys, Xilinx Vivado
           *   **Resources:** Udemy VLSI Design, Coursera Chip Design
           *   **Projects:** FPGA-based Processor, Low Power Circuit Design
-          *   **Job Market:** Growing semiconductor and electronics industry
+          *   **Job Market:** Extremely high value niche. Mid-level (10-20 LPA), Senior at top firms (25-80+ LPA).
           *   **Timeline:** 2–4 years
   3.  **Mechanical**
       *   **Automobile Engineer**
@@ -136,14 +136,14 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
           *   **Tools:** AutoCAD, SolidWorks, Ansys
           *   **Resources:** SAE India, NPTEL, MIT OpenCourseWare
           *   **Projects:** Electric Vehicle Prototype, Engine Design, Solar Car Model
-          *   **Job Market:** Strong in EV, manufacturing, R&D
+          *   **Job Market:** Strong in EV, manufacturing, R&D. Mid-level (5-10 LPA).
           *   **Timeline:** 3–4 years
       *   **Robotics Engineer**
           *   **Skills:** Control Systems, Mechatronics, Python, ROS
           *   **Tools:** MATLAB, Gazebo, Arduino, SolidWorks
           *   **Resources:** Coursera Robotics Specialization, ROS Tutorials
           *   **Projects:** Pick-and-Place Robot, Humanoid Robot, Automated Drone
-          *   **Job Market:** Growing in automation, defense, AI industries
+          *   **Job Market:** Growing in automation, defense, AI industries. Mid-level (7-15 LPA).
           *   **Timeline:** 2–4 years
   4.  **Civil**
       *   **Structural Engineer**
@@ -151,14 +151,14 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
           *   **Tools:** STAAD Pro, AutoCAD Civil 3D, ETABS
           *   **Resources:** NPTEL Civil, Bentley Learning, IS Codes
           *   **Projects:** Bridge Design, Earthquake-Resistant Building, Smart City Model
-          *   **Job Market:** Demand in infrastructure, smart cities, government projects
+          *   **Job Market:** Demand in infrastructure, smart cities, government projects. Mid-level (5-10 LPA).
           *   **Timeline:** 3–4 years
       *   **Urban Planner**
           *   **Skills:** GIS, Town Planning, Environmental Studies
           *   **Tools:** ArcGIS, AutoCAD Map, SketchUp
           *   **Resources:** UN Habitat, MIT Urban Studies, Coursera GIS
           *   **Projects:** Smart Traffic Management, Sustainable City Design
-          *   **Job Market:** Expanding with urban development
+          *   **Job Market:** Expanding with urban development. Mid-level (6-12 LPA).
           *   **Timeline:** 2–3 years
 
   **MBA**
@@ -168,16 +168,30 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
           *   **Tools:** Excel, Power BI, Tableau
           *   **Resources:** CFA Institute, Investopedia, Coursera Finance
           *   **Projects:** Budget Forecasting, Stock Market Analysis
-          *   **Job Market:** Stable in banks, corporates, fintech
+          *   **Job Market:** Stable in banks, corporates, fintech. Tiered: Banks/Corporates (5-12 LPA), Top consulting/finance firms (12-20 LPA).
           *   **Timeline:** 2–3 years
+      *   **Investment Banker**
+          *   **Skills:** Valuation, Mergers & Acquisitions, Financial Modeling, Capital Markets
+          *   **Tools:** Bloomberg Terminal, FactSet, Advanced Excel
+          *   **Resources:** Wall Street Prep, Breaking into Wall Street
+          *   **Projects:** M&A deal simulation, Leveraged Buyout (LBO) model
+          *   **Job Market:** Highly competitive and lucrative. Analyst roles at top firms (15-30+ LPA).
+          *   **Timeline:** 2-3 years.
   2.  **Marketing**
       *   **Digital Marketing Manager**
           *   **Skills:** SEO, SEM, Social Media, Analytics
           *   **Tools:** Google Analytics, HubSpot, Canva
           *   **Resources:** HubSpot Academy, Google Skillshop
           *   **Projects:** Brand Campaign, Social Media Strategy, E-commerce Ads
-          *   **Job Market:** Strong in startups and retail
+          *   **Job Market:** Strong in startups and retail. Mid-level (8-15 LPA).
           *   **Timeline:** 1–2 years
+      *   **Brand Manager**
+          *   **Skills:** Brand Strategy, Consumer Behavior, Market Research, Campaign Management
+          *   **Tools:** Nielsen, SimilarWeb, SurveyMonkey
+          *   **Resources:** "Positioning: The Battle for Your Mind" book, Kellogg School of Management resources
+          *   **Projects:** Develop a brand launch strategy, Analyze competitor brand positioning
+          *   **Job Market:** High demand in FMCG, retail. Senior roles (15-30+ LPA).
+          *   **Timeline:** 2-4 years
 
   **MCA**
   1.  **Software Development**
@@ -186,7 +200,7 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
           *   **Tools:** GitHub, VS Code, Docker
           *   **Resources:** FreeCodeCamp, Udemy Java Developer
           *   **Projects:** CRM System, Learning Management System
-          *   **Job Market:** Strong across IT industry
+          *   **Job Market:** Strong across IT industry. Tiered: Services firms (<8 LPA), Product companies (8-15+ LPA).
           *   **Timeline:** 2–3 years
   2.  **Cybersecurity**
       *   **Security Analyst**
@@ -194,7 +208,7 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
           *   **Tools:** Wireshark, Kali Linux, Metasploit
           *   **Resources:** EC-Council CEH, Coursera Cybersecurity, Cybrary
           *   **Projects:** Secure Banking App, Penetration Testing Lab
-          *   **Job Market:** Huge demand in IT, defense, finance
+          *   **Job Market:** Huge demand in IT, defense, finance. Mid-level (8-15 LPA), Senior (15-25+ LPA).
           *   **Timeline:** 2–3 years
 
   **Diploma**
@@ -204,7 +218,7 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
           *   **Tools:** VS Code, GitHub Pages
           *   **Resources:** W3Schools, FreeCodeCamp
           *   **Projects:** Personal Portfolio, Small Business Website
-          *   **Job Market:** Entry-level jobs in IT companies
+          *   **Job Market:** Entry-level jobs in IT companies, typically <5 LPA.
           *   **Timeline:** 1–2 years
   2.  **Electronics**
       *   **Technician / IoT Developer**
@@ -212,7 +226,7 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
           *   **Tools:** Arduino, Eagle, Proteus
           *   **Resources:** NPTEL IoT, Arduino Docs
           *   **Projects:** Smart Lighting System, Water Level Detector
-          *   **Job Market:** Local industries, IoT startups
+          *   **Job Market:** Local industries, IoT startups. Entry-level <5 LPA.
           *   **Timeline:** 1–2 years
   ---
 
@@ -226,7 +240,7 @@ const generatePersonalizedRoadmapPrompt = ai.definePrompt({
   6.  **Learning Resources:** Suggest top free and paid courses, books, and communities from the Knowledge Map.
   7.  **Career Growth:** Describe potential career growth and future opportunities for the chosen path.
   8.  **Resume & Interview Prep:** A brief resume outline and 3-5 common interview questions. Do not include 'Technical Skills' or 'Soft Skills' in the resume outline.
-  9.  **Job Market Insights:** Insights on demand and salary ranges from the Knowledge Map.`,
+  9.  **Job Market Insights:** Insights on demand and salary ranges from the Knowledge Map, reflecting the tiered compensation structure (services vs. product vs. startups).`,
 });
 
 
@@ -241,6 +255,3 @@ const generatePersonalizedRoadmapFlow = ai.defineFlow(
     return output!;
   }
 );
-
-    
-

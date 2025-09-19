@@ -2,7 +2,7 @@
 'use client';
 
 import { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { jobsData, type Company } from '@/lib/jobs-data';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,7 +20,7 @@ const parseSalary = (range: string): [number, number] => {
         const max = parseInt(range.replace('<', '').replace(' LPA', ''));
         return [0, max];
     }
-    const [min, max] = range.replace(' LPA', '').split('-').map(Number);
+    const [min, max] = range.replace(' LPA', '').split('-').map(s => parseFloat(s));
     return [min, max];
 }
 
@@ -46,6 +46,7 @@ function JobResults() {
     const targetSalary = parseSalary(salaryRange);
     
     const relevantRoles = jobsData[stream]?.[specialization] ?? [];
+    
     const filteredRole = relevantRoles.find(role => role.role === aimingCareer);
 
     if (!filteredRole) {
@@ -54,7 +55,7 @@ function JobResults() {
                 <Search className="h-4 w-4" />
                 <AlertTitle>No Exact Matches Found</AlertTitle>
                 <AlertDescription>
-                   We couldn't find specific job listings for "{aimingCareer}" in our current dataset. Try exploring related roles!
+                   We couldn't find specific job listings for "{aimingCareer}" in our current dataset for your specialization. Try exploring related roles!
                 </AlertDescription>
             </Alert>
         )
@@ -115,6 +116,8 @@ function JobCard({ company, role }: { company: Company, role: string }) {
 
 
 export default function JobsPage() {
+    const router = useRouter();
+
     return (
         <div className="min-h-screen bg-background">
              <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
