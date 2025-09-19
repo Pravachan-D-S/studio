@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CompanyLogo, VidyatejLogo } from '@/components/icons';
 import { ArrowLeft, Search } from 'lucide-react';
-import Link from 'next/link';
 
 const parseSalary = (range: string): [number, number] => {
     if (range.includes('+')) {
@@ -121,10 +120,10 @@ export default function JobsPage() {
         <div className="min-h-screen bg-background">
              <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="container flex h-14 items-center">
-                    <button onClick={() => router.back()} className="mr-6 flex items-center space-x-2">
+                    <div className="mr-6 flex items-center space-x-2">
                         <VidyatejLogo className="h-6 w-6" />
                         <span className="font-bold">Vidyatej Job Matcher</span>
-                    </button>
+                    </div>
                     <div className="flex flex-1 items-center justify-end space-x-4">
                         <Button variant="outline" onClick={() => router.back()}>
                            <ArrowLeft className="mr-2" />
