@@ -45,7 +45,15 @@ export const jobsData: JobsData = {
            {"company": "NVIDIA", "package": "15-22 LPA", "website": "https://www.nvidia.com/en-us/about-nvidia/careers/"},
            {"company": "Google DeepMind", "package": "20-28 LPA", "website": "https://deepmind.google/careers/"}
          ]
-       }
+       },
+        {
+          "role": "Cybersecurity Analyst",
+          "companies": [
+            {"company": "PwC", "package": "6-9 LPA", "website": "https://www.pwc.in/careers.html"},
+            {"company": "EY", "package": "7-10 LPA", "website": "https://www.ey.com/en_in/careers"},
+            {"company": "CrowdStrike", "package": "12-18 LPA", "website": "https://www.crowdstrike.com/careers/"}
+          ]
+        }
      ],
      "ECE": [
        {
